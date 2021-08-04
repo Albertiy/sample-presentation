@@ -1,15 +1,20 @@
-import * as ProductAPI from '../api/product_api_mock'
+import * as ProductAPI from '../api/product_api_mock';
+import Category from "../model/category";
+import Product from "../model/product";
+import ProductItem from "../model/product_item";
 
 const cacheDelay = 3000;
 
+/** @type{Product[]} */
 let productListCache = [];
 let productListCacheUpdatedTime = null;     // 缓存上次更新时间
+/** @type {Category[]} */
 let categoryListCache = [];
 let categoryListCacheUpdatedTime = null;    // 缓存上次更新时间
 
 /**
  * 获取产品列表
- * @returns 
+ * @returns {Promise<Product[]>}
  */
 export function getProductList() {
     return new Promise((resolve, reject) => {
@@ -28,22 +33,34 @@ export function getProductList() {
 }
 
 /**
- * 获取分类列表
- * @returns 
+ * 获取分类列表，因数据量小，后台不处理，在此过滤。
+ * @param {number} [product]
+ * @returns  {Promise<Category[]>}
  */
-export function getCategoryList() {
+export function getCategoryList(product) {
     return new Promise((resolve, reject) => {
         let now = new Date().getTime();
         if (!categoryListCacheUpdatedTime || (now - categoryListCacheUpdatedTime) / cacheDelay > 1)
             ProductAPI.getCategoryList().then(value => {
                 categoryListCache = value;
                 categoryListCacheUpdatedTime = now;
-                resolve(value);
+                if (product !== null)
+                    resolve(value.filter((val) => {
+                        return (val.product_id == null || val.product_id == product);
+                    }));
+                else
+                    resolve(value);
             }).catch(error => {
                 reject(error);
             })
-        else
-            resolve(categoryListCache);
+        else {
+            if (product !== null)
+                resolve(categoryListCache.filter((val) => {
+                    return (val.product_id == null || val.product_id == product);
+                }));
+            else
+                resolve(categoryListCache);
+        }
     });
 }
 
@@ -52,11 +69,11 @@ export function getCategoryList() {
  * @param {number} product 
  * @param {number} category 
  * @param {string} searchString 
- * @returns 
+ * @returns  {Promise<ProductItem[]>}
  */
 export function getProductItemList(product, category, searchString) {
     return new Promise((resolve, reject) => {
-        ProductAPI.getProductItemList(product, category, searchString).then(value => {
+        ProductAPI.getProductItemList(product, category, searchString.trim()).then(value => {
             resolve(value);
         }).catch(error => {
             reject(error);

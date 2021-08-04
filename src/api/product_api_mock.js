@@ -12,7 +12,7 @@ const categoryList = [
     new Category(1, '招牌'),
     new Category(2, '美食'),
     new Category(3, '培训'),
-    new Category(4, '婚庆'),
+    new Category(4, '婚庆', 2),
     new Category(5, '开业'),
     new Category(6, '房地产'),
     new Category(7, '金榜提名'),
@@ -29,12 +29,20 @@ const productItemList = [
     new ProductItem(6, '演出快乐6', 1, 'www.baidu.com', '/img/merryChristmas.png', [3]),
 ];
 
+/**
+ * 
+ * @returns {Promise<Product[]>}
+ */
 export function getProductList() {
     return new Promise((resolve, reject) => {
         resolve(productList);
     })
 }
 
+/**
+ * 
+ * @returns {Promise<Category[]>}
+ */
 export function getCategoryList() {
     return new Promise((resolve, reject) => {
         resolve(categoryList);
@@ -46,7 +54,7 @@ export function getCategoryList() {
  * @param {number} product 产品
  * @param {number} category 类别
  * @param {string} searchString 查询语句
- * @returns 
+ * @returns {Promise<ProductItem[]>}
  */
 export function getProductItemList(product, category, searchString) {
     return new Promise((resolve, reject) => {
