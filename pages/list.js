@@ -8,6 +8,7 @@ import Product from "../src/model/product";
 import Category from "../src/model/category";
 import * as ProductService from "../src/service/product_service";
 import SearchInput from "../src/component/input_search";
+import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
 
 
 export default function List() {
@@ -35,6 +36,8 @@ export default function List() {
     // 当selectedProduct变化，触发更新
     useEffect(() => {
         ProductService.getCategoryList(selectedProduct).then(val => {
+            if (val && ((val.length > 0 && val[0].id != null) || val.length == 0))
+                val.unshift(new Category(null, '全部'))   // 添加一个全部item
             setCategoryList(val);
         }).catch(err => { console.log(err) });
         ProductService.getProductItemList(selectedProduct, selectedCategory, searchString).then(val => {
@@ -51,20 +54,16 @@ export default function List() {
             <header>
                 {/* 搜索框，固定上方 */}
                 <div className={styles.pin_navbar}>
-                    <SearchInput className={styles.search_input}></SearchInput>
+                    <SearchInput className={styles.search_input} onChange={(value) => { console.log(value) }}></SearchInput>
                 </div>
                 <div>
                     {/* product 列表 */}
-                    <div className='nav-list'>
-                        <ul>
-                            <li></li>
-                        </ul>
+                    <div className={styles.nav_list}>
+                        <HorizontalScrollNav items={productList} defaultValue={selectedProduct} valueProp={'id'} displayProp={'name'} onChange={(value, item) => { console.log(value) }} itemStyle={{ fontSize: '0.8rem' }} />
                     </div>
                     {/* category 列表 */}
-                    <div className='nav-list'>
-                        <ul>
-                            <li></li>
-                        </ul>
+                    <div className={styles.nav_list}>
+                        <HorizontalScrollNav items={categoryList} defaultValue={selectedCategory} valueProp={'id'} displayProp={'name'} categoryList={(value, item) => { console.log(value) }} itemStyle={{ fontSize: '0.8rem' }} />
                     </div>
                 </div>
             </header>
@@ -72,7 +71,7 @@ export default function List() {
                 {/* productItem 列表 */}
                 <section>
                     <ul>
-                        <li>全部</li>
+                        <li></li>
                     </ul>
                 </section>
             </main>
@@ -83,6 +82,6 @@ export default function List() {
             {/* 跨子组件样式 */}
             <style jsx global>{`
             `}</style>
-        </div>
+        </div >
     );
 }

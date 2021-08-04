@@ -53,12 +53,14 @@ export default function SearchInput(props) {
     return (
         <div className={styles.container}>
             {/* 搜索图标 */}
-            <Icon className={styles.icon} path={mdiMagnify} size={1}></Icon>
-            <input type='search' className={styles.input} onChange={valueChanged} onKeyPress={keyPressed} ref={inputEle} {...inputProps} />
+            <Icon className={styles.icon} path={mdiMagnify} size={1} ></Icon>
+            <input type='search' className={`${styles.input}  ${className != undefined ? className : ''}`} onChange={valueChanged} onKeyPress={keyPressed} ref={inputEle} {...inputProps} />
             {/* 清空图标 */}
-            {clearVisible && (<span style={{ display: 'flex' }} onClick={ClearBtnClicked}>
-                <Icon className={styles.icon} path={mdiCloseCircle} size={0.75} title='清除'></Icon>
-            </span>)}
-        </div>
+            {
+                clearVisible && (<span style={{ display: 'flex' }} onClick={ClearBtnClicked}>
+                    <Icon className={styles.icon} path={mdiCloseCircle} size={0.75} title='清除'></Icon>
+                </span>)
+            }
+        </div >
     );
 }

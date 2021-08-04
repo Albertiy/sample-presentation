@@ -3,6 +3,17 @@
     flex-direction: column;
 }
 
+.pin_navbar {
+    margin: 10px 10px 5px;
+}
+
 .search_input {
+    font-size: 0.9rem;
     width: 100%;
+    height: 28px;
+    color: var(--color-text-secondary);
+}
+
+.nav_list {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
 }

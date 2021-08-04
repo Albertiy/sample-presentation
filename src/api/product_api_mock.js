@@ -5,7 +5,8 @@ import ProductItem from "../model/product_item";
 const productList = [
     new Product(1, '易拉宝'),
     new Product(2, '不锈钢广告牌'),
-    new Product(3, '巴拉巴拉')
+    new Product(3, '巴拉巴拉'),
+    new Product(4, '咕叽咕叽'),
 ];
 
 const categoryList = [
