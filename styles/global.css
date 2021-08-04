@@ -1,0 +1,43 @@
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+        Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    line-height: 1.6;
+    font-size: 18px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    /* #f34873; */
+    --color-theme-main: #c7fa52;
+    --color-background-empty: #f5f5f9;
+    --color-background-panel: #fff;
+    --color-text-secondary: #5c6b77;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 12px;
+    background-color: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+    display: block;
+    min-height: 12px;
+    min-width: 8px;
+    border-radius: 6px;
+    background-color: rgb(217, 217, 217);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    display: block;
+    min-height: 12px;
+    min-width: 8px;
+    border-radius: 6px;
+    background-color: rgb(159, 159, 159);
+}
