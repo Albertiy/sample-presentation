@@ -1,11 +1,13 @@
 import Head from "next/head";
 
+import styles from "../styles/list.module.css"
 
 import { useState, useEffect } from "react";
 
 import Product from "../src/model/product";
 import Category from "../src/model/category";
 import * as ProductService from "../src/service/product_service";
+import SearchInput from "../src/component/input_search";
 
 
 export default function List() {
@@ -25,10 +27,12 @@ export default function List() {
         }).catch(err => { console.log(err) });
     }
 
+    // 初始化
     useEffect(() => {
         init();
     }, [])  // [] 只执行一次初始化数据
 
+    // 当selectedProduct变化，触发更新
     useEffect(() => {
         ProductService.getCategoryList(selectedProduct).then(val => {
             setCategoryList(val);
@@ -39,28 +43,32 @@ export default function List() {
     }, [selectedProduct])
 
     return (
-        <div className='container'>
+        <div className={styles.container}>
             <Head>
                 <title>素材列表</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <header>
-                {/* 搜索框 */}
-                <input className='search-input'></input>
-                {/* product 列表 */}
-                <div className='nav-list'>
-                    <ul>
-                        <li></li>
-                    </ul>
+                {/* 搜索框，固定上方 */}
+                <div className={styles.pin_navbar}>
+                    <SearchInput className={styles.search_input}></SearchInput>
                 </div>
-                {/* category 列表 */}
-                <div className='nav-list'>
-                    <ul>
-                        <li></li>
-                    </ul>
+                <div>
+                    {/* product 列表 */}
+                    <div className='nav-list'>
+                        <ul>
+                            <li></li>
+                        </ul>
+                    </div>
+                    {/* category 列表 */}
+                    <div className='nav-list'>
+                        <ul>
+                            <li></li>
+                        </ul>
+                    </div>
                 </div>
             </header>
-            <main>
+            <main className='main-panel'>
                 {/* productItem 列表 */}
                 <section>
                     <ul>
@@ -71,13 +79,9 @@ export default function List() {
             <footer></footer>
             {/* 组件内部样式 */}
             <style jsx>{`
-            .serach-input {
-                width: 100%;
-            }
             `}</style>
             {/* 跨子组件样式 */}
             <style jsx global>{`
-
             `}</style>
         </div>
     );
