@@ -73,7 +73,8 @@ export function getCategoryList(product) {
  */
 export function getProductItemList(product, category, searchString) {
     return new Promise((resolve, reject) => {
-        ProductAPI.getProductItemList(product, category, searchString.trim()).then(value => {
+        ProductAPI.getProductItemList(product, category, searchString).then(value => {
+            console.log(value);
             resolve(value);
         }).catch(error => {
             reject(error);

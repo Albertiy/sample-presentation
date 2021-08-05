@@ -57,16 +57,21 @@ export function getCategoryList() {
  * @param {string} searchString 查询语句
  * @returns {Promise<ProductItem[]>}
  */
-export function getProductItemList(product, category, searchString) {
+export function getProductItemList(product = null, category = null, searchString = null) {
+    console.log(`product=${product} category=${category} searchString=${searchString}`)
     return new Promise((resolve, reject) => {
-        if (!product && !category && !searchString) {
+        if (product == null && category == null && searchString == null) {
             resolve(productItemList);
         } else {
-            resolve(productItemList.filter((value, idx, array) => {
-                return (!product || value.productId == product)
-                    && (!category || value.categoryList.includes(category))
-                    && (!searchString || value.name.includes(searchString))
-            }));
+            let temp = productItemList.filter((item, idx, array) => {
+                // console.log(`${item.productId} == ${product} ? ${item.productId == product}`);
+                // console.log(`${item.categoryList} includes ${category} ? ${item.categoryList.includes(category)}`);
+                // console.log(`${item.name} includes ${searchString} ? ${item.name.includes(searchString)}`);
+                return (product == undefined || item.productId == product)
+                    && (category == undefined || item.categoryList.includes(category))
+                    && (searchString == undefined || item.name.includes(searchString))
+            });
+            resolve(temp);
         }
     })
 }
