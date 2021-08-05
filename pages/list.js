@@ -6,25 +6,38 @@ import { useState, useEffect } from "react";
 
 import Product from "../src/model/product";
 import Category from "../src/model/category";
+import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
 import SearchInput from "../src/component/input_search";
 import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
 
+/** @type{Product[]} */
+const defaultProductList = [];
+/** @type{Category[]} */
+const defaultCategoryList = [];
+/** @type{Product} */
+const defaultProduct = null;
 const defaultCategory = -1;
+/** @type{ProductItem[]} */
+const defaultProductItemList = [];
+const defaultSearchString = '';   // 默认空串
+
+
 
 export default function List() {
-    const [productList, setProductList] = useState([]);
-    const [categoryList, setCategoryList] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState(defaultCategory); // 默认 -1，表示全部类型
-    const [productItemList, setProductItemList] = useState([]);
-    const [searchString, setSearchString] = useState('');   // 默认空串
+    const [productList, setProductList] = useState(defaultProductList);
+    const [categoryList, setCategoryList] = useState(defaultCategoryList);
+    const [selectedProduct, setSelectedProduct] = useState(defaultProduct);
+    const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
+    const [productItemList, setProductItemList] = useState(defaultProductItemList);
+    const [searchString, setSearchString] = useState(defaultSearchString);
 
     /**
      * 初始化获取产品列表
      */
     function init() {
         ProductService.getProductList().then(res => {
+            console.log('初始化产品列表：')
             setProductList(res);
             if (res.length > 0 && selectedProduct == null)
                 setSelectedProduct(res[0].id);
@@ -35,11 +48,12 @@ export default function List() {
      * 加载商品列表
      */
     function loadProductItems() {
-        console.log('加载商品里列表')
+        console.log('加载商品列表：')
         let p = selectedProduct;
         let c = selectedCategory == defaultCategory ? null : selectedCategory;
         let s = searchString && searchString.trim() != '' ? searchString.trim() : null;
         ProductService.getProductItemList(p, c, s).then(res => {
+            console.log(res);
             setProductItemList(res);
         }).catch(err => { console.log(err) });
     }
@@ -53,6 +67,7 @@ export default function List() {
     useEffect(() => {
         // 1.加载分类列表
         ProductService.getCategoryList(selectedProduct).then(res => {
+            console.log('加载分类列表：')
             if (res && ((res.length > 0 && res[0].id != defaultCategory) || res.length == 0)) {
                 res.unshift(new Category(-1, '全部'))   // 添加一个全部item
             }
@@ -85,7 +100,7 @@ export default function List() {
                     <SearchInput className={styles.search_input} onChange={value => {
                         console.log(value);
                         setSearchString(value);
-                    }}></SearchInput>
+                    }} placeholder='搜索素材'></SearchInput>
                 </div>
                 <div>
                     {/* product 列表 */}
@@ -106,10 +121,17 @@ export default function List() {
             </header>
             <main className='main-panel'>
                 {/* productItem 列表 */}
+                <p>{`共查询到 ${productItemList.length} 个结果`}</p>
                 <section>
-                    <ul>
-                        <li></li>
-                    </ul>
+                    {productItemList.map((item, idx) => {
+                        return (
+                            <div>
+                                <img src={item.mainPic}></img>
+                                <p>{item.name}</p>
+                            </div>
+                        )
+
+                    })}
                 </section>
             </main>
             <footer></footer>

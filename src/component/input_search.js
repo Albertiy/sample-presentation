@@ -1,20 +1,31 @@
 import styles from './input_search.module.css';
 import Icon from '@mdi/react';
 import { mdiMagnify, mdiCloseCircle } from '@mdi/js';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 /**
  * 自定义搜索框组件
- * @param {{onChange?:(value:string)=>{},onInput?:(value:string)=>{}}} props
+ * @param {{
+ *   defaultValue?:string,
+ *   onChange?:(value:string)=>{},
+ *   onInput?:(value:string)=>{},
+ *   placeholder?:string,
+ * }} props
  * @returns 
  */
 export default function SearchInput(props) {
 
-    const { className, onChange, onInput, inputProps } = props;
+    const { className, defaultValue = '', onChange = () => { }, onInput = () => { }, placeholder = '', inputProps } = props;
 
     const [clearVisible, setClearVisible] = useState(false);
 
     const inputEle = useRef(null);
+
+    useEffect(() => {
+        if (inputEle.current)
+            inputEle.current.value = defaultValue
+    }, [defaultValue])
+
 
     function valueChanged(event) {
         let value = event.target.value;
@@ -47,6 +58,7 @@ export default function SearchInput(props) {
         if (inputEle.current) {
             inputEle.current.value = ''
             setClearVisible(false)
+            onChange(inputEle.current.value)    // 也要提醒改变值
         }
     }
 
@@ -54,7 +66,7 @@ export default function SearchInput(props) {
         <div className={styles.container}>
             {/* 搜索图标 */}
             <Icon className={styles.icon} path={mdiMagnify} size={1} ></Icon>
-            <input type='search' className={`${styles.input}  ${className != undefined ? className : ''}`} onChange={valueChanged} onKeyPress={keyPressed} ref={inputEle} {...inputProps} />
+            <input type='search' className={`${styles.input}  ${className != undefined ? className : ''}`} onChange={valueChanged} onKeyPress={keyPressed} placeholder={placeholder} ref={inputEle} {...inputProps} />
             {/* 清空图标 */}
             {
                 clearVisible && (<span style={{ display: 'flex' }} onClick={ClearBtnClicked}>
