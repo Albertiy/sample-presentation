@@ -75,3 +75,18 @@ export function getProductItemList(product = null, category = null, searchString
         }
     })
 }
+
+export function getProductItemById(id) {
+    // console.log(id)
+    return new Promise((resolve, reject) => {
+        if (id != null) {
+            let res = productItemList.find(item => {
+                return item.id == id;
+            })
+            if (res) resolve(res)
+            else reject('未查询到结果')
+        } else {
+            reject('缺少必要参数')
+        }
+    })
+}

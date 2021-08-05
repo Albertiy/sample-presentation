@@ -21,6 +21,8 @@ body {
     --color-background-panel: #fff;
     --color-text-secondary: #5c6b77;
     --color-text-virtual: #bfd0dfc4;
+    --color-background-model: rgb(36, 36, 36);
+    --color-background-gray: rgb(63, 63, 63);
 }
 
 ::-webkit-scrollbar {

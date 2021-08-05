@@ -80,3 +80,13 @@ export function getProductItemList(product, category, searchString) {
         })
     });
 }
+
+export function getProductItemById(id) {
+    return new Promise((resolve, reject) => {
+        ProductAPI.getProductItemById(id).then(value => {
+            resolve(value)
+        }).catch(error => {
+            reject(error)
+        })
+    });
+}

@@ -14,6 +14,8 @@ import Icon from "@mdi/react";
 import { mdiEmoticonKissOutline } from '@mdi/js';
 import InView from "react-intersection-observer";
 
+import { useRouter } from 'next/router';
+
 /** @type{Product[]} */
 const defaultProductList = [];
 /** @type{Category[]} */
@@ -36,6 +38,7 @@ export default function List() {
     const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
     const [productItemList, setProductItemList] = useState(defaultProductItemList);
     const [searchString, setSearchString] = useState(defaultSearchString);
+    const router = useRouter();
 
     /**
      * 初始化获取产品列表
@@ -93,6 +96,18 @@ export default function List() {
         loadProductItems();
     }, [selectedCategory, searchString])
 
+    /**
+     * 
+     * @param {ProductItem} item 
+     */
+    function itemClicked(item) {
+        console.log(item)
+        // if (router)
+        //router.push('/detail', { query: { id: item.id } });
+        // else 
+        window.open('/detail?id=' + item.id, '_self')
+    }
+
     return (
         <div className={styles.container}>
             <Head>
@@ -132,7 +147,7 @@ export default function List() {
                     <section className={styles.item_list_container}>
                         {productItemList.map((item, idx) => {
                             return (
-                                <div key={item.id} className={styles.item_container}>
+                                <div key={item.id} className={styles.item_container} onClick={itemClicked.bind(this, item)}>
                                     <div className={styles.image_container}>
                                         <InView triggerOnce={true}>
                                             {({ inView, ref, entry }) => (
