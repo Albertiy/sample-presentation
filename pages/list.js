@@ -123,18 +123,22 @@ export default function List() {
             </header>
             <main className={styles.main_panel}>
                 {/* productItem 列表 */}
-                <p>{`共查询到 ${productItemList.length} 个结果`}</p>
-                <section className={styles.item_list_container}>
-                    {productItemList.map((item, idx) => {
-                        return (
-                            <div className={styles.item_container}>
-                                <img className={styles.main_pic} src={item.mainPic}></img>
-                                <div className={styles.item_name}>{item.name}</div>
-                            </div>
-                        )
+                {productItemList && productItemList.length > 0 ? (
+                    <section className={styles.item_list_container}>
+                        {productItemList.map((item, idx) => {
+                            return (
+                                <div className={styles.item_container}>
+                                    <img className={styles.main_pic} src={item.mainPic}></img>
+                                    <div className={styles.item_name}>{item.name}</div>
+                                </div>
+                            )
 
-                    })}
-                </section>
+                        })}
+                    </section>
+                ) : (
+                    <p>{`没有查询到结果，换条件个再试试吧`}</p>
+                )}
+
             </main>
             <footer></footer>
             {/* 组件内部样式 */}
