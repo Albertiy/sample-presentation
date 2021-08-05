@@ -95,12 +95,14 @@ export default function List() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <header>
-                {/* 搜索框，固定上方 */}
-                <div className={styles.pin_navbar}>
-                    <SearchInput className={styles.search_input} onChange={value => {
-                        console.log(value);
-                        setSearchString(value);
-                    }} placeholder='搜索素材'></SearchInput>
+                <div className={styles.pin_navbar_container}>
+                    {/* 搜索框，固定上方 */}
+                    <div className={styles.pin_navbar}>
+                        <SearchInput className={styles.search_input} onChange={value => {
+                            console.log(value);
+                            setSearchString(value);
+                        }} placeholder='搜索素材'></SearchInput>
+                    </div>
                 </div>
                 <div>
                     {/* product 列表 */}

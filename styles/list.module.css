@@ -1,10 +1,20 @@
 .container {
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+.pin_navbar_container {
+    height: 50px;
+    width: 100%;
 }
 
 .pin_navbar {
-    margin: 10px 10px 5px;
+    position: fixed;
+    width: 100%;
+    padding: 10px 10px 5px;
+    background: var(--color-background-panel);
+    z-index: 1;
 }
 
 .search_input {
