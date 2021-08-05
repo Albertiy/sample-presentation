@@ -10,6 +10,9 @@ import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
 import SearchInput from "../src/component/input_search";
 import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
+import Icon from "@mdi/react";
+import { mdiEmoticonKissOutline } from '@mdi/js';
+import InView from "react-intersection-observer";
 
 /** @type{Product[]} */
 const defaultProductList = [];
@@ -21,6 +24,8 @@ const defaultCategory = -1;
 /** @type{ProductItem[]} */
 const defaultProductItemList = [];
 const defaultSearchString = '';   // 默认空串
+
+const defaultImgSrc = '/img/picture.png';   // 默认图
 
 
 
@@ -127,8 +132,14 @@ export default function List() {
                     <section className={styles.item_list_container}>
                         {productItemList.map((item, idx) => {
                             return (
-                                <div className={styles.item_container}>
-                                    <img className={styles.main_pic} src={item.mainPic}></img>
+                                <div key={item.id} className={styles.item_container}>
+                                    <div className={styles.image_container}>
+                                        <InView triggerOnce={true}>
+                                            {({ inView, ref, entry }) => (
+                                                <img ref={ref} className={styles.main_pic} alt={item.name} src={inView ? item.mainPic : defaultImgSrc}></img>
+                                            )}
+                                        </InView>
+                                    </div>
                                     <div className={styles.item_name}>{item.name}</div>
                                 </div>
                             )
@@ -136,7 +147,10 @@ export default function List() {
                         })}
                     </section>
                 ) : (
-                    <p>{`没有查询到结果，换条件个再试试吧`}</p>
+                    <div className={styles.empty_list}>
+                        <Icon path={mdiEmoticonKissOutline} size={2}></Icon>
+                        <div>{`没有查询到结果，换条件个再试试吧`}</div>
+                    </div>
                 )}
 
             </main>
