@@ -121,15 +121,15 @@ export default function List() {
                     </div>
                 </div>
             </header>
-            <main className='main-panel'>
+            <main className={styles.main_panel}>
                 {/* productItem 列表 */}
                 <p>{`共查询到 ${productItemList.length} 个结果`}</p>
-                <section>
+                <section className={styles.item_list_container}>
                     {productItemList.map((item, idx) => {
                         return (
-                            <div>
-                                <img src={item.mainPic}></img>
-                                <p>{item.name}</p>
+                            <div className={styles.item_container}>
+                                <img className={styles.main_pic} src={item.mainPic}></img>
+                                <div className={styles.item_name}>{item.name}</div>
                             </div>
                         )
 

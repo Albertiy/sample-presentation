@@ -23,7 +23,7 @@ const categoryList = [
 
 const productItemList = [
     new ProductItem(1, '圣诞快乐1', 1, 'www.baidu.com', '/img/merryChristmas.png', [8]),
-    new ProductItem(2, '春节快乐2', 1, 'www.baidu.com', '/img/merryChristmas.png', [7]),
+    new ProductItem(2, '春节快乐2fdsa fdsa fdsaf ds fdsf', 1, 'www.baidu.com', '/img/merryChristmas.png', [7]),
     new ProductItem(3, '节日快乐3', 1, 'www.baidu.com', '/img/merryChristmas.png', [6]),
     new ProductItem(4, '毕业快乐4', 1, 'www.baidu.com', '/img/merryChristmas.png', [5]),
     new ProductItem(5, '周岁快乐5', 1, 'www.baidu.com', '/img/merryChristmas.png', [4]),
