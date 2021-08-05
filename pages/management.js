@@ -7,7 +7,7 @@ export default function Upload(props) {
     return (
         <div>
             <Head>
-                <title>素材管理</title>
+                <title>数据管理</title>
                 <link rel="icon" href="/img/picturex64.png" />
             </Head>
         </div>
