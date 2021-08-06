@@ -8,10 +8,10 @@ export default class Category {
      * 商品类
      * @param {number} id 
      * @param {string} name 
-     * @param {number} parent_id 
-     * @param {number} product_id
+     * @param {number} [parent_id] 
+     * @param {number} [product_id]
      */
-    constructor(id, name, product_id, parent_id) {
+    constructor(id, name, product_id = null, parent_id = null) {
         this.id = id;
         this.name = name;
         this.product_id = product_id;

@@ -3,9 +3,9 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'PingFang SC',
-    'Source Han Sans',
-    'Noto Sans',
-    'Microsoft YaHei',Helvetica,'Hiragino Sans GB',Arial,'Lucida Grande',sans-serif;
+        'Source Han Sans',
+        'Noto Sans',
+        'Microsoft YaHei', Helvetica, 'Hiragino Sans GB', Arial, 'Lucida Grande', sans-serif;
     line-height: 1.6;
     font-size: 18px;
 }
@@ -17,12 +17,15 @@ body {
 :root {
     /* #f34873; */
     --color-theme-main: #a7e457;
+    --color-theme-bg: rgb(129, 0, 6);
+    --color-theme-bg2: rgb(90, 8, 8);
     --color-background-empty: #f5f5f9;
     --color-background-panel: #fff;
     --color-text-secondary: #5c6b77;
     --color-text-virtual: #bfd0dfc4;
     --color-background-model: rgb(36, 36, 36);
     --color-background-gray: rgb(63, 63, 63);
+    --color-shadow-light: rgba(100, 100, 100, 0.801);
 }
 
 ::-webkit-scrollbar {

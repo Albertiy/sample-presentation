@@ -32,6 +32,9 @@ export function getProductList() {
     });
 }
 
+// 当未选择时，id = -1
+const defaultCategory = new Category(-1, '全部')
+
 /**
  * 获取分类列表，因数据量小，后台不处理，在此过滤。
  * @param {number} [product]
@@ -40,26 +43,30 @@ export function getProductList() {
 export function getCategoryList(product) {
     return new Promise((resolve, reject) => {
         let now = new Date().getTime();
-        if (!categoryListCacheUpdatedTime || (now - categoryListCacheUpdatedTime) / cacheDelay > 1)
+        let res = [];
+
+        if (!categoryListCacheUpdatedTime || (now - categoryListCacheUpdatedTime) / cacheDelay > 1) {
             ProductAPI.getCategoryList().then(value => {
-                categoryListCache = value;
+                categoryListCache = value // .unshift(defaultCategory); // 添加默认分类
                 categoryListCacheUpdatedTime = now;
                 if (product !== null)
-                    resolve(value.filter((val) => {
+                    res = value.filter((val) => {
                         return (val.product_id == null || val.product_id == product);
-                    }));
+                    });
                 else
-                    resolve(value);
+                    res = value;
+                resolve(res);
             }).catch(error => {
                 reject(error);
             })
-        else {
+        } else {
             if (product !== null)
-                resolve(categoryListCache.filter((val) => {
+                res = categoryListCache.filter((val) => {
                     return (val.product_id == null || val.product_id == product);
-                }));
+                });
             else
-                resolve(categoryListCache);
+                res = categoryListCache;
+            resolve(res);
         }
     });
 }
@@ -89,4 +96,24 @@ export function getProductItemById(id) {
             reject(error)
         })
     });
+}
+
+export function addNewProduct(name) {
+    return new Promise((resolve, reject) => {
+        ProductAPI.addNewProduct(name).then(value => {
+            resolve(value);
+        }).catch(error => {
+            reject(error)
+        })
+    })
+}
+
+export function addNewCategory(name) {
+    return new Promise((resolve, reject) => {
+        ProductAPI.addNewCategory(name).then(value => {
+            resolve(value);
+        }).catch(error => {
+            reject(error)
+        })
+    })
 }

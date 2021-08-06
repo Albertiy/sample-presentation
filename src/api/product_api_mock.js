@@ -2,14 +2,14 @@ import Category from "../model/category";
 import Product from "../model/product";
 import ProductItem from "../model/product_item";
 
-const productList = [
+let productList = [
     new Product(1, '易拉宝'),
     new Product(2, '不锈钢广告牌'),
     new Product(3, '巴拉巴拉'),
     new Product(4, '咕叽咕叽'),
 ];
 
-const categoryList = [
+let categoryList = [
     new Category(1, '招牌'),
     new Category(2, '美食'),
     new Category(3, '培训'),
@@ -21,7 +21,7 @@ const categoryList = [
     new Category(9, '演出'),
 ];
 
-const productItemList = [
+let productItemList = [
     new ProductItem(1, '圣诞快乐1', 1, 'www.baidu.com', '/img/merryChristmas.png', [8]),
     new ProductItem(2, '春节快乐2fdsa fdsa fdsaf ds fdsf', 1, 'www.baidu.com', '/img/merryChristmas.png', [7]),
     new ProductItem(3, '节日快乐3', 1, 'www.baidu.com', '/img/merryChristmas.png', [6]),
@@ -87,6 +87,34 @@ export function getProductItemById(id) {
             else reject('未查询到结果')
         } else {
             reject('缺少必要参数')
+        }
+    })
+}
+
+export function addNewProduct(name) {
+    return new Promise((resolve, reject) => {
+        if (name) {
+            if (productList.findIndex(item => item.name == name) != -1)
+                reject('产品名重复')
+            else {
+                let newProduct = new Product(productList.length + 1, name.trim())
+                productList.push(newProduct)
+                resolve(newProduct)
+            }
+        }
+    })
+}
+
+export function addNewCategory(name) {
+    return new Promise((resolve, reject) => {
+        if (name) {
+            if (categoryList.findIndex(item => item.name == name) != -1)
+                reject('类别名重复')
+            else {
+                let newCategory = new Category(categoryList.length + 1, name.trim())
+                categoryList.push(newCategory)
+                resolve(newCategory)
+            }
         }
     })
 }
