@@ -18,13 +18,34 @@ router.get('/product', function (req, res, next) {
     })
 })
 
-router.put('/product', function (req, res, next) {
+router.post('/product', function (req, res, next) {
     let { name } = req.body;
-    dbService.addNewProduct(name).then(val => {
+    if (name)
+        dbService.addNewProduct(name).then(val => {
+            res.send(new ReqBody(1, val))
+        }).catch(err => {
+            res.send(new ReqBody(0, null, err))
+        })
+    else res.send(new ReqBody(0, null, 'need parameters'))
+})
+
+router.get('/category', function (req, res, next) {
+    dbService.getCategoryList().then(val => {
         res.send(new ReqBody(1, val))
     }).catch(err => {
         res.send(new ReqBody(0, null, err))
     })
+})
+
+router.post('/category', function (req, res, next) {
+    let { name } = req.body;
+    if (name)
+        dbService.addNewCategory(name).then(val => {
+            res.send(new ReqBody(1, val))
+        }).catch(err => {
+            res.send(new ReqBody(0, null, err))
+        })
+    else res.send(new ReqBody(0, null, 'need parameters'))
 })
 
 

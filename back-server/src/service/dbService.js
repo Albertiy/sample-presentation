@@ -22,7 +22,29 @@ function addNewProduct(name) {
     })
 }
 
+function getCategoryList() {
+    return new Promise((resolve, reject) => {
+        CategoryAPI.queryAll().then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+function addNewCategory(name) {
+    return new Promise((resolve, reject) => {
+        CategoryAPI.add(name).then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     getProductList: getProductList,
     addNewProduct: addNewProduct,
+    getCategoryList: getCategoryList,
+    addNewCategory: addNewCategory,
 }
