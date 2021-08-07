@@ -4,5 +4,5 @@
   "staticPath": "./public",
   "frontAddress": "http://localhost:8511",
   "logDirectory": "logs",
-  "fileRoot": "../../multiImageRoot"
+  "fileRoot": "../yilabaoPic"
 }
