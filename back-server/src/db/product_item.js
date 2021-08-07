@@ -35,11 +35,12 @@ function query(product, category, searchString) {
 }
 
 
-const addSql = 'insert into product_item(name) values(?);'
+const addSql = "insert into product_item(`name`, product_id, category_list, main_pic, link_url) values(?, ?, convert(?,json), ?, ?)"
 
-function add(name) {
+function add(name, product, categories, mainPic, linkUrl) {
+    let categoryList = categories ? JSON.stringify(categories) : '[]';  // stringify 自动添加引号
     return new Promise((resolve, reject) => {
-        ConnPool.query(addSql, [name], (err, res, fields) => {
+        ConnPool.query(addSql, [name, product_id, categoryList, ], (err, res, fields) => {
             if (err) {
                 console.log(err)
                 reject(err)

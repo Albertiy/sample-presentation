@@ -42,9 +42,35 @@ function addNewCategory(name) {
     })
 }
 
+/**
+ * 
+ * @param {number} product 
+ * @param {number} category 
+ * @param {string} searchString 
+ * @returns 
+ */
 function getProductItemList(product, category, searchString) {
     return new Promise((resolve, reject) => {
         ProductItemAPI.query(product, category, searchString).then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
+/**
+ * 
+ * @param {string} name 
+ * @param {number} product 
+ * @param {number[]} categories 
+ * @param {string} mainPic 
+ * @param {string} linkUrl 
+ * @returns 
+ */
+function addProductItem(name, product, categories, mainPic, linkUrl) {
+    return new new Promise((resolve, reject) => {
+        ProductItemAPI.add(name, product, categories, mainPic, linkUrl).then((result) => {
             resolve(result)
         }).catch((err) => {
             reject(err)

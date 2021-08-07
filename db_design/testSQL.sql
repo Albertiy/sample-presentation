@@ -12,6 +12,8 @@ select * from product_item;
 
 insert into product_item(`name`, product_id, category_list, main_pic, link_url) values('圣诞寄语1', 1, '[]', 'merryChristmas.png', 'https://m.58pic.com/newpic/37102112.html');
 
+insert into product_item(`name`, product_id, category_list, main_pic, link_url) values(?, ?, '[]', ?, ?);
+
 update product_item set category_list = '[1,2]' where id =1;
 
 -- $$$$$
@@ -21,4 +23,4 @@ select t.id as `product_item_id`, j.category_id, c.`name` as `category_name` fro
 	INNER JOIN category as c
 	where t.id =1 and c.id=j.category_id;
     
-select * from product_item;
+select * from product_item t where t.id = 1 and JSON_contains(t.category_list, '1', '$') and t.name like '%1%';
