@@ -24,7 +24,7 @@ const addNewSql = 'insert into product(name) values(?);'
  * @param {string} name 
  * @returns 
  */
-export function addNew(name) {
+export function add(name) {
     return new Promise((resolve, reject) => {
         ConnPool.query(addNewSql, [name], (err, res, fields) => {
             if (err) {
