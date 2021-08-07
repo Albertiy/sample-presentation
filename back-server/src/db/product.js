@@ -1,10 +1,10 @@
-import ConnPool from './conn_pool'
+const ConnPool = require('./conn_pool')
 
 const pool = ConnPool.getPool();
 
 const queryAllSql = 'select * from product;'
 
-export function queryAll() {
+function queryAll() {
     return new Promise((resolve, reject) => {
         ConnPool.query(queryAllSql, [], (err, res, fields) => {
             if (err) {
@@ -24,7 +24,7 @@ const addNewSql = 'insert into product(name) values(?);'
  * @param {string} name 
  * @returns 
  */
-export function add(name) {
+function add(name) {
     return new Promise((resolve, reject) => {
         ConnPool.query(addNewSql, [name], (err, res, fields) => {
             if (err) {
@@ -35,4 +35,9 @@ export function add(name) {
             }
         })
     })
+}
+
+module.exports = {
+    queryAll: queryAll,
+    add: add
 }

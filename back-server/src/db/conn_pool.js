@@ -10,15 +10,8 @@ class ConnPool {
     static _instance = new ConnPool();
 
     flag = true;
-    /**
-       {
-            host: 'localhost',
-            port: '3306',
-            user: 'root',
-            password: '34477384',
-            database: 'zhagen_oa'
-        }
-     */
+
+
     constructor() {
         if (ConnPool._instance) {
             throw new Error('错误：ConnPool 无需实例化')

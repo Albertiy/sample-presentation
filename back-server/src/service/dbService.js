@@ -1,8 +1,8 @@
-import * as ProductAPI from '../db/product'
-import * as CategoryAPI from '../db/category'
-import * as ProductItemAPI from '../db/product_item'
+const ProductAPI = require('../db/product')
+const CategoryAPI = require('../db/category')
+const ProductItemAPI = require('../db/product_item')
 
-export function getProductList() {
+function getProductList() {
     return new Promise((resolve, reject) => {
         ProductAPI.queryAll().then(res => {
             resolve(res)
@@ -12,7 +12,7 @@ export function getProductList() {
     })
 }
 
-export function addNewProduct(name) {
+function addNewProduct(name) {
     return new Promise((resolve, reject) => {
         ProductAPI.add(name).then((result) => {
             resolve(result)
@@ -20,4 +20,9 @@ export function addNewProduct(name) {
             reject(err)
         });
     })
+}
+
+module.exports = {
+    getProductList: getProductList,
+    addNewProduct: addNewProduct,
 }
