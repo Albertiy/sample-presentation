@@ -1,0 +1,8 @@
+{
+  "port": 8512,
+  "env": "dev",
+  "staticPath": "./public",
+  "frontAddress": "http://localhost:8511",
+  "logDirectory": "logs",
+  "fileRoot": "../../multiImageRoot"
+}

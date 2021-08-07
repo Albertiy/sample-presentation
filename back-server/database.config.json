@@ -1,0 +1,9 @@
+{
+  "sample-host": "36.156.139.247",
+  "host": "127.0.0.1",
+  "port": "3306",
+  "user": "root",
+  "sample-password": "123456",
+  "password": "34477384",
+  "database": "yilabaodb"
+}
