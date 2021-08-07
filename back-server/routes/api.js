@@ -48,5 +48,23 @@ router.post('/category', function (req, res, next) {
     else res.send(new ReqBody(0, null, 'need parameters'))
 })
 
+router.get('/productitem', function (req, res, next) {
+    console.log('queryParams: %o', req.query)
+    let { product, category, searchString } = req.query;
+    try {
+        if (product) product = parseInt(product);
+        if (category) category = parseInt(product);
+    } catch {
+        res.send(new ReqBody(0, null, '参数格式错误'))
+    }
+
+
+    dbService.getProductItemList(product, category, searchString).then(val => {
+        res.send(new ReqBody(1, val))
+    }).catch(err => {
+        res.send(new ReqBody(0, null, err))
+    })
+})
+
 
 module.exports = router;

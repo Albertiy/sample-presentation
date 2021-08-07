@@ -42,9 +42,20 @@ function addNewCategory(name) {
     })
 }
 
+function getProductItemList(product, category, searchString) {
+    return new Promise((resolve, reject) => {
+        ProductItemAPI.query(product, category, searchString).then((result) => {
+            resolve(result)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
 module.exports = {
     getProductList: getProductList,
     addNewProduct: addNewProduct,
     getCategoryList: getCategoryList,
     addNewCategory: addNewCategory,
+    getProductItemList: getProductItemList,
 }

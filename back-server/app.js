@@ -58,8 +58,8 @@ function skip(req) {
 
 
 // 中间件
-app.use(logger('dev'));
-app.use(logger('customAccessLog', { skip: skip, stream: accessLogfile }))
+app.use(logger('dev')); // 默认的access日志输出到控制台
+app.use(logger('customAccessLog', { skip: skip, stream: accessLogfile })) // 自定义的写入文件流
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
