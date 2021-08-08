@@ -57,6 +57,39 @@ module.exports.getImage = function (fileUrl) {
 }
 
 /**
+ * 校验文件名是否合法
+ * @param {string} fileName 
+ * @returns {boolean}
+ */
+module.exports.validateFileName = function (fileName) {
+    var reg = new RegExp('[\\\\/:*?\"<>|]');
+    if (reg.test(fileName)) {
+        //"上传的文件名不能包含【\\\\/:*?\"<>|】这些非法字符,请修改后重新上传!";
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 替换不合法的文件名中的字符
+ * @param {string} fileName 
+ * @param {string} replaceChar
+ * @returns 
+ */
+module.exports.correctingFileName = function (fileName, replaceChar = '-') {
+    return fileName.replace(/[\\\/:*?"<>|]+/g, replaceChar);
+}
+
+/**
+ * 获取文件后缀名（包括点号）
+ * @param {string} fileName 
+ * @returns 
+ */
+module.exports.getExtName = function (fileName) {
+    return fileName.slice(f.name.lastIndexOf('.'))
+}
+
+/**
  * 获取字符串比特长度
  * @param {string} str 字符串
  * @returns {number} 长度

@@ -66,7 +66,7 @@ function getProductItemList(product, category, searchString) {
  * @param {number[]} categories 
  * @param {string} mainPic 
  * @param {string} linkUrl 
- * @returns 
+ * @returns {Promise<>}
  */
 function addProductItem(name, product, categories, mainPic, linkUrl) {
     return new new Promise((resolve, reject) => {
@@ -84,4 +84,5 @@ module.exports = {
     getCategoryList: getCategoryList,
     addNewCategory: addNewCategory,
     getProductItemList: getProductItemList,
+    addProductItem: addProductItem,
 }
