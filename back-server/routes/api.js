@@ -10,7 +10,7 @@ var ReqBody = require('../src/model/req_body')
 var dbService = require('../src/service/dbService');
 
 var formidable = require('formidable');
-var uuidV3 = require('uuid').v3;
+var uuidV1 = require('uuid').v1;
 const fileService = require('../src/service/fileservice');
 const tools = require('../src/tool/tools');
 
@@ -76,6 +76,7 @@ router.get('/productitem', function (req, res, next) {
 router.post('/productitem', function (req, res, next) {
     try {
         let tempPath = path.resolve(fileService.getFileRoot(), './temp');
+        let rootUrl = fileService.getFileRoot();
         fileService.mkdirsSync(tempPath);
         let maxFileSize = 60 * 1024 * 1024;
 
@@ -119,7 +120,9 @@ router.post('/productitem', function (req, res, next) {
                 console.log(fields);
                 let { name, product, categories, linkUrl } = fields;
                 product = parseInt(product);
-                let picUrl = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV3();
+                if (categories && typeof categories == 'string')
+                    categories = JSON.parse(categories)
+                let relativeUrl = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
                 console.log(files);
                 if (Object.keys(files).length > 0) {
                     let keys = []   // 目前是单图传输，以后可能会有多图。
@@ -128,25 +131,23 @@ router.post('/productitem', function (req, res, next) {
                     })
                     let file = files[keys[0]];
                     console.log('|| 临时文件路径:' + file.path);
-                    let picUrl = picUrl + tools.getExtName(file.name);
-                    console.log('|| 目标存储路径:' + picUrl)
-
+                    relativeUrl = relativeUrl + tools.getExtName(file.name)
+                    let absoluteUrl = path.resolve(rootUrl, relativeUrl)
+                    console.log('|| 目标存储路径:' + absoluteUrl)
+                    fs.renameSync(file.path, absoluteUrl);
+                    if (!name || !product || !relativeUrl || !linkUrl) {
+                        res.send(new ReqBody(0, null, '缺少必要的参数'))
+                    } else {
+                        dbService.addProductItem(name, product, categories, relativeUrl, linkUrl).then(val => {
+                            res.send(new ReqBody(1, val))
+                        }).catch(err => {
+                            res.send(new ReqBody(0, null, err))
+                        })
+                        res.send(new ReqBody(1, 'success'))
+                        return;
+                    }
                 } else {
                     res.send(new ReqBody(0, null, '文件上传失败'))
-                }
-
-                res.send(new ReqBody(1, 'success'))
-
-                if (!name || !product || !picUrl || !linkUrl) {
-                    // res.send(new ReqBody(0, null, '缺少必要的参数'))
-                } else {
-                    res.send(new ReqBody(1, 'success'))
-                    return;
-                    dbService.addProductItem(name, product, categories, picUrl, linkUrl).then(val => {
-                        res.send(new ReqBody(1, val))
-                    }).catch(err => {
-                        res.send(new ReqBody(0, null, err))
-                    })
                 }
             }
         })

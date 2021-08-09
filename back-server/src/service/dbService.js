@@ -69,7 +69,7 @@ function getProductItemList(product, category, searchString) {
  * @returns {Promise<>}
  */
 function addProductItem(name, product, categories, mainPic, linkUrl) {
-    return new new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         ProductItemAPI.add(name, product, categories, mainPic, linkUrl).then((result) => {
             resolve(result)
         }).catch((err) => {

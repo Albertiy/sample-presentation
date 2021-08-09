@@ -86,7 +86,7 @@ module.exports.correctingFileName = function (fileName, replaceChar = '-') {
  * @returns 
  */
 module.exports.getExtName = function (fileName) {
-    return fileName.slice(f.name.lastIndexOf('.'))
+    return fileName.slice(fileName.lastIndexOf('.'))
 }
 
 /**
