@@ -89,9 +89,7 @@
     color: var(--color-text-secondary);
     font-size: 0.85rem;
     white-space: nowrap;
-    /* 强制性的在一行显示所有的文本，直到文本结束或者遭遇br标签对象才换行*/
     overflow: hidden;
-    /* 溢出的文字隐藏起来*/
     text-overflow: ellipsis;
 }
 

@@ -60,7 +60,7 @@ export default function Detail() {
     return (
         <div className={styles.container}>
             <Head>
-                <title>[{id}]素材详情</title>
+                <title>素材详情[{id}]</title>
                 <link rel="icon" href="/img/picturex64.png" />
             </Head>
             <header>
@@ -69,6 +69,7 @@ export default function Detail() {
                         <div className={styles.nav_back} onClick={backBtnClicked}>
                             <Icon path={mdiChevronLeft} size={1.2}></Icon>
                         </div>
+                        {item && <div className={styles.nav_title}><span className={styles.nav_title_text}>{item.name}</span></div>}
                     </div>
                 </div>
             </header>
