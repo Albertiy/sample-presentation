@@ -11,7 +11,7 @@ import * as ProductService from "../src/service/product_service";
 import SearchInput from "../src/component/input_search";
 import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
 import Icon from "@mdi/react";
-import { mdiEmoticonKissOutline } from '@mdi/js';
+import { mdiEmoticonKissOutline, mdiLinkVariant, mdiLinkBoxVariantOutline } from '@mdi/js';
 import InView from "react-intersection-observer";
 
 import { useRouter } from 'next/router';
@@ -101,11 +101,24 @@ export default function List() {
      * @param {ProductItem} item 
      */
     function itemClicked(item) {
-        console.log(item)
+        console.log('itemClicked: %o', item)
         // if (router)
         //router.push('/detail', { query: { id: item.id } });
         // else 
         window.open('/detail?id=' + item.id, '_self')
+    }
+
+    /**
+     * 点击图片右上角的链接按钮。this 无效。
+     * @param {ProductItem} item 
+     */
+    function linkBtnClicked(item) {
+        console.log('linkBtnClicked: %o', item)
+        // 检查是否包含协议头，若无可能被前端服务器识别为内部地址。
+        if (!item.linkUrl.startsWith('http://') && !item.linkUrl.startsWith('https://'))
+            window.open('http://' + item.linkUrl, '_blank')
+        else
+            window.open(item.linkUrl, '_blank')
     }
 
     return (
@@ -147,15 +160,16 @@ export default function List() {
                     <section className={styles.item_list_container}>
                         {productItemList.map((item, idx) => {
                             return (
-                                <div key={item.id} className={styles.item_container} onClick={itemClicked.bind(this, item)}>
+                                <div key={item.id} className={styles.item_container}>
                                     <div className={styles.image_container}>
+                                        <div className={styles.link_btn} onClick={linkBtnClicked.bind(this, item)}><Icon path={mdiLinkVariant}></Icon></div>
                                         <InView triggerOnce={true}>
                                             {({ inView, ref, entry }) => (
-                                                <img ref={ref} className={styles.main_pic} alt={item.name} src={inView ? item.mainPic : defaultImgSrc}></img>
+                                                <img ref={ref} className={styles.main_pic} alt={item.name} src={inView ? item.mainPic : defaultImgSrc} onClick={itemClicked.bind(this, item)}></img>
                                             )}
                                         </InView>
                                     </div>
-                                    <div className={styles.item_name}>{item.name}</div>
+                                    <div className={styles.item_name} onClick={itemClicked.bind(this, item)}>{item.name}</div>
                                 </div>
                             )
 
