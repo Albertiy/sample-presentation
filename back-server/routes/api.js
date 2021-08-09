@@ -14,7 +14,7 @@ var uuidV1 = require('uuid').v1;
 const fileService = require('../src/service/fileservice');
 const tools = require('../src/tool/tools');
 
-router.get('/product', function (req, res, next) {
+router.get('/productlist', function (req, res, next) {
     dbService.getProductList().then(val => {
         res.send(new ReqBody(1, val))
     }).catch(err => {
@@ -33,7 +33,7 @@ router.post('/product', function (req, res, next) {
     else res.send(new ReqBody(0, null, 'need parameters'))
 })
 
-router.get('/category', function (req, res, next) {
+router.get('/categorylist', function (req, res, next) {
     dbService.getCategoryList().then(val => {
         res.send(new ReqBody(1, val))
     }).catch(err => {
@@ -52,16 +52,15 @@ router.post('/category', function (req, res, next) {
     else res.send(new ReqBody(0, null, 'need parameters'))
 })
 
-router.get('/productitem', function (req, res, next) {
+router.get('/productitemlist', function (req, res, next) {
     console.log('queryParams: %o', req.query)
     let { product, category, searchString } = req.query;
     try {
         if (product) product = parseInt(product);
-        if (category) category = parseInt(product);
+        if (category) category = parseInt(category);
     } catch {
         res.send(new ReqBody(0, null, '参数格式错误'))
     }
-
 
     dbService.getProductItemList(product, category, searchString).then(val => {
         res.send(new ReqBody(1, val))
@@ -155,6 +154,42 @@ router.post('/productitem', function (req, res, next) {
         res.send(new ReqBody(0, null, e))
     }
 })
+
+/**
+ * 获取一个素材项
+ */
+router.get('/productitem', function (req, res, next) {
+    let { id } = req.query;
+    if (id) {
+        try {
+            if (typeof id == 'string') id = parseInt(id)
+        } catch (e) {
+            res.send(new ReqBody(0, null, '参数的格式不正确'))
+        }
+        dbService.getProductItem(id).then(val => {
+            console.log(val)
+            res.send(new ReqBody(1, val))
+        }).catch(err => {
+            console.log(err)
+            res.send(new ReqBody(0, null, err))
+        })
+    } else {
+        res.send(new ReqBody(0, null, '缺少必要参数'))
+    }
+})
+
+/**
+ * 获取图片链接
+ * 后台生成图片链接，不用担心CORS问题
+ * 参数：文件相对于根文件夹的路径。
+ * 为了方便拼接，文件名不作为路径的参数，而是作为path的一部分。可能需要 uldecode 解码。
+ */
+router.get('/file/*', function (req, res, next) {
+    let filePath = req.params[0];
+    let absoluteFilePath = path.join(fileService.getFileRoot(), filePath);
+    console.log(absoluteFilePath);
+    res.sendFile(absoluteFilePath); // 传输为字节流文件
+});
 
 
 module.exports = router;

@@ -24,3 +24,5 @@ select t.id as `product_item_id`, j.category_id, c.`name` as `category_name` fro
 	where t.id =1 and c.id=j.category_id;
     
 select * from product_item t where t.id = 1 and JSON_contains(t.category_list, '1', '$') and t.name like '%1%';
+
+select * from product_item where id = 1;

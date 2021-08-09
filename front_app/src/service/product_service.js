@@ -1,4 +1,4 @@
-import * as ProductAPI from '../api/product_api_mock';
+import * as ProductAPI from '../api/product_api';
 import Category from "../model/category";
 import Product from "../model/product";
 import ProductItem from "../model/product_item";
@@ -72,7 +72,7 @@ export function getCategoryList(product) {
 }
 
 /**
- * 获取展示列表
+ * 获取展示素材项列表
  * @param {number} product 
  * @param {number} category 
  * @param {string} searchString 
@@ -81,6 +81,10 @@ export function getCategoryList(product) {
 export function getProductItemList(product, category, searchString) {
     return new Promise((resolve, reject) => {
         ProductAPI.getProductItemList(product, category, searchString).then(value => {
+            value.forEach(item => {
+                item.mainPic = ProductAPI.getFileRemotePath(item.mainPic);
+            })
+            console.log('getProductItemList: %o', value)
             resolve(value);
         }).catch(error => {
             reject(error);
@@ -88,9 +92,15 @@ export function getProductItemList(product, category, searchString) {
     });
 }
 
+/**
+ * 通过Id获取素材详情
+ * @param {number} id 
+ * @returns {Promise<ProductItem>}
+ */
 export function getProductItemById(id) {
     return new Promise((resolve, reject) => {
         ProductAPI.getProductItemById(id).then(value => {
+            value.mainPic = ProductAPI.getFileRemotePath(value.mainPic);
             resolve(value)
         }).catch(error => {
             reject(error)
@@ -98,6 +108,11 @@ export function getProductItemById(id) {
     });
 }
 
+/**
+ * 新增产品，返回新增的对象
+ * @param {string} name 
+ * @returns {Promise<Product>}
+ */
 export function addNewProduct(name) {
     return new Promise((resolve, reject) => {
         ProductAPI.addNewProduct(name).then(value => {
@@ -108,12 +123,42 @@ export function addNewProduct(name) {
     })
 }
 
+/**
+ * 新增类目，返回新增的对象
+ * @param {string} name 
+ * @returns {Promise<Category>}
+ */
 export function addNewCategory(name) {
     return new Promise((resolve, reject) => {
         ProductAPI.addNewCategory(name).then(value => {
             resolve(value);
         }).catch(error => {
             reject(error)
+        })
+    })
+}
+
+/**
+ * 新增素材项
+ * @param {string} itemName 
+ * @param {number} itemProduct 
+ * @param {number[]} [itemCategoryList] 
+ * @param {string} itemLink 
+ * @param {File} itemMainPic 
+ * @returns 
+ */
+export function addNewProductItem(itemName, itemProduct, itemCategoryList, itemLink, itemMainPic) {
+    return new Promise((resolve, reject) => {
+        const data = new FormData();
+        data.append('name', itemName)
+        data.append('product', itemProduct)
+        data.append('cateogries', itemCategoryList)
+        data.append('linkUrl', itemLink)
+        data.append('mainPic', itemMainPic, itemMainPic.name)
+        ProductAPI.addNewProductItem(data).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
         })
     })
 }

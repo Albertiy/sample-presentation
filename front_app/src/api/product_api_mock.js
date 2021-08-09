@@ -118,3 +118,26 @@ export function addNewCategory(name) {
         }
     })
 }
+
+/**
+ * 
+ * @param {FormData} formData 
+ * @returns 
+ */
+export function addNewProductItem(formData) {
+    return new Promise((resolve, reject) => {
+        console.log(formData)
+        let name = formData.get('name')
+        let product = formData.get('product')
+        let categories = formData.get('categories')
+        let linkUrl = formData.get('linkUrl')
+        let mainPic = formData.get('mainPic')
+        if (productItemList.findIndex(item => item.name == name) != -1)
+            reject('名称重复')
+        else {
+            let newProductItem = new ProductItem(categoryList.length += 1, name.trim(), product, linkUrl.trim(), mainPic.name, categories)
+            productItemList.push(newProductItem)
+            resolve('新增成功')
+        }
+    })
+}

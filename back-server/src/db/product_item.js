@@ -9,7 +9,7 @@ const querySql = 'select * from product_item as t '
  * @param {number} [product] 产品id
  * @param {number} [category] 若之后需要多选，就全部读出来再循环判断好了。
  * @param {*} [searchString] 搜索语句
- * @returns {Promise<>}
+ * @returns {Promise<[]>}
  */
 function query(product, category, searchString) {
     let params = [];
@@ -60,7 +60,31 @@ function add(name, product, categories, picUrl, linkUrl) {
     })
 }
 
+const getSql = 'select * from product_item where id = ?'
+
+/**
+ * 
+ * @param {number} id 
+ * @returns {Promise<>}
+ */
+function get(id) {
+    return new Promise((resolve, reject) => {
+        ConnPool.query(getSql, [id], (err, results, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                console.log(results)
+                if (results.length < 1)
+                    reject('未找到对应内容')
+                resolve(results[0])
+            }
+        })
+    })
+}
+
 module.exports = {
     query: query,
     add: add,
+    get: get,
 }

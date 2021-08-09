@@ -4,6 +4,10 @@ const pool = ConnPool.getPool();
 
 const queryAllSql = 'select * from category;'
 
+/**
+ * 
+ * @returns {Promise<[]>}
+ */
 function queryAll() {
     return new Promise((resolve, reject) => {
         ConnPool.query(queryAllSql, [], (err, res, fields) => {
@@ -20,12 +24,20 @@ function queryAll() {
 
 const addSql = 'insert into category(name) values(?);'
 
+/**
+ * 添加
+ * @param {string} name 
+ * @returns 
+ */
 function add(name) {
     return new Promise((resolve, reject) => {
         ConnPool.query(addSql, [name], (err, res, fields) => {
             if (err) {
-                console.log(err)
-                reject(err)
+                console.log(err.sqlMessage)
+                if (err.code == 'ER_DUP_ENTRY')
+                    reject('名称重复')
+                else
+                    reject(err.sqlMessage)
             } else {
                 resolve(res)
             }

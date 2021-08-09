@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8511",
+    "dev": "node server.js -p 8511",
     "build": "next build",
     "start": "next start -p 8511"
   },
@@ -16,6 +16,7 @@
     "dayjs": "^1.10.6",
     "grommet": "^2.17.4",
     "grommet-icons": "^4.6.0",
+    "http-proxy-middleware": "^2.0.1",
     "next": "^11.0.0",
     "notistack": "^1.0.10",
     "react": "17.0.2",

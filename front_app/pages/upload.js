@@ -155,7 +155,14 @@ export default function Upload(props) {
 
     function addItemClicked(e) {
         if (itemName && itemLink && itemProduct && itemMainPic) {
-            // TODO 上传。
+            ProductService.addNewProductItem(itemName, itemProduct, itemCategoryList, itemLink, itemMainPic).then(res => {
+                enqueueSnackbar(res, { autoHideDuration: 2000, variant: 'success' })
+                // 清空部分值
+                setItemName('');
+                setItemLink('');
+            }).catch(err => {
+                enqueueSnackbar(err, { autoHideDuration: 2000, variant: 'error' })
+            })
         } else {
             enqueueSnackbar('请补全信息', { autoHideDuration: 2000, variant: 'warning' })
         }

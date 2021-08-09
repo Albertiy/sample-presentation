@@ -17,22 +17,21 @@ export default function Detail() {
     const [item, setItem] = useState(defaultItem);
     const [error, setError] = useState('');
 
-    useEffect(() => {
+    function init() {
         console.log('初始化')
         if (router && router.query && router.query.id) {
             console.log(router.query);
             let i = router.query.id;
             setId(i);
         }
+    }
+
+    useEffect(() => {
+        init()
     }, []);
 
     useEffect(() => {
-        console.log('初始化')
-        if (router && router.query && router.query.id) {
-            console.log(router.query);
-            let i = router.query.id;
-            setId(i);
-        }
+        init()
     }, [router]);
 
     useEffect(() => {
