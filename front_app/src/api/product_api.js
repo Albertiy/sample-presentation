@@ -14,6 +14,14 @@ const addNewCategoryUrl = 'api/category';
 const addNewProductItemUrl = 'api/productitem';
 const fileUrl = 'api/file';
 
+// 拦截服务器错误
+axios.interceptors.response.use((response) => {
+    return response;
+}, err => {
+    console.log('请求错误', err.response)
+    return Promise.reject('服务器错误')
+})
+
 /**
  * 获取产品列表
  * @returns {Promise<Product[]>}

@@ -31,7 +31,7 @@ function getProductList() {
  */
 function addNewProduct(name) {
     return new Promise((resolve, reject) => {
-        ProductAPI.add(name).then((result) => {
+        ProductAPI.add(name).then(res => {
             resolve(new Product(res.insertId, name))
         }).catch((err) => {
             reject(err)
@@ -64,8 +64,8 @@ function getCategoryList() {
  */
 function addNewCategory(name) {
     return new Promise((resolve, reject) => {
-        CategoryAPI.add(name).then((result) => {
-            resolve(new Category(result.insertId, name))
+        CategoryAPI.add(name).then(res => {
+            resolve(new Category(res.insertId, name))
         }).catch((err) => {
             reject(err)
         });
@@ -110,7 +110,7 @@ function getProductItemList(product, category, searchString) {
 function addProductItem(name, product, categories, mainPic, linkUrl) {
     return new Promise((resolve, reject) => {
         ProductItemAPI.add(name, product, categories, mainPic, linkUrl).then((result) => {
-            resolve(result)
+            resolve('添加成功')
         }).catch((err) => {
             reject(err)
         });

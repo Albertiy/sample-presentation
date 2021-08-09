@@ -51,9 +51,13 @@ function add(name, product, categories, picUrl, linkUrl) {
     return new Promise((resolve, reject) => {
         ConnPool.query(addSql, [name, product, categoryList, picUrl, linkUrl], (err, res, fields) => {
             if (err) {
-                console.log(err)
-                reject(err)
+                console.log(err.sqlMessage)
+                if (err.code == 'ER_DUP_ENTRY')
+                    reject('名称重复')
+                else
+                    reject(err.sqlMessage)
             } else {
+                console.log(res)
                 resolve(res)
             }
         })

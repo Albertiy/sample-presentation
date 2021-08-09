@@ -147,12 +147,13 @@ export function addNewCategory(name) {
  * @param {File} itemMainPic 
  * @returns 
  */
-export function addNewProductItem(itemName, itemProduct, itemCategoryList, itemLink, itemMainPic) {
+export function addNewProductItem(itemName, itemProduct, itemCategoryList = [], itemLink, itemMainPic) {
     return new Promise((resolve, reject) => {
         const data = new FormData();
         data.append('name', itemName)
         data.append('product', itemProduct)
-        data.append('cateogries', itemCategoryList)
+        // itemCategoryList.forEach(item => { data.append('categories', item) })
+        data.append('categories', JSON.stringify(itemCategoryList))
         data.append('linkUrl', itemLink)
         data.append('mainPic', itemMainPic, itemMainPic.name)
         ProductAPI.addNewProductItem(data).then(res => {

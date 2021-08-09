@@ -58,13 +58,19 @@ export default function Upload(props) {
             setProductList(value)
             if (value.length > 0)
                 setItemProduct(value[0])
-        }).catch(error => console.log(error))
+        }).catch(error => {
+            console.log(error)
+            enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
+        })
     }, [])
 
     useEffect(() => {
         ProductService.getCategoryList(itemProduct).then(value => {
             setCategoryList(value)
-        }).catch(error => console.log(error))
+        }).catch(error => {
+            console.log(error)
+            enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
+        })
     }, [itemProduct])
 
     // categoryList 改变时，检查已选择类目是否有不符合的。
@@ -129,7 +135,7 @@ export default function Upload(props) {
                 }
                 enqueueSnackbar('添加成功', { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
-                enqueueSnackbar(err, { autoHideDuration: 2000, variant: 'error' });
+                enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' });
             })
 
         } else
@@ -146,7 +152,7 @@ export default function Upload(props) {
                 })
                 enqueueSnackbar('添加成功', { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
-                enqueueSnackbar(err, { autoHideDuration: 2000, variant: 'error' });
+                enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' });
             })
 
         } else
@@ -155,13 +161,16 @@ export default function Upload(props) {
 
     function addItemClicked(e) {
         if (itemName && itemLink && itemProduct && itemMainPic) {
-            ProductService.addNewProductItem(itemName, itemProduct, itemCategoryList, itemLink, itemMainPic).then(res => {
-                enqueueSnackbar(res, { autoHideDuration: 2000, variant: 'success' })
+            let productId = itemProduct.id;
+            let categories = [];
+            if (itemCategoryList) itemCategoryList.forEach(item => { categories.push(item.id) })
+            ProductService.addNewProductItem(itemName, productId, categories, itemLink, itemMainPic).then(res => {
+                enqueueSnackbar('' + res, { autoHideDuration: 2000, variant: 'success' })
                 // 清空部分值
                 setItemName('');
                 setItemLink('');
             }).catch(err => {
-                enqueueSnackbar(err, { autoHideDuration: 2000, variant: 'error' })
+                enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' })
             })
         } else {
             enqueueSnackbar('请补全信息', { autoHideDuration: 2000, variant: 'warning' })

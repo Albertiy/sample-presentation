@@ -117,36 +117,40 @@ router.post('/productitem', function (req, res, next) {
                 res.send(new ReqBody(0, null, err.message))
             } else {
                 console.log(fields);
+                console.log('上传文件数：%o', Object.keys(files).length);
                 let { name, product, categories, linkUrl } = fields;
-                product = parseInt(product);
-                if (categories && typeof categories == 'string')
-                    categories = JSON.parse(categories)
-                let relativeUrl = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
-                console.log(files);
-                if (Object.keys(files).length > 0) {
-                    let keys = []   // 目前是单图传输，以后可能会有多图。
-                    Object.keys(files).forEach(key => {
-                        keys.push(key)
-                    })
-                    let file = files[keys[0]];
-                    console.log('|| 临时文件路径:' + file.path);
-                    relativeUrl = relativeUrl + tools.getExtName(file.name)
-                    let absoluteUrl = path.resolve(rootUrl, relativeUrl)
-                    console.log('|| 目标存储路径:' + absoluteUrl)
-                    fs.renameSync(file.path, absoluteUrl);
-                    if (!name || !product || !relativeUrl || !linkUrl) {
-                        res.send(new ReqBody(0, null, '缺少必要的参数'))
-                    } else {
+                if (!name || !product || !linkUrl) {
+                    res.send(new ReqBody(0, null, '缺少必要的参数'))
+                } else {
+                    try {
+                        product = parseInt(product);
+                        if (categories && typeof categories == 'string')
+                            categories = JSON.parse(categories)    // 在前台JSON处理了，应该是number数组
+                    } catch (e) {
+                        res.send(new ReqBody(0, null, '参数格式错误'))
+                        return;
+                    }
+
+                    let relativeUrl = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
+                    if (Object.keys(files).length > 0) {
+                        let keys = []   // 目前是单图传输，以后可能会有多图。
+                        Object.keys(files).forEach(key => {
+                            keys.push(key)
+                        })
+                        let file = files[keys[0]];
+                        console.log('|| 临时文件路径:' + file.path);
+                        relativeUrl = relativeUrl + tools.getExtName(file.name)
+                        let absoluteUrl = path.resolve(rootUrl, relativeUrl)
+                        console.log('mainPic:' + absoluteUrl)
                         dbService.addProductItem(name, product, categories, relativeUrl, linkUrl).then(val => {
+                            fs.renameSync(file.path, absoluteUrl);  // 确保写入数据库后再移动文件，若记录创建失败则文件待在临时文件夹中，便于区分
                             res.send(new ReqBody(1, val))
                         }).catch(err => {
                             res.send(new ReqBody(0, null, err))
                         })
-                        res.send(new ReqBody(1, 'success'))
-                        return;
+                    } else {
+                        res.send(new ReqBody(0, null, '文件上传失败'))
                     }
-                } else {
-                    res.send(new ReqBody(0, null, '文件上传失败'))
                 }
             }
         })
