@@ -5,14 +5,19 @@ import ReqBody from "../model/req_body";
 
 import axios from 'axios'
 
-const getProductListUrl = 'api/productlist';
-const getCategoryListUrl = 'api/categorylist';
-const getProductItemListUrl = 'api/productitemlist';
-const getProductItemByIdUrl = 'api/productitem';
-const addNewProductUrl = 'api/product';
-const addNewCategoryUrl = 'api/category';
-const addNewProductItemUrl = 'api/productitem';
-const fileUrl = 'api/file';
+import config from '../../application.config.json'
+
+const server = '';
+// const server = config.server ? config.server + '' : '';
+
+const getProductListUrl = server + 'api/productlist';
+const getCategoryListUrl = server + 'api/categorylist';
+const getProductItemListUrl = server + 'api/productitemlist';
+const getProductItemByIdUrl = server + 'api/productitem';
+const addNewProductUrl = server + 'api/product';
+const addNewCategoryUrl = server + 'api/category';
+const addNewProductItemUrl = server + 'api/productitem';
+const fileUrl = server + 'api/file';
 
 // 拦截服务器错误
 axios.interceptors.response.use((response) => {
