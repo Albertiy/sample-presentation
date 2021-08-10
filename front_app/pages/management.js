@@ -11,7 +11,7 @@ import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
 
 import Icon from "@mdi/react";
-import { mdiEmoticonKissOutline, mdiLinkVariant, mdiLinkBoxVariantOutline } from '@mdi/js';
+import { mdiPageNextOutline } from '@mdi/js';
 
 import dayjs from 'dayjs'
 import { Space } from 'antd';
@@ -236,7 +236,7 @@ export default function Management() {
             fixed: 'right',
             render: (value, row, index) => {
                 return (
-                    <div> 操作 </div>
+                    <div><Button plain label='修改'></Button></div>
                 )
             },
             width: 150,
@@ -251,7 +251,7 @@ export default function Management() {
         showQuickJumper: true,
         showTotal: (total, range) => `共 ${total} 项，当前显示 ${range[0]}-${range[1]} 项`,
         locale: {
-            items_per_page: " 项/页",
+            items_per_page: " / 页",
             jump_to: "跳转至",
             jump_to_confirm: "确认",
             next_3: "下 3 页",
@@ -273,7 +273,7 @@ export default function Management() {
     return (
         <Grommet className={styles.container} theme={theme} >
             <Head>
-                <title>数据管理</title>
+                <title>素材管理</title>
                 <link rel="icon" href="/img/picturex64.png" />
             </Head>
             <header className={styles.header}>
@@ -285,6 +285,14 @@ export default function Management() {
                 <div className={styles.filter_row}>
                     <label className={styles.label}>类别：</label>
                     <Select multiple={false} options={categoryList} labelKey={'name'} value={selectedCategory} valueKey={'id'} onChange={selectedCategoryChanged} ></Select>
+                </div>
+                <div className={styles.header_right}>
+                    <div className={styles.filter_row}>
+                        <Button className={styles.button} primary label='新增素材' onClick={() => { window.open('/upload', '_blank') }}></Button>
+                    </div>
+                    <div className={styles.filter_row}>
+                        <Button className={styles.button} primary icon={<Icon path={mdiPageNextOutline} size={0.5}></Icon>} reverse={true} label='客户展示页' onClick={() => { window.open('/list', '_blank') }}></Button>
+                    </div>
                 </div>
             </header>
 

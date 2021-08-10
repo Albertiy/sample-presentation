@@ -14,6 +14,15 @@
     margin-right: 20px;
 }
 
+.header_right {
+    display: flex;
+    align-items: center;
+    justify-self: right;
+    margin-left: auto;
+}
+
+.button {}
+
 .image {
     object-fit: contain;
     width: 50px;
