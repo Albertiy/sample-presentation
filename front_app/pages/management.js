@@ -11,13 +11,14 @@ import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
 
 import Icon from "@mdi/react";
-import { mdiPageNextOutline } from '@mdi/js';
+import { mdiShapeSquarePlus, mdiPageNextOutline, mdiSquareEditOutline, mdiOpenInNew } from '@mdi/js';
 
 import dayjs from 'dayjs'
 import { Space } from 'antd';
 import { Table as AntTable } from 'antd';
 import { Button, TextInput, FileInput, Select, Image, Box, Grommet } from 'grommet'
 import theme from '../src/setting/grommet-theme.json'
+import { useSnackbar } from 'notistack';
 
 /** @type{Product[]} */
 const defaultProductList = [];
@@ -44,6 +45,7 @@ export default function Management() {
     const [searchString, setSearchString] = useState(defaultSearchString);
     const [isLoading, setIsLoading] = useState(defaultIsLoading);
 
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const router = useRouter();
 
     /**
@@ -236,7 +238,17 @@ export default function Management() {
             fixed: 'right',
             render: (value, row, index) => {
                 return (
-                    <div><Button plain label='修改'></Button></div>
+                    <div className={styles.button_bar}>
+                        <Button className={styles.button_modify} plain title='修改' icon={
+                            <Icon path={mdiSquareEditOutline} size={0.85}></Icon>
+                        } onClick={() => {
+                            enqueueSnackbar('目前无法编辑', { variant: 'warning', autoHideDuration: 2000 })
+                            /*window.open('/edit?id=' + value.id, '_blank')*/
+                        }}></Button>
+                        <Button plain title='展示页' icon={
+                            <Icon className={styles.button} path={mdiOpenInNew} size={0.85}></Icon>
+                        } onClick={() => { window.open('/detail?id=' + value.id, '_blank') }}></Button>
+                    </div>
                 )
             },
             width: 150,
@@ -288,10 +300,10 @@ export default function Management() {
                 </div>
                 <div className={styles.header_right}>
                     <div className={styles.filter_row}>
-                        <Button className={styles.button} primary label='新增素材' onClick={() => { window.open('/upload', '_blank') }}></Button>
+                        <Button primary icon={<Icon path={mdiShapeSquarePlus} size={0.5}></Icon>} label='新增素材' onClick={() => { window.open('/upload', '_blank') }}></Button>
                     </div>
                     <div className={styles.filter_row}>
-                        <Button className={styles.button} primary icon={<Icon path={mdiPageNextOutline} size={0.5}></Icon>} reverse={true} label='客户展示页' onClick={() => { window.open('/list', '_blank') }}></Button>
+                        <Button primary icon={<Icon path={mdiPageNextOutline} size={0.5}></Icon>} reverse={true} label='客户展示页' onClick={() => { window.open('/list', '_blank') }}></Button>
                     </div>
                 </div>
             </header>

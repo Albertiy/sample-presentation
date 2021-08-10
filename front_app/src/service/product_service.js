@@ -100,6 +100,7 @@ export function getProductItemList(product, category, searchString) {
 export function getProductItemById(id) {
     return new Promise((resolve, reject) => {
         ProductAPI.getProductItemById(id).then(value => {
+            console.log('getProductItemById: %o', value)
             value.mainPic = ProductAPI.getFileRemotePath(value.mainPic);
             resolve(value)
         }).catch(error => {

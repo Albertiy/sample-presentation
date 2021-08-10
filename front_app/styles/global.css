@@ -21,6 +21,7 @@ body {
     --color-theme-main: #a7e457;
     --color-theme-bg: rgb(129, 0, 6);
     --color-theme-bg2: rgb(90, 8, 8);
+    --color-theme-bg-reverse: rgb(0, 129, 123);
     --color-background-empty: #f5f5f9;
     --color-background-panel: #fff;
     --color-text-secondary: #5c6b77;
