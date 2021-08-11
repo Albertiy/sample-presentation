@@ -145,7 +145,7 @@ export default function List() {
                 <div>
                     {/* product 列表 */}
                     <div className={styles.nav_list}>
-                        <HorizontalScrollNav items={productList} defaultValue={selectedProduct} valueProp={'id'} displayProp={'name'} onChange={(value, item) => {
+                        <HorizontalScrollNav selectedClassName={styles.product_selected} items={productList} defaultValue={selectedProduct} valueProp={'id'} displayProp={'name'} onChange={(value, item) => {
                             console.log('Product Navbar onChange: ' + value);
                             setSelectedProduct(value);
                         }} itemStyle={{ fontSize: '0.8rem' }} />

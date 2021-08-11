@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
  * 自定义横向滚动导航条组件
  * @param {{
  *   className?: string,
+ *   selectedClassName?: string,
  *   items: [],
  *   defaultValue: any,
  *   valueProp: string,
@@ -18,7 +19,7 @@ import { useEffect, useRef, useState } from 'react';
  */
 export default function HorizontalScrollNav(props) {
 
-    const { className, items, defaultValue, valueProp = 'id', displayProp = 'name', onChange, itemStyle = {} } = props;
+    const { className, selectedClassName, items, defaultValue, valueProp = 'id', displayProp = 'name', onChange, itemStyle = {} } = props;
 
     const [value, setValue] = useState(defaultValue);   // defaultValue 是值，不是对象！
 
@@ -38,7 +39,7 @@ export default function HorizontalScrollNav(props) {
         <div className={`${styles.container} ${className != undefined ? className : ''}`}>
             {items.map((val, index, array) => {
                 return (
-                    <span className={[styles.item, val[valueProp] == value ? styles.item_selected : null].join(' ')} style={{ ...itemStyle }} key={val[valueProp]} onClick={itemClicked.bind(this, val[valueProp])}>
+                    <span className={[styles.item, val[valueProp] == value ? (selectedClassName ? selectedClassName : styles.item_selected) : null].join(' ')} style={{ ...itemStyle }} key={val[valueProp]} onClick={itemClicked.bind(this, val[valueProp])}>
                         {val[displayProp].toString()}
                     </span>
                 )
