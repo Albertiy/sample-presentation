@@ -27,8 +27,10 @@ body {
     --color-text-secondary: #5c6b77;
     --color-text-virtual: #bfd0dfc4;
     --color-background-model: rgb(36, 36, 36);
+    --color-background-model-opacity: rgba(36, 36, 36, 0.527);
     --color-background-gray: rgb(63, 63, 63);
     --color-shadow-light: rgba(100, 100, 100, 0.801);
+    --color-them-primary: #40a9ff;
 }
 
 ::-webkit-scrollbar {

@@ -13,6 +13,7 @@ import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
 import Icon from "@mdi/react";
 import { mdiEmoticonKissOutline, mdiLinkVariant, mdiLinkBoxVariantOutline } from '@mdi/js';
 import InView from "react-intersection-observer";
+import ModelLoading from "../src/component/model_loading"
 
 import { useRouter } from 'next/router';
 
@@ -28,6 +29,7 @@ const defaultProductItemList = [];
 const defaultSearchString = '';   // 默认空串
 
 const defaultImgSrc = '/img/picture.png';   // 默认图
+const defaultShowLoading = false;   // 显示loading
 
 
 
@@ -38,6 +40,7 @@ export default function List() {
     const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
     const [productItemList, setProductItemList] = useState(defaultProductItemList);
     const [searchString, setSearchString] = useState(defaultSearchString);
+    const [showLoading, setShowLoading] = useState(defaultShowLoading);
     const router = useRouter();
 
     /**
@@ -56,6 +59,7 @@ export default function List() {
      * 加载商品列表
      */
     function loadProductItems() {
+        setShowLoading(true)
         console.log('加载商品列表：')
         let p = selectedProduct;
         let c = selectedCategory == defaultCategory ? null : selectedCategory;
@@ -63,6 +67,7 @@ export default function List() {
         ProductService.getProductItemList(p, c, s).then(res => {
             console.log(res);
             setProductItemList(res);
+            setShowLoading(false);
         }).catch(err => { console.log(err) });
     }
 
@@ -183,7 +188,9 @@ export default function List() {
                 )}
 
             </main>
-            <footer></footer>
+            <footer>
+            </footer>
+            {showLoading && <ModelLoading />}
             {/* 组件内部样式 */}
             <style jsx>{`
             `}</style>
