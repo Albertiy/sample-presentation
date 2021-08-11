@@ -19,6 +19,7 @@ import Icon from '@mdi/react'
 import { mdiImageSizeSelectActual } from '@mdi/js';
 
 import { useSnackbar } from 'notistack'
+import ModelLoading from '../src/component/model_loading'
 
 /** @type{Product[]} */
 const defaultProductList = [];
@@ -34,6 +35,7 @@ const defaultItemCategoryList = [];
 /** @type{File} */
 const defaultItemMainPic = null;
 const defaultPrivewSrc = '';
+const defaultShowLoading = false;
 
 
 export default function Upload(props) {
@@ -50,6 +52,7 @@ export default function Upload(props) {
     const [itemCategoryList, setItemCategoryList] = useState(defaultItemCategoryList)
     const [itemMainPic, setItemMainPic] = useState(defaultItemMainPic)
     const [previewSrc, setPreviewSrc] = useState(defaultPrivewSrc)
+    const [showLoading, setShowLoading] = useState(defaultShowLoading)
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -125,6 +128,7 @@ export default function Upload(props) {
 
     function addProductClicked(e) {
         if (newProduct && newProduct.trim().length > 0) {
+            setShowLoading(true)
             ProductService.addNewProduct(newProduct.trim()).then(res => {
                 console.log(productList)
                 if (productList.findIndex(item => item.id == res.id) == -1) {
@@ -136,6 +140,8 @@ export default function Upload(props) {
                 enqueueSnackbar('添加成功', { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
                 enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' });
+            }).finally(() => {
+                setShowLoading(false)
             })
 
         } else
@@ -144,6 +150,7 @@ export default function Upload(props) {
 
     function addCategoryClicked(e) {
         if (newCategory && newCategory.trim().length > 0) {
+            setShowLoading(true)
             ProductService.addNewCategory(newCategory.trim()).then(res => {
                 console.log(res)
                 setCategoryList(old => {
@@ -153,6 +160,8 @@ export default function Upload(props) {
                 enqueueSnackbar('添加成功', { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
                 enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' });
+            }).finally(() => {
+                setShowLoading(false)
             })
 
         } else
@@ -161,6 +170,7 @@ export default function Upload(props) {
 
     function addItemClicked(e) {
         if (itemName && itemLink && itemProduct && itemMainPic) {
+            setShowLoading(true)
             let productId = itemProduct.id;
             let categories = [];
             if (itemCategoryList) itemCategoryList.forEach(item => { categories.push(item.id) })
@@ -171,6 +181,8 @@ export default function Upload(props) {
                 setItemLink('');
             }).catch(err => {
                 enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' })
+            }).finally(() => {
+                setShowLoading(false)
             })
         } else {
             enqueueSnackbar('请补全信息', { autoHideDuration: 2000, variant: 'warning' })
@@ -253,6 +265,7 @@ export default function Upload(props) {
             </main>
             <footer>
             </footer>
+            {showLoading && <ModelLoading />}
         </Grommet>
     );
 }

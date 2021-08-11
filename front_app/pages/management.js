@@ -19,6 +19,7 @@ import { Table as AntTable } from 'antd';
 import { Button, TextInput, FileInput, Select, Image, Box, Grommet } from 'grommet'
 import theme from '../src/setting/grommet-theme.json'
 import { useSnackbar } from 'notistack';
+import ModelLoading from '../src/component/model_loading'
 
 /** @type{Product[]} */
 const defaultProductList = [];
@@ -64,13 +65,16 @@ export default function Management() {
      * 加载素材项列表
      */
     function loadProductItems() {
+        setIsLoading(true);
         let p = (selectedProduct && selectedProduct.id != defaultProduct.id) ? selectedProduct.id : null;
         let c = (selectedCategory && selectedCategory.id != defaultCategory.id) ? selectedCategory.id : null;
         let s = searchString && searchString.trim() != '' ? searchString.trim() : null;
         ProductService.getProductItemList(p, c, s).then(res => {
             console.log('加载素材项列表：%o', res);
             setProductItemList(res);
-        }).catch(err => { console.log(err) });
+        }).catch(err => { console.log(err) }).finally(() => {
+            setIsLoading(false);
+        });
     }
 
     // 初始化
@@ -323,6 +327,7 @@ export default function Management() {
             <footer>
 
             </footer>
+            {isLoading && <ModelLoading />}
         </Grommet>
     );
 }
