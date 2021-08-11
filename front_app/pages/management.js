@@ -221,7 +221,7 @@ export default function Management() {
             width: 200,
             align: 'center',
             render: (value, row, index) => {
-                return <a>{'' + value}</a>
+                return <a href={'' + value} target='_blank'>{'' + value}</a>
             }
         }, {
             title: '图片',
