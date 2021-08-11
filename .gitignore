@@ -3,3 +3,4 @@ node_modules/
 */database.config.json
 *.log
 yilabaoPic/
+*/node_modules.zip
