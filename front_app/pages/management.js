@@ -221,7 +221,8 @@ export default function Management() {
             width: 200,
             align: 'center',
             render: (value, row, index) => {
-                return <a href={'' + value} target='_blank'>{'' + value}</a>
+                let link = (!value.startsWith('http://') && !value.startsWith('https://')) ? 'http://' + value : value;
+                return <a href={link} target='_blank'>{'' + value}</a>
             }
         }, {
             title: '图片',

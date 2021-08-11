@@ -3,8 +3,10 @@
     {
       "name": "yilabaoServer",
       "script": "bin/www",
-      "watch": "../",
-      "log_date_format": "YYYY-MM-DD HH:mm Z"
+      "watch": "./",
+      "ignore_watch": ["node_modules", "logs"],
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "error_file": "./pm2_error.log"
     }
   ]
 }
