@@ -45,7 +45,7 @@ export default function List() {
     const [searchString, setSearchString] = useState(defaultSearchString);
     const [showLoading, setShowLoading] = useState(defaultShowLoading);
 
-    // 用于路由判断
+    // 用于保存路由参数
     const routerProduct = useRef(null);
     const routerCategory = useRef(null);
     const routerSearchString = useRef(null);
@@ -69,7 +69,9 @@ export default function List() {
                         return p;
                     })
                 else if (selectedProduct == defaultProduct)    // 只有当选中项未初始化才让列表刷新引起选中项刷新
-                    setSelectedProduct(value => { return res[0].id });
+                    setSelectedProduct(value => {
+                        return res[0].id;
+                    });
             }
         }).catch(err => { console.log(err) });
     }
@@ -119,36 +121,6 @@ export default function List() {
         console.log('router searchString: %o', routerSearchString.current)
     }
 
-
-    // 路由参数的变化，应该只接收一次，后边再变都是了在history中记住跳转。
-    // useEffect(() => {
-    //     console.log('router query changed! ' + routerTimes)
-    //     if (routerTimes == 0) setRouterTimes(value => ++value);
-    //     else if (routerTimes == 1) {
-    //         console.log('router.query: %o', router.query)
-    //         // 查询参数为空，不管它
-    //         if (router.query) {
-    //             let { product, category, searchString } = router.query;
-    //             if (product)
-    //                 try {
-    //                     product = parseInt(product);
-    //                 } catch (e) { console.log('无效的查询参数：product'); product = null; }
-    //             if (category)
-    //                 try {
-    //                     category = parseInt(category);
-    //                 } catch (e) { console.log('category'); category = null; }
-    //             if (searchString) searchString = searchString.trim();
-    //             console.log(product)
-    //             console.log(category)
-    //             console.log(searchString)
-    //             setSelectedProduct(product)
-    //             setSelectedCategory(category)
-    //             setSearchString(searchString)
-    //         }
-    //         setRouterTimes(value => ++value);
-    //     }
-    // }, [router.query])
-
     // 初始化，此时路由参数仍然为空，finally时也为空
     // useEffect(() => {
     //     init();
@@ -164,11 +136,17 @@ export default function List() {
             value++;
             return value;
         })
-    }, [router.query])
+    }, [router.query])  // 用 isReady 一样的
 
     // 选中的产品变化
     useEffect(() => {
         if (selectedProduct) {  // product为必要参数
+            if (!routerProduct.current) {
+                let query = router.query;
+                query.product = selectedProduct;
+                // 参数写入URL
+                router.replace({ pathname: '/list', query: query }, null, { shallow: true });
+            }
             console.log('加载分类列表：%o', selectedProduct)
             // 1.加载分类列表
             ProductService.getCategoryList(selectedProduct).then(res => {
@@ -187,6 +165,7 @@ export default function List() {
                     })
                 } else if (res.findIndex(item => item.id == selectedCategory) == -1) {  // 联动
                     console.log('在此商品下未找到对应分类，重置选中的分类')
+                    router.replace('/list', { shallow: true })
                     setSelectedCategory(defaultCategory);
                 }
                 if (routerSearchString.current != null) {
@@ -202,11 +181,25 @@ export default function List() {
         }
     }, [selectedProduct])
 
-    // 选中的分类变化，或者查询语句变化时。这里有重复查询问题
+    // 选中的分类变化时。这里有重复查询问题
     useEffect(() => {
-        // 加载商品目录
+        if (!routerCategory.current) {
+            let query = router.query;
+            query.category = selectedCategory;
+            router.replace({ pathname: '/list', query: query }, null, { shallow: true });
+        }
         loadProductItems();
-    }, [selectedCategory, searchString])
+    }, [selectedCategory])
+
+    //查询语句变化
+    useEffect(() => {
+        if (!routerSearchString.current) {
+            let query = router.query;
+            query.searchString = searchString;
+            router.replace({ pathname: '/list', query: query }, null, { shallow: true });
+        }
+        loadProductItems();
+    }, [searchString])
 
     /**
      * 
@@ -215,7 +208,6 @@ export default function List() {
     function itemClicked(item) {
         console.log('itemClicked: %o', item)
         // if (router)
-        //router.push('/detail', { query: { id: item.id } });
         // else 
         window.open('/detail?id=' + item.id, '_self')
     }
