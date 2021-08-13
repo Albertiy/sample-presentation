@@ -2,7 +2,7 @@ const ConnPool = require('./conn_pool')
 
 const pool = ConnPool.getPool();
 
-const queryAllSql = 'select * from category;'
+const queryAllSql = 'select * from category order by `order` IS NULL, `order` asc;' // 添加排序
 
 /**
  * 

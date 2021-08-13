@@ -48,7 +48,7 @@ function getCategoryList() {
         CategoryAPI.queryAll().then(res => {
             let list = [];
             res.forEach(ele => {
-                list.push(new Category(ele.id, ele.name, ele.product_id, ele.parent_id))
+                list.push(new Category(ele.id, ele.name, ele.order, ele.product_id, ele.parent_id))
             });
             resolve(list)
         }).catch(err => {
