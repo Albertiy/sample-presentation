@@ -20,6 +20,7 @@ import { Button, TextInput, FileInput, Select, Image, Box, Grommet } from 'gromm
 import theme from '../src/setting/grommet-theme.json'
 import { useSnackbar } from 'notistack';
 import ModelLoading from '../src/component/model_loading'
+import InView from "react-intersection-observer";
 
 /** @type{Product[]} */
 const defaultProductList = [];
@@ -233,7 +234,12 @@ export default function Management() {
             dataIndex: 'mainPic',
             key: 'mainPic',
             render: (value, row, index) => {
-                return (<img className={styles.image} src={value}></img>)
+                return (
+                    <InView triggerOnce={true}>
+                        {({ inView, ref, entry }) => (
+                            <img ref={ref} className={styles.image} alt={value} src={inView ? value : defaultImgSrc}></img>
+                        )}
+                    </InView>)
             },
             width: 100,
             align: 'center'
