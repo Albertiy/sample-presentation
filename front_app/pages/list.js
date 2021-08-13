@@ -130,7 +130,7 @@ export default function List() {
         <div className={styles.container}>
             <Head>
                 <title>素材列表</title>
-                <link rel="icon" href="/favicon.ico" />
+                <link rel="icon" href="/img/picturex64.png" />
             </Head>
             <header>
                 <div className={styles.pin_navbar_container}>
