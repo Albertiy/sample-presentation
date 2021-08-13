@@ -35,7 +35,7 @@ const defaultProductItemList = [];
 const defaultSearchString = '';   // 默认空串
 const defaultIsLoading = false;
 
-const defaultImgSrc = '/img/picture.png';   // 默认图
+const defaultImgSrc = '/img/placeholder.jpg';   // 默认图
 
 
 export default function Management() {

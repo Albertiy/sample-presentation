@@ -28,7 +28,7 @@ const defaultCategory = -1;
 const defaultProductItemList = [];
 const defaultSearchString = '';   // 默认空串
 
-const defaultImgSrc = '/img/picture.png';   // 默认图
+const defaultImgSrc = '/img/placeholder.jpg';   // 默认图
 const defaultShowLoading = false;   // 显示loading
 
 
