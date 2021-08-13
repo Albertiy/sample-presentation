@@ -69,7 +69,7 @@ export function getCategoryList() {
  * @returns {Promise<ProductItem[]>}
  */
 export function getProductItemList(product = null, category = null, searchString = null) {
-    console.log(`product=${product} category=${category} searchString=${searchString}`)
+    // console.log(`product=${product} category=${category} searchString=${searchString}`)
     return new Promise((resolve, reject) => {
         axios.get(getProductItemListUrl, {
             params: {

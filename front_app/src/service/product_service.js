@@ -72,10 +72,10 @@ export function getCategoryList(product) {
 }
 
 /**
- * 获取展示素材项列表
+ * 获取展示素材项列表，product 为必填
  * @param {number} product 
- * @param {number} category 
- * @param {string} searchString 
+ * @param {number} [category] 
+ * @param {string} [searchString] 
  * @returns  {Promise<ProductItem[]>}
  */
 export function getProductItemList(product, category, searchString) {
@@ -84,7 +84,7 @@ export function getProductItemList(product, category, searchString) {
             value.forEach(item => {
                 item.mainPic = ProductAPI.getFileRemotePath(item.mainPic);
             })
-            console.log('getProductItemList: %o', value)
+            // console.log('getProductItemList: %o', value)
             resolve(value);
         }).catch(error => {
             reject(error);

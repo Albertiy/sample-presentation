@@ -2,7 +2,7 @@ import Head from "next/head";
 
 import styles from "../styles/list.module.css"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Product from "../src/model/product";
 import Category from "../src/model/category";
@@ -30,10 +30,13 @@ const defaultSearchString = '';   // 默认空串
 
 const defaultImgSrc = '/img/placeholder.jpg';   // 默认图
 const defaultShowLoading = false;   // 显示loading
+const defaultRouterTime = 0;
 
 
 
 export default function List() {
+    const router = useRouter();
+    const [routerTime, setRouterTime] = useState(defaultRouterTime);  // 第一次的路由参数总是为{}，被舍弃
     const [productList, setProductList] = useState(defaultProductList);
     const [categoryList, setCategoryList] = useState(defaultCategoryList);
     const [selectedProduct, setSelectedProduct] = useState(defaultProduct);
@@ -41,17 +44,33 @@ export default function List() {
     const [productItemList, setProductItemList] = useState(defaultProductItemList);
     const [searchString, setSearchString] = useState(defaultSearchString);
     const [showLoading, setShowLoading] = useState(defaultShowLoading);
-    const router = useRouter();
+
+    // 用于路由判断
+    const routerProduct = useRef(null);
+    const routerCategory = useRef(null);
+    const routerSearchString = useRef(null);
 
     /**
      * 初始化获取产品列表
      */
     function init() {
+        console.log('[init]')
+        console.log('初始化产品列表：')
         ProductService.getProductList().then(res => {
-            console.log('初始化产品列表：')
+            console.log('初始化产品列表：结果：%o', res)
             setProductList(res);
-            if (res.length > 0 && selectedProduct == null)
-                setSelectedProduct(res[0].id);
+            if (res.length > 0) {
+                console.log(routerProduct)
+                if (routerProduct.current != null)
+                    setSelectedProduct(value => {
+                        console.log(routerProduct.current)
+                        let p = routerProduct.current;
+                        routerProduct.current = null;
+                        return p;
+                    })
+                else if (selectedProduct == defaultProduct)    // 只有当选中项未初始化才让列表刷新引起选中项刷新
+                    setSelectedProduct(value => { return res[0].id });
+            }
         }).catch(err => { console.log(err) });
     }
 
@@ -59,43 +78,131 @@ export default function List() {
      * 加载商品列表
      */
     function loadProductItems() {
-        setShowLoading(true)
-        console.log('加载商品列表：')
         let p = selectedProduct;
         let c = selectedCategory == defaultCategory ? null : selectedCategory;
         let s = searchString && searchString.trim() != '' ? searchString.trim() : null;
-        ProductService.getProductItemList(p, c, s).then(res => {
-            console.log(res);
-            setProductItemList(res);
-            setShowLoading(false);
-        }).catch(err => { console.log(err) });
+        if (p) {    // product 为必要参数
+            console.log('加载商品列表：product=%o category=%o searchString=%o', p, c, s)
+            setShowLoading(true)
+            ProductService.getProductItemList(p, c, s).then(res => {
+                console.log('加载商品列表：product=%o category=%o searchString=%o 结果：%o', p, c, s, res);
+                setProductItemList(res);
+                setShowLoading(false);
+            }).catch(err => { console.log(err) });
+        }
     }
 
-    // 初始化
+    /**
+     * 从路由获取查询参数。使用 ref 保存值
+     */
+    function setRouterParams() {
+        let { product, category, searchString: search } = router.query;
+        console.log('router product: %o', product)
+        console.log('router category: %o', category)
+        console.log('router searchString: %o', search)
+        if (product)
+            try {
+                product = parseInt(product);
+                routerProduct.current = product;
+            } catch (e) { console.log('无效的查询参数：product'); product = null; }
+        if (category)
+            try {
+                category = parseInt(category);
+                routerCategory.current = category;
+            } catch (e) { console.log('category'); category = null; }
+        if (search && search.trim() != '') {
+            search = search.trim();
+            routerSearchString.current = search;
+        }
+        console.log('router product: %o', routerProduct.current)
+        console.log('router category: %o', routerCategory.current)
+        console.log('router searchString: %o', routerSearchString.current)
+    }
+
+
+    // 路由参数的变化，应该只接收一次，后边再变都是了在history中记住跳转。
+    // useEffect(() => {
+    //     console.log('router query changed! ' + routerTimes)
+    //     if (routerTimes == 0) setRouterTimes(value => ++value);
+    //     else if (routerTimes == 1) {
+    //         console.log('router.query: %o', router.query)
+    //         // 查询参数为空，不管它
+    //         if (router.query) {
+    //             let { product, category, searchString } = router.query;
+    //             if (product)
+    //                 try {
+    //                     product = parseInt(product);
+    //                 } catch (e) { console.log('无效的查询参数：product'); product = null; }
+    //             if (category)
+    //                 try {
+    //                     category = parseInt(category);
+    //                 } catch (e) { console.log('category'); category = null; }
+    //             if (searchString) searchString = searchString.trim();
+    //             console.log(product)
+    //             console.log(category)
+    //             console.log(searchString)
+    //             setSelectedProduct(product)
+    //             setSelectedCategory(category)
+    //             setSearchString(searchString)
+    //         }
+    //         setRouterTimes(value => ++value);
+    //     }
+    // }, [router.query])
+
+    // 初始化，此时路由参数仍然为空，finally时也为空
+    // useEffect(() => {
+    //     init();
+    // }, [])  // [] 只执行一次
+
     useEffect(() => {
-        init();
-    }, [])  // [] 只执行一次
+        setRouterTime(value => {
+            console.log('路由刷新第 %d 次：%o', value + 1, router.query)
+            if (value == 1) {
+                setRouterParams();  // 获取路由参数
+                init(); // 从获取Product列表开始
+            }
+            value++;
+            return value;
+        })
+    }, [router.query])
 
     // 选中的产品变化
     useEffect(() => {
-        // 1.加载分类列表
-        ProductService.getCategoryList(selectedProduct).then(res => {
-            console.log('加载分类列表：')
-            if (res && ((res.length > 0 && res[0].id != defaultCategory) || res.length == 0)) {
-                res.unshift(new Category(-1, '全部'))   // 添加一个全部item
-            }
-            setCategoryList(res);
-            // 若当前选中的分类不在列表中，则重置选中的分类
-            if (res.findIndex(item => item.id == selectedCategory) == -1) {  // 联动
-                console.log('在此商品下未找到对应分类，重置选中的分类')
-                setSelectedCategory(defaultCategory);
-            }
-        }).catch(err => { console.log(err) });
-        // 2.加载商品目录
-        loadProductItems();
+        if (selectedProduct) {  // product为必要参数
+            console.log('加载分类列表：%o', selectedProduct)
+            // 1.加载分类列表
+            ProductService.getCategoryList(selectedProduct).then(res => {
+                if (res && ((res.length > 0 && res[0].id != defaultCategory) || res.length == 0)) {
+                    res.unshift(new Category(defaultCategory, '全部'))   // 添加一个全部item
+                }
+                console.log('加载分类列表：%o 结果: %o', selectedProduct, res)
+                setCategoryList(res);
+                // 若当前选中的分类不在列表中，则重置选中的分类
+                if (routerCategory.current != null && res.findIndex(item => item.id == routerCategory.current) != -1) {
+                    setSelectedCategory(value => {
+                        console.log(routerCategory.current);
+                        let c = routerCategory.current;
+                        routerCategory.current = null;
+                        return c;
+                    })
+                } else if (res.findIndex(item => item.id == selectedCategory) == -1) {  // 联动
+                    console.log('在此商品下未找到对应分类，重置选中的分类')
+                    setSelectedCategory(defaultCategory);
+                }
+                if (routerSearchString.current != null) {
+                    setSearchString(value => {
+                        let s = routerSearchString.current;
+                        routerSearchString.current = null;
+                        return s;
+                    })
+                }
+            }).catch(err => { console.log(err) });
+            // 2.加载商品目录。这里浪费了性能，因为若selectedCategory改变，还会触发一次请求。但同步太难了，只能先这样。
+            loadProductItems();
+        }
     }, [selectedProduct])
 
-    // 选中的分类变化，或者查询语句变化时
+    // 选中的分类变化，或者查询语句变化时。这里有重复查询问题
     useEffect(() => {
         // 加载商品目录
         loadProductItems();
@@ -136,7 +243,7 @@ export default function List() {
                 <div className={styles.pin_navbar_container}>
                     {/* 搜索框，固定上方 */}
                     <div className={styles.pin_navbar}>
-                        <SearchInput className={styles.search_input} onChange={value => {
+                        <SearchInput className={styles.search_input} defaultValue={searchString} onChange={value => {
                             console.log(value);
                             setSearchString(value);
                         }} placeholder='搜索素材'></SearchInput>
