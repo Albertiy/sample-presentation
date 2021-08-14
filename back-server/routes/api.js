@@ -182,6 +182,8 @@ router.get('/productitem', function (req, res, next) {
     }
 })
 
+const thumbName = '-thumb';
+
 /**
  * 获取图片链接(以及缩略图链接，默认只有jpg有缩略图)
  * 后台生成图片链接，不用担心CORS问题
@@ -195,7 +197,7 @@ router.get('/file/*', function (req, res, next) {
     /** @type{string} */
     let filePath = req.params[0];
     if (thumb != undefined) {
-        let tempfilePath = tools.expandFileName(filePath, null, '-thumbnail')
+        let tempfilePath = tools.expandFileName(filePath, null, thumbName)
         let absoluteTempFilePath = path.join(fileService.getFileRoot(), tempfilePath);
         if (fs.existsSync(absoluteTempFilePath)) {
             res.sendFile(absoluteTempFilePath);

@@ -269,7 +269,7 @@ export default function List() {
                                         <div className={styles.link_btn} onClick={linkBtnClicked.bind(this, item)}><Icon path={mdiLinkVariant}></Icon></div>
                                         <InView triggerOnce={true}>
                                             {({ inView, ref, entry }) => (
-                                                <img ref={ref} className={styles.main_pic} alt={item.name} src={inView ? item.mainPic : defaultImgSrc} onClick={itemClicked.bind(this, item)}></img>
+                                                <img ref={ref} className={styles.main_pic} alt={item.name} src={inView ? item.mainPic + '?thumb=1' : defaultImgSrc} onClick={itemClicked.bind(this, item)}></img>
                                             )}
                                         </InView>
                                     </div>

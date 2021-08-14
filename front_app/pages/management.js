@@ -237,7 +237,7 @@ export default function Management() {
                 return (
                     <InView triggerOnce={true}>
                         {({ inView, ref, entry }) => (
-                            <img ref={ref} className={styles.image} alt={value} src={inView ? value : defaultImgSrc}></img>
+                            <img ref={ref} className={styles.image} alt={value} src={inView ? value + '?thumb=1' : defaultImgSrc}></img>
                         )}
                     </InView>)
             },
@@ -319,7 +319,7 @@ export default function Management() {
                 </div>
             </header>
 
-            {/* // TODO: 分页以后再说吧 pagination={{
+            {/* // TODO: 后端分页以后再说吧 pagination={{
                     ...tablePagination, current: tablePageNumber, pageSize: this.state.tableMaxRows, total: this.state.tableResultCount,
                 }}  */}
             {/* 
