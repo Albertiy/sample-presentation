@@ -86,7 +86,33 @@ module.exports.correctingFileName = function (fileName, replaceChar = '-') {
  * @returns 
  */
 module.exports.getExtName = function (fileName) {
-    return fileName.slice(fileName.lastIndexOf('.'))
+    var p = fileName.lastIndexOf('.');
+    if (p == -1) {  // 无后缀名
+        return '';
+    } else {
+        return fileName.slice(p);   // 带有点号
+    }
+}
+
+/**
+ * 文件名拼接前后缀（文件名可能带有文件夹路径）
+ * @param {string} fileName 
+ * @param {string} [prefix] 前缀
+ * @param {string} [suffix] 后缀
+ * @returns 
+ */
+module.exports.expandFileName = function (fileName, prefix = '', suffix = '') {
+    let step1 = ''; // 先处理后缀
+    let step2 = ''; // 再处理前缀
+    if (!prefix) prefix = '';
+    if (!suffix) suffix = '';
+    var p = fileName.lastIndexOf('.');
+    if (p == -1) step1 = fileName + suffix;
+    else step1 = fileName.slice(0, p) + suffix + fileName.slice(p);
+    var d = Math.max(step1.lastIndexOf('/'), step1.lastIndexOf('\\'));
+    if (d == -1) step2 = prefix + step1;
+    else step2 = step1.slice(0, d + 1) + suffix + step1.slice(d + 1);
+    return step2;
 }
 
 /**
