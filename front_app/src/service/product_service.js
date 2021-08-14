@@ -32,8 +32,6 @@ export function getProductList() {
     });
 }
 
-// 当未选择时，id = -1
-const defaultCategory = new Category(-1, '全部')
 
 /**
  * 获取分类列表，因数据量小，后台不处理，在此过滤。
@@ -47,7 +45,7 @@ export function getCategoryList(product) {
 
         if (!categoryListCacheUpdatedTime || (now - categoryListCacheUpdatedTime) / cacheDelay > 1) {
             ProductAPI.getCategoryList().then(value => {
-                categoryListCache = value // .unshift(defaultCategory); // 添加默认分类
+                categoryListCache = value;
                 categoryListCacheUpdatedTime = now;
                 if (product !== null)
                     res = value.filter((val) => {

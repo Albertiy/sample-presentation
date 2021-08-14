@@ -23,7 +23,7 @@ const defaultProductList = [];
 const defaultCategoryList = [];
 /** @type{Product} */
 const defaultProduct = null;
-const defaultCategory = -1;
+const defaultCategory = null;   // -1
 /** @type{ProductItem[]} */
 const defaultProductItemList = [];
 const defaultSearchString = '';   // 默认空串
@@ -138,7 +138,7 @@ export default function List() {
         })
     }, [router.query])  // 用 isReady 一样的
 
-    // 选中的产品变化
+    // 选中的产品变化。现去除默认选项。
     useEffect(() => {
         if (selectedProduct) {  // product为必要参数
             if (!routerProduct.current) {
@@ -150,12 +150,12 @@ export default function List() {
             console.log('加载分类列表：%o', selectedProduct)
             // 1.加载分类列表
             ProductService.getCategoryList(selectedProduct).then(res => {
-                if (res && ((res.length > 0 && res[0].id != defaultCategory) || res.length == 0)) {
-                    res.unshift(new Category(defaultCategory, '全部'))   // 添加一个全部item
-                }
+                // if (res && ((res.length > 0 && res[0].id != defaultCategory) || res.length == 0)) {
+                //     res.unshift(new Category(defaultCategory, '全部'))   // 添加一个全部item
+                // }
                 console.log('加载分类列表：%o 结果: %o', selectedProduct, res)
                 setCategoryList(res);
-                // 若当前选中的分类不在列表中，则重置选中的分类
+                // 路由参数尚未使用，使用路由参数
                 if (routerCategory.current != null && res.findIndex(item => item.id == routerCategory.current) != -1) {
                     setSelectedCategory(value => {
                         console.log(routerCategory.current);
@@ -163,11 +163,13 @@ export default function List() {
                         routerCategory.current = null;
                         return c;
                     })
-                } else if (res.findIndex(item => item.id == selectedCategory) == -1) {  // 联动
+                }  // 若当前选中的分类为空或不在列表中，则重置选中的分类
+                else if (selectedCategory == defaultCategory || res.findIndex(item => item.id == selectedCategory) == -1) {
                     console.log('在此商品下未找到对应分类，重置选中的分类')
-                    router.replace('/list', { shallow: true })
-                    setSelectedCategory(defaultCategory);
+                    if (res.length > 0)
+                        setSelectedCategory(value => { return res[0].id });
                 }
+                // 若searchString路由参数不为空，则初始化并废弃searchString路由参数
                 if (routerSearchString.current != null) {
                     setSearchString(value => {
                         let s = routerSearchString.current;
