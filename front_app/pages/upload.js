@@ -194,7 +194,7 @@ export default function Upload(props) {
         <Grommet className={styles.container} theme={theme}>
             <Head>
                 <title>添加素材</title>
-                <link rel="icon" href="/img/picturex64.png" />
+                <link rel="icon" href="/img/picturex64u.png" />
             </Head>
             <header className={styles.header_panel}>
                 <div className={styles.pin_header}>

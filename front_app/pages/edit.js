@@ -218,7 +218,7 @@ export default function Edit() {
         <Grommet className={styles.container} theme={theme}>
             <Head>
                 <title>编辑素材</title>
-                <link rel="icon" href="/img/picturex64.png" />
+                <link rel="icon" href="/img/picturex64e.png" />
             </Head>
             <header className={styles.header_panel}>
                 <div className={styles.pin_header}>

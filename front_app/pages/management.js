@@ -297,7 +297,7 @@ export default function Management() {
         <Grommet className={styles.container} theme={theme} >
             <Head>
                 <title>素材管理</title>
-                <link rel="icon" href="/img/picturex64.png" />
+                <link rel="icon" href="/img/picturex64m.png" />
             </Head>
             <header className={styles.header}>
                 <div className={styles.filter_row}>
