@@ -292,7 +292,7 @@ router.put('/productitem', function (req, res, next) {
                         res.send(new ReqBody(0, null, '参数格式错误'))
                         return;
                     }
-                    // TODO 记得删除原图 从数据库获得文件路径
+
                     // 拼接自定义的文件名，格式 “<素材名>-uuid<扩展名>”
                     let mainRelativePath = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
                     let thumbRelativePath = mainRelativePath + thumbName;
@@ -325,6 +325,7 @@ router.put('/productitem', function (req, res, next) {
                             if (thumbPicIdx != -1) {
                                 thumbPic = files[keys[thumbPicIdx]]
                             }
+                            //TODO 从数据库获取原mainPic值
                         } else {
                             console.log('未修改图片')
                         }
@@ -333,7 +334,8 @@ router.put('/productitem', function (req, res, next) {
                     }
                     // 写入数据库
                     dbService.updateProductItem(id, name, linkUrl, product, categories, mainPic && mainPic.size > 0 ? mainRelativePath : null).then(val => {
-                        if (mainPic && mainPic.size > 0) {  // 空参数的情况下，可能为0
+                        let data = { message: val };
+                        if (mainPic && mainPic.size > 0) {  // 空参数的情况下，size为0
                             fs.renameSync(mainPic.path, mainAbsolutePath);
                             console.log('mainPic 存储路径:' + mainAbsolutePath)
                             if (thumbPic && mainPic.size > 0) {
@@ -342,8 +344,10 @@ router.put('/productitem', function (req, res, next) {
                             } else {
                                 console.log('没有上传缩略图')
                             }
+                            // TODO 删除原图
+                            data.mainPic = mainRelativePath.trim();
                         }
-                        res.send(new ReqBody(1, val))
+                        res.send(new ReqBody(1, data))
                     }).catch(err => {
                         res.send(new ReqBody(0, null, err))
                     })

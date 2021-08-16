@@ -150,7 +150,7 @@ function updateProductItem(id, name, linkUrl, product, categories, mainPic) {
     return new Promise((resolve, reject) => {
         ProductItemAPI.update(id, name, linkUrl, product, categories, mainPic).then(result => {
             console.log(result)
-            resolve(result)
+            resolve('更新成功')
         }).catch(err => {
             reject(err)
         })

@@ -43,12 +43,14 @@ const defaultItemCategoryList = [];
 const defaultItemMainPic = null;
 /** @type{File} */
 const defaultThumbMainPic = null;
-const defaultPrivewSrc = '';
+const defaultPreviewSrc = '';
 const defaultPreviewOldSrc = '';
 /** @type{number} */
 const defaultId = null;
 const defaultErrorInfo = null;
 const defaultShowLoading = false;
+
+const thumb = '?thumb=1';
 
 export default function Edit() {
 
@@ -70,7 +72,7 @@ export default function Edit() {
     const [itemCategoryList, setItemCategoryList] = useState(defaultItemCategoryList)
     const [itemMainPic, setItemMainPic] = useState(defaultItemMainPic)
     const [thumbMainPic, setThumbMainPic] = useState(defaultThumbMainPic)   // 缩略图
-    const [previewSrc, setPreviewSrc] = useState(defaultPrivewSrc)
+    const [previewSrc, setPreviewSrc] = useState(defaultPreviewSrc)
     const [previewOldSrc, setPrivewOldSrc] = useState(defaultPreviewOldSrc)    // 保存目前素材主图的远程地址
     const [showLoading, setShowLoading] = useState(defaultShowLoading)  // loading组件
 
@@ -117,7 +119,7 @@ export default function Edit() {
                 setItemLink(val.linkUrl)    // 字符串
                 setItemProduct(val.productId)   // number
                 setItemCategoryList(val.categoryList)   // number数组
-                setPrivewOldSrc(val.mainPic + '?thumb=1')  // 是一串远程链接字符串，添加缩略图标记
+                setPrivewOldSrc(val.mainPic + thumb)  // 是一串远程链接字符串，添加缩略图标记
             }).catch(err => {
                 console.log(err)
                 enqueueSnackbar(err)
@@ -172,7 +174,7 @@ export default function Edit() {
                 setPreviewSrc(this.result)
             }
         } else {
-            setPreviewSrc(defaultPrivewSrc)
+            setPreviewSrc(defaultPreviewSrc)
         }
     }, [itemMainPic])
 
@@ -264,7 +266,12 @@ export default function Edit() {
         if (id && itemName && itemLink && itemProduct) {  // 图片若未选择新文件，则不提交
             setShowLoading(true)
             ProductService.editProductItem(id, itemName, itemProduct, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
-                enqueueSnackbar('' + res, { autoHideDuration: 2000, variant: 'success' })
+                if (res.mainPic) {  // 文件更新
+                    setPrivewOldSrc(res.mainPic + thumb)    // 更新state
+                    setItemMainPic(defaultItemMainPic)      // 更新主图
+                    setThumbMainPic(defaultThumbMainPic)    // 移除缩略图
+                }
+                enqueueSnackbar('' + res.message, { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
                 enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' })
             }).finally(() => {
@@ -343,6 +350,7 @@ export default function Edit() {
                             {/* itemCategoryList.map(item => item.name).join(', ') */}
                             <div className={styles.form_row}>
                                 <label className={styles.label}>图片：</label>
+                                {/* // TODO 清除 FileInput中的选项 */}
                                 <FileInput messages={{
                                     browse: "选择", dropPrompt: "拖动文件到此处，或者点击", dropPromptMultiple: "拖动文件到此处，或者点击",
                                     files: "文件", remove: "移除", remove: "全部移除"

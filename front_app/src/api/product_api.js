@@ -176,7 +176,7 @@ export function addNewProductItem(formData) {
 /**
  * 更新素材项
  * @param {FormData} formData 
- * @returns 
+ * @returns {Promise<{message:string, mainPic:string|null}>}
  */
 export function updateProductItem(formData) {
     console.log(formData)

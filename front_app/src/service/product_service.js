@@ -177,7 +177,7 @@ export function addNewProductItem(itemName, itemProduct, itemCategoryList = [], 
  * @param {string} itemLink 链接
  * @param {File} itemMainPic 原图
  * @param {File} thumbMainPic 缩略图
- * @returns 
+ * @returns {Promise<{message:string, mainPic:string|null}>}
  */
 export function editProductItem(id, itemName, itemProduct, itemCategoryList = [], itemLink, itemMainPic, thumbMainPic) {
     return new Promise((resolve, reject) => {
@@ -194,6 +194,9 @@ export function editProductItem(id, itemName, itemProduct, itemCategoryList = []
                 data.append('thumbPic', thumbMainPic, thumbMainPic.name)
         }
         ProductAPI.updateProductItem(data).then(res => {
+            if (res && res.mainPic)
+                res.mainPic = ProductAPI.getFileRemotePath(res.mainPic);
+            console.log(res)
             resolve(res)
         }).catch(err => {
             reject(err)
