@@ -182,6 +182,7 @@ export function addNewProductItem(itemName, itemProduct, itemCategoryList = [], 
 export function editProductItem(id, itemName, itemProduct, itemCategoryList = [], itemLink, itemMainPic, thumbMainPic) {
     return new Promise((resolve, reject) => {
         const data = new FormData();
+        data.append('id', id)
         data.append('name', itemName)
         data.append('product', itemProduct)
         // itemCategoryList.forEach(item => { data.append('categories', item) })

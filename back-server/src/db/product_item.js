@@ -75,8 +75,8 @@ function get(id) {
     return new Promise((resolve, reject) => {
         ConnPool.query(getSql, [id], (err, results, fields) => {
             if (err) {
-                console.log(err)
-                reject(err)
+                console.log(err.sqlMessage)
+                reject(err.sqlMessage)
             } else {
                 console.log(results)
                 if (results.length < 1)
@@ -87,8 +87,46 @@ function get(id) {
     })
 }
 
+const updateSql = 'update `product_item` t set t.`name`=? , t.`link_url`=? , t.`product_id`=? , t.`category_list`=convert(?,json) ';
+
+/**
+ * 
+ * @param {number} id 
+ * @param {string} name 
+ * @param {string} linkUrl 
+ * @param {number} product 
+ * @param {number[]} categories 
+ * @param {string} [mainPic] 
+ * @returns 
+ */
+function update(id, name, linkUrl, product, categories, mainPic) {
+    let where = ' where id = ?';    // 条件拼接在最后
+    let categoryList = categories ? JSON.stringify(categories) : '[]';  // 转换为JSON
+    let params = [name, linkUrl, product, categoryList];
+    if (mainPic && mainPic.trim().length > 0) {
+        params.push(mainPic.trim());
+        where = ' , t.`main_pic`=? ' + where;
+    }
+    params.push(id);
+
+    console.log('updateSQL: %s', updateSql + where);
+
+    return new Promise((resolve, reject) => {
+        ConnPool.query(updateSql + where, params, (err, results, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err.sqlMessage)
+            } else {
+                console.log(results)
+                resolve(results)
+            }
+        })
+    })
+}
+
 module.exports = {
     query: query,
     add: add,
     get: get,
+    update: update,
 }

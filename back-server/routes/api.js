@@ -232,5 +232,128 @@ router.get('/file/*', function (req, res, next) {
     res.sendFile(absoluteFilePath); // 传输为字节流文件
 });
 
+/** 更新 */
+router.put('/productitem', function (req, res, next) {
+    try {
+        let tempPath = path.resolve(fileService.getFileRoot(), './temp');
+        let rootUrl = fileService.getFileRoot();
+        fileService.mkdirsSync(tempPath);
+        let maxFileSize = 60 * 1024 * 1024;
+
+        // formidable 插件
+        let form = new formidable.IncomingForm({
+            uploadDir: tempPath,
+            keepExtensions: true,
+            maxFileSize: maxFileSize,
+        });
+        // 非文件字段
+        form.on('field', (name, value) => {
+            console.log('name: %o, value: %o', name, value)
+        })
+        // 文件传输开始
+        form.on('fileBegin', (formName, file) => {
+            console.log(formName, file.name, file.size)
+        })
+        // 文件传输结束
+        form.on('file', (formName, file) => {
+            console.log(formName, file.name, file.size)
+        })
+
+        form.on('error', err => {
+            console.log('|| formidable error：%o', err.message);
+        })
+
+        form.on('aborted', () => {
+            console.log('|| formidable aborted!')
+        })
+        // 没有作用？
+        form.on('data', data => {
+            console.log('data: ')
+            console.log(data.name)
+        })
+
+        form.parse(req, (err, fields, files) => {
+            if (err) {
+                console.log('formidable parse error: %o', err.message)
+                res.send(new ReqBody(0, null, err.message))
+            } else {
+                console.log(fields);
+                console.log('上传文件数：%o', Object.keys(files).length);
+                let { id, name, product, categories, linkUrl } = fields;
+                if (!id || !name || !product || !linkUrl) {
+                    res.send(new ReqBody(0, null, '缺少必要的参数'))
+                } else {
+                    try {
+                        id = parseInt(id);
+                        product = parseInt(product);
+                        if (categories && typeof categories == 'string')
+                            categories = JSON.parse(categories)    // 在前台JSON处理了，应该是number数组
+                    } catch (e) {
+                        res.send(new ReqBody(0, null, '参数格式错误'))
+                        return;
+                    }
+                    // TODO 记得删除原图 从数据库获得文件路径
+                    // 拼接自定义的文件名，格式 “<素材名>-uuid<扩展名>”
+                    let mainRelativePath = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
+                    let thumbRelativePath = mainRelativePath + thumbName;
+
+                    /** @type{File} */
+                    let mainPic;    // 若文件为空，不会报错，会没有扩展名，且创建的文件内容为空
+                    /** @type{File} */
+                    let thumbPic;
+
+                    let mainAbsolutePath;
+                    let thumbAbsolutePath;
+
+                    // 检查是否上传了文件
+                    if (Object.keys(files).length > 0) {
+                        let keys = []
+                        Object.keys(files).forEach(key => {
+                            keys.push(key)
+                        })
+                        console.log(keys)
+                        let mainPicIdx = keys.findIndex(value => value == 'mainPic')
+                        let thumbPicIdx = keys.findIndex(value => value == 'thumbPic')
+                        // 原图
+                        if (mainPicIdx != -1) {
+                            mainPic = files[keys[mainPicIdx]]
+                            console.log('|| 临时文件路径:' + mainPic.path);
+                            mainRelativePath += tools.getExtName(mainPic.name)
+                            thumbRelativePath += tools.getExtName(mainPic.name)
+                            mainAbsolutePath = path.resolve(rootUrl, mainRelativePath)
+                            thumbAbsolutePath = path.resolve(rootUrl, thumbRelativePath)
+                            if (thumbPicIdx != -1) {
+                                thumbPic = files[keys[thumbPicIdx]]
+                            }
+                        } else {
+                            console.log('未修改图片')
+                        }
+                    } else {
+                        console.log('未修改图片')
+                    }
+                    // 写入数据库
+                    dbService.updateProductItem(id, name, linkUrl, product, categories, mainPic && mainPic.size > 0 ? mainRelativePath : null).then(val => {
+                        if (mainPic && mainPic.size > 0) {  // 空参数的情况下，可能为0
+                            fs.renameSync(mainPic.path, mainAbsolutePath);
+                            console.log('mainPic 存储路径:' + mainAbsolutePath)
+                            if (thumbPic && mainPic.size > 0) {
+                                fs.renameSync(thumbPic.path, thumbAbsolutePath)
+                                console.log('thumbPic 存储路径:' + thumbAbsolutePath)
+                            } else {
+                                console.log('没有上传缩略图')
+                            }
+                        }
+                        res.send(new ReqBody(1, val))
+                    }).catch(err => {
+                        res.send(new ReqBody(0, null, err))
+                    })
+                }
+            }
+        })
+    } catch (e) {
+        res.send(new ReqBody(0, null, e))
+    }
+})
+
 
 module.exports = router;

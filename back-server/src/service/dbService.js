@@ -136,6 +136,27 @@ function getProductItem(id) {
     })
 }
 
+/**
+ * 更新
+ * @param {number} id 
+ * @param {string} name 
+ * @param {string} linkUrl 
+ * @param {number} product 
+ * @param {number[]} categories 
+ * @param {string} [mainPic] 
+ * @returns 
+ */
+function updateProductItem(id, name, linkUrl, product, categories, mainPic) {
+    return new Promise((resolve, reject) => {
+        ProductItemAPI.update(id, name, linkUrl, product, categories, mainPic).then(result => {
+            console.log(result)
+            resolve(result)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 module.exports = {
     getProductList: getProductList,
     addNewProduct: addNewProduct,
@@ -144,4 +165,5 @@ module.exports = {
     getProductItemList: getProductItemList,
     addProductItem: addProductItem,
     getProductItem: getProductItem,
+    updateProductItem: updateProductItem,
 }
