@@ -21,6 +21,8 @@ import { mdiImageSizeSelectActual } from '@mdi/js';
 import { useSnackbar } from 'notistack'
 import ModelLoading from '../src/component/model_loading'
 
+import Compressor from 'compressorjs'
+
 /** @type{Product[]} */
 const defaultProductList = [];
 /** @type{Category[]} */
@@ -34,6 +36,8 @@ const defaultItemProduct = new Product(-1, '未选择');
 const defaultItemCategoryList = [];
 /** @type{File} */
 const defaultItemMainPic = null;
+/** @type{File} */
+const defaultThumbMainPic = null;
 const defaultPrivewSrc = '';
 const defaultShowLoading = false;
 
@@ -51,6 +55,7 @@ export default function Upload(props) {
     const [itemProduct, setItemProduct] = useState(defaultItemProduct)
     const [itemCategoryList, setItemCategoryList] = useState(defaultItemCategoryList)
     const [itemMainPic, setItemMainPic] = useState(defaultItemMainPic)
+    const [thumbMainPic, setThumbMainPic] = useState(defaultThumbMainPic)
     const [previewSrc, setPreviewSrc] = useState(defaultPrivewSrc)
     const [showLoading, setShowLoading] = useState(defaultShowLoading)
 
@@ -118,6 +123,23 @@ export default function Upload(props) {
             let temp = fileList[0];
             if (temp && Tools.validImageType(temp)) {
                 setItemMainPic(temp);
+                // TODO 额外压缩一个缩略图
+                new Compressor(temp, {
+                    quality: 0.85,
+                    success: (result) => {
+                        setThumbMainPic(result)
+                        enqueueSnackbar('图片压缩成功', { variant: 'success', autoHideDuration: 2000 })
+                    }, error: (err) => {
+                        setThumbMainPic(defaultThumbMainPic)    // 清除上次的压缩图片
+                        console.log('err')
+                        enqueueSnackbar(err, { variant: 'warning', autoHideDuration: 2000 })
+                    },
+                    maxWidth: 600,
+                    maxHeight: 1200,
+                    checkOrientation: false,
+                    convertSize: Infinity
+                })
+
             } else {
                 enqueueSnackbar('不是有效的图片文件', { autoHideDuration: 2000, variant: 'warning' })
             }
@@ -174,7 +196,7 @@ export default function Upload(props) {
             let productId = itemProduct.id;
             let categories = [];
             if (itemCategoryList) itemCategoryList.forEach(item => { categories.push(item.id) })
-            ProductService.addNewProductItem(itemName, productId, categories, itemLink, itemMainPic).then(res => {
+            ProductService.addNewProductItem(itemName, productId, categories, itemLink, itemMainPic, thumbMainPic).then(res => {
                 enqueueSnackbar('' + res, { autoHideDuration: 2000, variant: 'success' })
                 // 清空部分值
                 setItemName('');

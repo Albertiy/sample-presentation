@@ -14,6 +14,9 @@ var uuidV1 = require('uuid').v1;
 const fileService = require('../src/service/fileservice');
 const tools = require('../src/tool/tools');
 
+/** 缩略图文件默认后缀 */
+const thumbName = '-thumb';
+
 router.get('/productlist', function (req, res, next) {
     dbService.getProductList().then(val => {
         res.send(new ReqBody(1, val))
@@ -130,24 +133,44 @@ router.post('/productitem', function (req, res, next) {
                         res.send(new ReqBody(0, null, '参数格式错误'))
                         return;
                     }
-
-                    let relativeUrl = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
+                    // 拼接自定义的文件名，格式 “<素材名>-uuid<扩展名>”
+                    let mainRelativePath = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
+                    // 缩略图加上后缀
+                    let thumbRelativePath = mainRelativePath + thumbName;
                     if (Object.keys(files).length > 0) {
                         let keys = []   // 目前是单图传输，以后可能会有多图。
                         Object.keys(files).forEach(key => {
                             keys.push(key)
                         })
-                        let file = files[keys[0]];
-                        console.log('|| 临时文件路径:' + file.path);
-                        relativeUrl = relativeUrl + tools.getExtName(file.name)
-                        let absoluteUrl = path.resolve(rootUrl, relativeUrl)
-                        console.log('mainPic:' + absoluteUrl)
-                        dbService.addProductItem(name, product, categories, relativeUrl, linkUrl).then(val => {
-                            fs.renameSync(file.path, absoluteUrl);  // 确保写入数据库后再移动文件，若记录创建失败则文件待在临时文件夹中，便于区分
-                            res.send(new ReqBody(1, val))
-                        }).catch(err => {
-                            res.send(new ReqBody(0, null, err))
-                        })
+                        console.log(keys)
+                        let mainPicIdx = keys.findIndex(value => value == 'mainPic')
+                        let thumbPicIdx = keys.findIndex(value => value == 'thumbPic')
+                        // 原图
+                        if (mainPicIdx != -1) {
+                            let mainPic = files[keys[mainPicIdx]]
+                            console.log('|| 临时文件路径:' + mainPic.path);
+                            mainRelativePath += tools.getExtName(mainPic.name)
+                            thumbRelativePath += tools.getExtName(mainPic.name)
+                            let mainAbsolutePath = path.resolve(rootUrl, mainRelativePath)
+                            let thumbAbsolutePath = path.resolve(rootUrl, thumbRelativePath)
+                            console.log('mainPic 存储路径:' + mainAbsolutePath)
+
+                            dbService.addProductItem(name, product, categories, mainRelativePath, linkUrl).then(val => {
+                                fs.renameSync(mainPic.path, mainAbsolutePath);  // 确保写入数据库后再移动文件，若记录创建失败则文件待在临时文件夹中，便于区分
+                                if (thumbPicIdx != -1) {
+                                    let thumbPic = files[keys[thumbPicIdx]]
+                                    fs.renameSync(thumbPic.path, thumbAbsolutePath)
+                                    console.log('thumbPic 存储路径:' + thumbAbsolutePath)
+                                } else {
+                                    console.log('没有上传缩略图')
+                                }
+                                res.send(new ReqBody(1, val))
+                            }).catch(err => {
+                                res.send(new ReqBody(0, null, err))
+                            })
+                        } else {
+                            res.send(new ReqBody(0, null, '原图上传失败'))
+                        }
                     } else {
                         res.send(new ReqBody(0, null, '文件上传失败'))
                     }
@@ -181,8 +204,6 @@ router.get('/productitem', function (req, res, next) {
         res.send(new ReqBody(0, null, '缺少必要参数'))
     }
 })
-
-const thumbName = '-thumb';
 
 /**
  * 获取图片链接(以及缩略图链接，默认只有jpg有缩略图)

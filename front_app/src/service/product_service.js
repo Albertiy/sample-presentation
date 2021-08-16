@@ -146,10 +146,11 @@ export function addNewCategory(name) {
  * @param {number} itemProduct 
  * @param {number[]} [itemCategoryList] 
  * @param {string} itemLink 
- * @param {File} itemMainPic 
+ * @param {File} itemMainPic 原图
+ * @param {File} thumbMainPic 缩略图
  * @returns 
  */
-export function addNewProductItem(itemName, itemProduct, itemCategoryList = [], itemLink, itemMainPic) {
+export function addNewProductItem(itemName, itemProduct, itemCategoryList = [], itemLink, itemMainPic, thumbMainPic) {
     return new Promise((resolve, reject) => {
         const data = new FormData();
         data.append('name', itemName)
@@ -158,6 +159,7 @@ export function addNewProductItem(itemName, itemProduct, itemCategoryList = [], 
         data.append('categories', JSON.stringify(itemCategoryList))
         data.append('linkUrl', itemLink)
         data.append('mainPic', itemMainPic, itemMainPic.name)
+        data.append('thumbPic', thumbMainPic, thumbMainPic.name)
         ProductAPI.addNewProductItem(data).then(res => {
             resolve(res)
         }).catch(err => {
