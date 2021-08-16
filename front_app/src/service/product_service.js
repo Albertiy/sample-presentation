@@ -167,3 +167,34 @@ export function addNewProductItem(itemName, itemProduct, itemCategoryList = [], 
         })
     })
 }
+
+/**
+ * 修改素材项
+ * @param {number} id 素材id
+ * @param {string} itemName 名称
+ * @param {number} itemProduct 产品id
+ * @param {number[]} [itemCategoryList] 类目id列表
+ * @param {string} itemLink 链接
+ * @param {File} itemMainPic 原图
+ * @param {File} thumbMainPic 缩略图
+ * @returns 
+ */
+export function editProductItem(id, itemName, itemProduct, itemCategoryList = [], itemLink, itemMainPic, thumbMainPic) {
+    return new Promise((resolve, reject) => {
+        const data = new FormData();
+        data.append('name', itemName)
+        data.append('product', itemProduct)
+        // itemCategoryList.forEach(item => { data.append('categories', item) })
+        data.append('categories', JSON.stringify(itemCategoryList))
+        data.append('linkUrl', itemLink)
+        if (itemMainPic) {  // 有图传图，没图不传
+            data.append('mainPic', itemMainPic, itemMainPic.name)
+            data.append('thumbPic', thumbMainPic, thumbMainPic.name)
+        }
+        ProductAPI.updateProductItem(data).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}

@@ -45,7 +45,7 @@ const defaultItemMainPic = null;
 const defaultThumbMainPic = null;
 const defaultPrivewSrc = '';
 const defaultPreviewOldSrc = '';
-
+/** @type{number} */
 const defaultId = null;
 const defaultErrorInfo = null;
 const defaultShowLoading = false;
@@ -84,8 +84,13 @@ export default function Edit() {
         console.log('初始化')
         if (query && query.id) {
             console.log('query.id：%o', query.id);
-            let i = query.id;
-            setId(i);
+            try {
+                let i = parseInt(query.id.trim());
+                setId(i);
+                setErrorInfo(defaultErrorInfo)
+            } catch (e) {
+                setErrorInfo('无效的素材id')
+            }
         } else {
             setErrorInfo('无效的素材id')
         }
@@ -256,10 +261,10 @@ export default function Edit() {
 
     /** 点击保存更改按钮 */
     function editItemClicked(e) {
-        if (itemName && itemLink && itemProduct) {  // 图片若未选择新文件，则不提交
+        if (id && itemName && itemLink && itemProduct) {  // 图片若未选择新文件，则不提交
             setShowLoading(true)
             // TODO 重写修改素材接口
-            ProductService.addNewProductItem(itemName, itemProduct, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
+            ProductService.addNewProductItem(id, itemName, itemProduct, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
                 enqueueSnackbar('' + res, { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
                 enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' })

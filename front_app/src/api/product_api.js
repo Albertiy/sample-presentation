@@ -17,6 +17,7 @@ const getProductItemByIdUrl = server + 'api/productitem';
 const addNewProductUrl = server + 'api/product';
 const addNewCategoryUrl = server + 'api/category';
 const addNewProductItemUrl = server + 'api/productitem';
+const updateProductItemUrl = server + 'api/productitem';
 const fileUrl = server + 'api/file';
 
 // 拦截服务器错误
@@ -162,6 +163,25 @@ export function addNewProductItem(formData) {
     console.log(formData)
     return new Promise((resolve, reject) => {
         axios.post(addNewProductItemUrl, formData).then((result) => {
+            /** @type {ReqBody} */
+            let res = result.data;
+            if (res.state) resolve(res.data)
+            else reject(res.error)
+        }).catch((err) => {
+            reject(err)
+        });
+    })
+}
+
+/**
+ * 更新素材项
+ * @param {FormData} formData 
+ * @returns 
+ */
+export function updateProductItem(formData) {
+    console.log(formData)
+    return new Promise((resolve, reject) => {
+        axios.put(updateProductItemUrl, formData).then((result) => {
             /** @type {ReqBody} */
             let res = result.data;
             if (res.state) resolve(res.data)
