@@ -97,10 +97,10 @@ export function getProductItemList(product = null, category = null, searchString
  * @returns {Promise<ProductItem>}
  */
 export function getProductItemById(id) {
-    console.log(id)
+    // console.log(id)
     return new Promise((resolve, reject) => {
         axios.get(getProductItemByIdUrl, { params: { id: id } }).then(result => {
-            console.log('getProductItemById: %o', result.data)
+            // console.log('getProductItemById: %o', result.data)
             /** @type {ReqBody} */
             let res = result.data;
             if (res.state) resolve(res.data)

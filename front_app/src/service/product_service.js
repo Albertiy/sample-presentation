@@ -101,7 +101,7 @@ export function getProductItemById(id) {
             reject('缺少必要参数')
         else
             ProductAPI.getProductItemById(id).then(value => {
-                console.log('getProductItemById: %o', value)
+                // console.log('getProductItemById: %o', value)
                 value.mainPic = ProductAPI.getFileRemotePath(value.mainPic);
                 resolve(value)
             }).catch(error => {

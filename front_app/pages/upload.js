@@ -123,7 +123,7 @@ export default function Upload(props) {
             let temp = fileList[0];
             if (temp && Tools.validImageType(temp)) {
                 setItemMainPic(temp);
-                // TODO 额外压缩一个缩略图
+                // 额外压缩一个缩略图
                 new Compressor(temp, {
                     quality: 0.85,
                     success: (result) => {
