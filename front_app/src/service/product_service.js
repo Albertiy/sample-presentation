@@ -189,7 +189,8 @@ export function editProductItem(id, itemName, itemProduct, itemCategoryList = []
         data.append('linkUrl', itemLink)
         if (itemMainPic) {  // 有图传图，没图不传
             data.append('mainPic', itemMainPic, itemMainPic.name)
-            data.append('thumbPic', thumbMainPic, thumbMainPic.name)
+            if (thumbMainPic)
+                data.append('thumbPic', thumbMainPic, thumbMainPic.name)
         }
         ProductAPI.updateProductItem(data).then(res => {
             resolve(res)

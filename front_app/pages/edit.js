@@ -263,8 +263,7 @@ export default function Edit() {
     function editItemClicked(e) {
         if (id && itemName && itemLink && itemProduct) {  // 图片若未选择新文件，则不提交
             setShowLoading(true)
-            // TODO 重写修改素材接口
-            ProductService.addNewProductItem(id, itemName, itemProduct, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
+            ProductService.editProductItem(id, itemName, itemProduct, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
                 enqueueSnackbar('' + res, { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
                 enqueueSnackbar('' + err, { autoHideDuration: 2000, variant: 'error' })
