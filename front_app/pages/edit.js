@@ -6,7 +6,7 @@ import Product from '../src/model/product'
 import Category from '../src/model/category'
 import ProductItem from '../src/model/product_item'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import * as ProductService from '../src/service/product_service'
 
@@ -77,6 +77,8 @@ export default function Edit() {
     const [showLoading, setShowLoading] = useState(defaultShowLoading)  // loading组件
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+    // const fileInputEl = useRef(null);   // 绑定FileInput元素
 
     /**
      * 从路由参数中获取id
@@ -270,6 +272,13 @@ export default function Edit() {
                     setPrivewOldSrc(res.mainPic + thumb)    // 更新state
                     setItemMainPic(defaultItemMainPic)      // 更新主图
                     setThumbMainPic(defaultThumbMainPic)    // 移除缩略图
+                    // console.log('%o', fileInputEl.current);
+                    // if (fileInputEl.current) {  // 即使清空target的value或files值，也不能去掉它的文件名，除非...
+                    //     /** @type{HTMLInputElement} */
+                    //     let fi = fileInputEl.current;
+                    //     fi.files = null;
+                    //     console.log('%o', fileInputEl.current);
+                    // }
                 }
                 enqueueSnackbar('' + res.message, { autoHideDuration: 2000, variant: 'success' })
             }).catch(err => {
@@ -351,10 +360,11 @@ export default function Edit() {
                             <div className={styles.form_row}>
                                 <label className={styles.label}>图片：</label>
                                 {/* // TODO 清除 FileInput中的选项 */}
+                                {/* 没办法，算了吧 renderFile={(file) => (<span>{itemMainPic && itemMainPic.name}</span>)}； ref={fileInputEl} 不行； value 也没办法 */}
                                 <FileInput messages={{
                                     browse: "选择", dropPrompt: "拖动文件到此处，或者点击", dropPromptMultiple: "拖动文件到此处，或者点击",
                                     files: "文件", remove: "移除", remove: "全部移除"
-                                }} multiple={false} accept={Tools.imageFileTypes} onChange={fileChanged}></FileInput>
+                                }} multiple={false} accept={Tools.imageFileTypes} onChange={fileChanged} ></FileInput>
                             </div>
                             <div className={styles.form_row}>
                                 <label className={styles.label}>预览：</label>
