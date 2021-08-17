@@ -13,6 +13,7 @@ var formidable = require('formidable');
 var uuidV1 = require('uuid').v1;
 const fileService = require('../src/service/fileservice');
 const tools = require('../src/tool/tools');
+const { rejects } = require('assert');
 
 /** 缩略图文件默认后缀 */
 const thumbName = '-thumb';
@@ -332,25 +333,46 @@ router.put('/productitem', function (req, res, next) {
                     } else {
                         console.log('未修改图片')
                     }
-                    // 写入数据库
-                    dbService.updateProductItem(id, name, linkUrl, product, categories, mainPic && mainPic.size > 0 ? mainRelativePath : null).then(val => {
-                        let data = { message: val };
-                        if (mainPic && mainPic.size > 0) {  // 空参数的情况下，size为0
-                            fs.renameSync(mainPic.path, mainAbsolutePath);
-                            console.log('mainPic 存储路径:' + mainAbsolutePath)
-                            if (thumbPic && mainPic.size > 0) {
-                                fs.renameSync(thumbPic.path, thumbAbsolutePath)
-                                console.log('thumbPic 存储路径:' + thumbAbsolutePath)
-                            } else {
-                                console.log('没有上传缩略图')
+                    // 先读数据库，获取原图地址
+                    dbService.getProductItem(id).then(val => {
+                        let oldMainRelativePath = val.mainPic;
+                        let oldThumbRelativePath = tools.expandFileName(oldMainRelativePath, null, thumbName);
+                        let oldMainAbsolutePath = path.resolve(rootUrl, oldMainRelativePath);
+                        let oldThumbAbsolutePath = path.resolve(rootUrl, oldThumbRelativePath);
+                        console.log('oldMainAbsolutePath: ' + oldMainAbsolutePath);
+                        console.log('oldThumbAbsolutePath: ' + oldThumbAbsolutePath);
+
+                        // 写入数据库
+                        dbService.updateProductItem(id, name, linkUrl, product, categories, mainPic && mainPic.size > 0 ? mainRelativePath : null).then(val => {
+                            let data = { message: val };
+                            // 若上传了图片
+                            if (mainPic && mainPic.size > 0) {  // 空参数的情况下，size为0
+                                fs.renameSync(mainPic.path, mainAbsolutePath);
+                                console.log('mainPic 存储路径:' + mainAbsolutePath)
+                                if (thumbPic && mainPic.size > 0) {
+                                    fs.renameSync(thumbPic.path, thumbAbsolutePath)
+                                    console.log('thumbPic 存储路径:' + thumbAbsolutePath)
+                                } else {
+                                    console.log('没有上传缩略图')
+                                }
+                                data.mainPic = mainRelativePath.trim();
+
+                                // 删除原图。突然想到图片的内容本该和url无关的，应该是固定的才对。file接口更像是一个纯粹的资源路径。
+                                fs.rm(oldMainAbsolutePath, { force: true }, (err) => {
+                                    if (!err) console.log('oldMainPic删除成功');
+                                    else console.log(err);
+                                })
+                                fs.rm(oldThumbAbsolutePath, { force: true }, (err) => {
+                                    if (!err) console.log('oldThumbPic删除成功');
+                                    else console.log(err);
+                                })
                             }
-                            // TODO 删除原图
-                            data.mainPic = mainRelativePath.trim();
-                        }
-                        res.send(new ReqBody(1, data))
-                    }).catch(err => {
-                        res.send(new ReqBody(0, null, err))
-                    })
+                            res.send(new ReqBody(1, data))
+                        }).catch(err => {
+                            res.send(new ReqBody(0, null, err))
+                        })
+
+                    }).catch(err => { res.send(new ReqBody(0, null, err)) });
                 }
             }
         })
