@@ -253,8 +253,8 @@ export default function Management() {
                         <Button className={styles.button_modify} plain title='修改' icon={
                             <Icon path={mdiSquareEditOutline} size={0.85}></Icon>
                         } onClick={() => {
-                            enqueueSnackbar('目前无法编辑', { variant: 'warning', autoHideDuration: 2000 })
-                            /*window.open('/edit?id=' + value.id, '_blank')*/
+                            // enqueueSnackbar('目前无法编辑', { variant: 'warning', autoHideDuration: 2000 })
+                            window.open('/edit?id=' + value.id, '_blank')
                         }}></Button>
                         <Button plain title='展示页' icon={
                             <Icon className={styles.button} path={mdiOpenInNew} size={0.85}></Icon>
