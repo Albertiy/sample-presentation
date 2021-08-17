@@ -11,9 +11,10 @@ import * as ProductService from "../src/service/product_service";
 import SearchInput from "../src/component/input_search";
 import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
 import Icon from "@mdi/react";
-import { mdiEmoticonKissOutline, mdiLinkVariant, mdiLinkBoxVariantOutline } from '@mdi/js';
+import { mdiEmoticonKissOutline, mdiLinkVariant, mdiFormatVerticalAlignTop, mdiLinkBoxVariantOutline } from '@mdi/js';
 import InView from "react-intersection-observer";
-import ModelLoading from "../src/component/model_loading"
+import ModelLoading from "../src/component/model_loading";
+import BackToTop from "../src/component/back_to_top";
 
 import { useRouter } from 'next/router';
 
@@ -49,6 +50,9 @@ export default function List() {
     const routerProduct = useRef(null);
     const routerCategory = useRef(null);
     const routerSearchString = useRef(null);
+
+    // 滚动组件的锚点元素
+    const scrollToTopAnchor = useRef(null);
 
     /**
      * 初始化获取产品列表
@@ -234,7 +238,7 @@ export default function List() {
                 <link rel="icon" href="/img/picturex64.png" />
             </Head>
             <header>
-                <div className={styles.pin_navbar_container}>
+                <div className={styles.pin_navbar_container} ref={scrollToTopAnchor}>
                     {/* 搜索框，固定上方 */}
                     <div className={styles.pin_navbar}>
                         <SearchInput className={styles.search_input} defaultValue={searchString} onChange={value => {
@@ -291,6 +295,8 @@ export default function List() {
             </main>
             <footer>
             </footer>
+            {/* //TODO 回到顶部 */}
+            <BackToTop anchor={scrollToTopAnchor.current} />
             {showLoading && <ModelLoading />}
             {/* 组件内部样式 */}
             <style jsx>{`

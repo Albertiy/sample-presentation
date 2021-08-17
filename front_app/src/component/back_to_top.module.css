@@ -1,0 +1,25 @@
+.container {
+    position: fixed;
+    z-index: 996;
+    right: 1rem;
+    bottom: 1.4rem;
+}
+
+.button {
+    width: 3rem;
+    height: 3rem;
+    color: #fff;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #4bbd28, #e3ffdd);
+    box-shadow: 2px 2px 20px #bebebe,
+        -2px -2px 20px #ffffff;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    width: 1.8rem;
+    height: 1.8rem;
+}
