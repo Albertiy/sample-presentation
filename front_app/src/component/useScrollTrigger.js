@@ -7,11 +7,17 @@ function defaultTrigger(options) {
     let current;
 
     if (target) {
-        current = target.pageYOffset !== undefined ? target.pageYOffset : target.scrollTop;
+        // window 有 pageYOffset，其他元素没有
+        // scrollTop 是外包元素内的滚动距离，锚点元素永远是0
+        // window 没有 getBoundingClientRect，其他元素有。
+        if (target.getBoundingClientRect)
+            current = target.getBoundingClientRect().top;
+        else
+            current = target.pageYOffset !== undefined ? target.pageYOffset : target.scrollTop;
         console.log('current: ' + current)
     }
 
-    return current > threshold;
+    return Math.abs(current) > threshold;
 }
 
 const defaultTarget = typeof window !== 'undefined' ? window : null;
@@ -23,15 +29,18 @@ const defaultTarget = typeof window !== 'undefined' ? window : null;
  */
 const useScrollTrigger = (options = {}) => {
 
+    console.log('options: %o', options)
+
     // void 0 返回 undefined，防止 undefined 被重写
-    let target = options.target === void 0 ? defaultTarget : options.target;
-    let threshold = options.target === void 0 ? 100 : options.threshold;
+    let target = options.target === void 0 || options.target === null ? defaultTarget : options.target;
+    let threshold = options.target === void 0 || options.target === null ? 100 : options.threshold;
     let getTrigger = defaultTrigger;
+
+    console.log('%O', target);
 
     const [trigger, setTrigger] = useState(false);
 
     let checkScroll = () => {
-        console.log('checkScroll')
         setTrigger(getTrigger({ threshold: threshold, target: target }))
     };
 

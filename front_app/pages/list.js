@@ -238,7 +238,7 @@ export default function List() {
                 <link rel="icon" href="/img/picturex64.png" />
             </Head>
             <header>
-                <div className={styles.pin_navbar_container} ref={scrollToTopAnchor}>
+                <div id='topbar' className={styles.pin_navbar_container} ref={scrollToTopAnchor}>
                     {/* 搜索框，固定上方 */}
                     <div className={styles.pin_navbar}>
                         <SearchInput className={styles.search_input} defaultValue={searchString} onChange={value => {

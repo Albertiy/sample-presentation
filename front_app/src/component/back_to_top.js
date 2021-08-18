@@ -8,12 +8,14 @@ export default function BackToTop(props) {
 
     const { children, anchor } = props;
 
+    console.log('anchor: %o', anchor)
+
     const trigger = useScrollTrigger({ target: anchor });
 
     const handleClick = (event) => {
         console.log('BackToTop!')
         // const anchor = (event.target.ownerDocument || document).querySelector('#back-to-top-anchor');
-        console.log(anchor)
+
         if (anchor) {
             anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
