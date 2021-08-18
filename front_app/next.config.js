@@ -11,6 +11,10 @@ module.exports = {
             {
                 source: '/api/:path*',
                 destination: server + '/api/:path*',
+            },
+            {
+                source: '/MP_verify_TheTVVlNKvL5iKBL.txt',
+                destination: server + '/MP_verify_TheTVVlNKvL5iKBL.txt'
             }
         ]
     },
@@ -22,5 +26,5 @@ module.exports = {
                 permanent: true
             }
         ]
-    }
+    },
 };

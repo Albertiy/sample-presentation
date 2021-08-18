@@ -4,3 +4,5 @@ node_modules/
 *.log
 yilabaoPic/
 */node_modules.zip
+# 微信小程序SDK验证文件
+back-server/public/MP_verify_*.txt
