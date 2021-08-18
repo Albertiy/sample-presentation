@@ -13,8 +13,8 @@ module.exports = {
                 destination: server + '/api/:path*',
             },
             {
-                source: '/MP_verify_TheTVVlNKvL5iKBL.txt',
-                destination: server + '/MP_verify_TheTVVlNKvL5iKBL.txt'
+                source: '/:slug(MP_verify_\\S*.txt)',
+                destination: server + '/:slug',
             }
         ]
     },
@@ -24,7 +24,7 @@ module.exports = {
                 source: '/',
                 destination: '/list',
                 permanent: true
-            }
+            },
         ]
     },
 };
