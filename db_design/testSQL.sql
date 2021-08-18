@@ -26,3 +26,5 @@ select t.id as `product_item_id`, j.category_id, c.`name` as `category_name` fro
 select * from product_item t where t.id = 1 and JSON_contains(t.category_list, '1', '$') and t.name like '%1%';
 
 select * from product_item where id = 1;
+
+update `product_item` t set t.`name` = '圣诞狂欢夜1', t.`link_url` = 'www.baidu.com' where id = 1;

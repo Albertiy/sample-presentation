@@ -112,3 +112,5 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
 ALTER TABLE `yilabaodb`.`category` ADD `order` INT NULL COMMENT '顺序，默认可空' AFTER `name`;
+
+ALTER TABLE `yilabaodb`.`product` ADD `order` INT NULL COMMENT '顺序，默认可空' AFTER `name`;
