@@ -14,7 +14,7 @@ function defaultTrigger(options) {
             current = target.getBoundingClientRect().top;
         else
             current = target.pageYOffset !== undefined ? target.pageYOffset : target.scrollTop;
-        console.log('current: ' + current)
+        // console.log('current: ' + current)
     }
 
     return Math.abs(current) > threshold;
@@ -36,7 +36,7 @@ const useScrollTrigger = (options = {}) => {
     let threshold = options.target === void 0 || options.target === null ? 100 : options.threshold;
     let getTrigger = defaultTrigger;
 
-    console.log('%O', target);
+    // console.log('%O', target);
 
     const [trigger, setTrigger] = useState(false);
 
