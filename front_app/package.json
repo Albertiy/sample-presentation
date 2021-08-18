@@ -9,6 +9,8 @@
     "pm2": "pm2 start pm2.config.json"
   },
   "dependencies": {
+    "@dnd-kit/core": "^3.1.1",
+    "@dnd-kit/sortable": "^4.0.0",
     "@material-ui/core": "^4.12.3",
     "@mdi/font": "^5.9.55",
     "@mdi/js": "^5.9.55",
