@@ -2,7 +2,7 @@ const ConnPool = require('./conn_pool')
 
 const pool = ConnPool.getPool();
 
-const queryAllSql = 'select * from product;'
+const queryAllSql = 'select * from product order by `order` IS NULL, `order` asc;'
 
 /**
  * 查询所有

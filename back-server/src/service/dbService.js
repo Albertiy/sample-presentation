@@ -15,7 +15,7 @@ function getProductList() {
         ProductAPI.queryAll().then(res => {
             let list = [];
             res.forEach(ele => {
-                list.push(new Product(ele.id, ele.name))
+                list.push(new Product(ele.id, ele.name, ele.order))
             });
             resolve(list)
         }).catch(err => {
