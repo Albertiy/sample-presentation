@@ -36,6 +36,7 @@
 .list_container {
     width: 80%;
     max-width: 25rem;
+    overflow: auto;
 }
 
 .list_container div:nth-child(n) {
@@ -77,4 +78,8 @@
     height: 100%;
     padding: auto;
     cursor: grab;
+}
+
+.list_item_selected {
+    transition: all 2s;
 }
