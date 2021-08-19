@@ -12,9 +12,9 @@ import { useState, useEffect } from 'react';
 import theme from '../src/setting/grommet-theme.json'
 import { Grommet, Card, CardBody, Button, TextInput, FileInput, Select, Image, Box, Keyboard } from 'grommet'
 import Icon from '@mdi/react';
-import { } from '@mdi/js';
+import { mdiDragHorizontal } from '@mdi/js';
 
-import { useDroppable, useDraggable } from '@dnd-kit/core';
+import { useDroppable, useDraggable, DragOverlay } from '@dnd-kit/core';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, TouchSensor, useSensors, useSensor } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import SortableItem from '../src/component/sortable_item';
@@ -30,7 +30,9 @@ export default function Cagegory() {
 
     const [isLoading, setIsLoading] = useState(false)
 
-    const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates, }), useSensor(TouchSensor));
+    const [activeId, setActiveId] = useState(null)
+
+    const sensors = useSensors(useSensor(PointerSensor, {}), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates, }), useSensor(TouchSensor, { activationConstraint: { delay: 250 } }));
 
     useEffect(() => {
         ProductService.getCategoryList().then(res => {
@@ -41,6 +43,11 @@ export default function Cagegory() {
         })
         return () => { }
     }, [])
+
+    function handleDragStart(event) {
+        const { active } = event;
+        setActiveId(active.id);
+    }
 
     /**
      * 拖拽结束事件
@@ -61,6 +68,7 @@ export default function Cagegory() {
                 return newList;
             })
         }
+        setActiveId(null)
     }
 
     return (
@@ -77,20 +85,35 @@ export default function Cagegory() {
             </header>
             <main className={styles.main}>
                 <div className={styles.list_container}>
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                         <SortableContext items={categoryList} strategy={verticalListSortingStrategy}>
                             {categoryList.map((item, idx, arr) => (
                                 <SortableItem key={item.id} id={item.id}>
-                                    <Card background="light-1">
+                                    <Card background="light-1" style={item.id == activeId ? { opacity: 0.5 } : {}}>
                                         <div className={styles.list_item}>
                                             <div className={styles.list_item_order}>{item.order ? item.order : '无'}</div>
                                             <div className={styles.list_item_text}>{item.name}</div>
-                                            <div className={styles.list_item_icon}><Icon></Icon></div>
+                                            <div className={styles.list_item_icon}>
+                                                <Icon path={mdiDragHorizontal} size={0.6}></Icon>
+                                            </div>
                                         </div>
                                     </Card>
                                 </SortableItem>
                             ))}
                         </SortableContext>
+                        <DragOverlay>
+                            {activeId ? (
+                                <Card background="light-1">
+                                    <div className={styles.list_item}>
+                                        <div className={styles.list_item_order}>{categoryList.find(val => val.id == activeId).order || '无'}</div>
+                                        <div className={styles.list_item_text}>{categoryList.find(val => val.id == activeId).name}</div>
+                                        <div className={styles.list_item_icon}>
+                                            <Icon path={mdiDragHorizontal} size={0.6}></Icon>
+                                        </div>
+                                    </div>
+                                </Card>
+                            ) : null}
+                        </DragOverlay>
                     </DndContext>
                 </div>
             </main>

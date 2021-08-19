@@ -47,17 +47,34 @@
     margin: 2px;
     display: flex;
     flex-direction: row;
+    align-items: center;
     margin-left: 10px;
     margin-right: 10px;
+    user-select: none;
+}
+
+.list_item div:nth-child(n) {
+    display: flex;
+    align-items: center;
+    margin: 0;
 }
 
 .list_item_order {
-    min-width: 2rem;
+    min-width: 1.5rem;
     border-right: 0.1rem rgb(211, 211, 211) solid;
+    height: 100%;
+    padding: auto;
 }
 
 .list_item_text {
     flex: 1;
     margin-left: 10px;
     font-weight: bold;
+    padding-left: 0.7rem;
+}
+
+.list_item_icon {
+    height: 100%;
+    padding: auto;
+    cursor: grab;
 }
