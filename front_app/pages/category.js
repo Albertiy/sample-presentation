@@ -113,7 +113,11 @@ export default function Cagegory() {
      * 保存
      */
     function saveCategoryListChange() {
-
+        ProductService.saveCategoryListModify(categoryList).then(val => {
+            enqueueSnackbar('' + val, { variant: 'success', autoHideDuration: 2000 })
+        }).catch(err => {
+            enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+        })
     }
 
     return (
@@ -125,7 +129,7 @@ export default function Cagegory() {
             <header className={styles.header}>
                 <div className={styles.header_row}>
                     <div style={{ fontSize: '1.6rem', fontWeight: 'bold' }}>类目管理</div>
-                    <Button primary label='保存' onClick={saveChangeClicked}></Button>
+                    <Button primary label='保存修改' onClick={saveChangeClicked}></Button>
                 </div>
             </header>
             <main className={styles.main}>

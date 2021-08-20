@@ -157,6 +157,28 @@ function updateProductItem(id, name, linkUrl, product, categories, mainPic) {
     })
 }
 
+/**
+ * 更新
+ * @param {Category[]} list 
+ */
+function updateCategoryList(list) {
+    return new Promise((resolve, reject) => {
+        if (list && list.length > 0) {
+            let updateList = list.filter(val => val.id != null && val.name != null && val.name.trim() != '').map(val => {
+                return { id: val.id, name: val.name.trim(), order: val.order }
+            })
+            // 只更新 name 和 order 字段。
+            console.log(updateList)
+            CategoryAPI.updateAll(updateList).then(result => {
+                console.log(result)
+                resolve('更新成功')
+            }).catch(err => {
+                reject(err)
+            })
+        } else reject('缺少必要参数')
+    })
+}
+
 module.exports = {
     getProductList: getProductList,
     addNewProduct: addNewProduct,
@@ -166,4 +188,5 @@ module.exports = {
     addProductItem: addProductItem,
     getProductItem: getProductItem,
     updateProductItem: updateProductItem,
+    updateCategoryList: updateCategoryList,
 }

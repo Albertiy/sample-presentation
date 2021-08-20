@@ -381,5 +381,19 @@ router.put('/productitem', function (req, res, next) {
     }
 })
 
+router.put('/categorylist', function (req, res, next) {
+    /** @type{Category[]} */
+    let { list } = req.body;
+    if (list) {
+        console.log(list)
+        dbService.updateCategoryList(list).then(val => {
+            res.send(new ReqBody(1, val))
+        }).catch(err => {
+            res.send(new ReqBody(0, null, err))
+        })
+    } else
+        res.send(new ReqBody(0, null, '缺少必要参数'))
+})
+
 
 module.exports = router;

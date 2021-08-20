@@ -45,7 +45,19 @@ function add(name) {
     })
 }
 
+/**
+ * 更新全部
+ * @param {Category[]} list 
+ */
+function updateAll(list) {
+    return new Promise((resolve, reject) => {
+        // ConnPool.query(updateAllSql, )
+        resolve('行啊！')
+    })
+}
+
 module.exports = {
     queryAll: queryAll,
     add: add,
+    updateAll: updateAll,
 }
