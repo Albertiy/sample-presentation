@@ -24,6 +24,12 @@
     margin-right: 20px;
 }
 
+.title {
+    font-size: large;
+    font-weight: 600;
+    color: var(--color-theme-bg);
+}
+
 .main {
     flex: 1;
     padding: 0.5rem;

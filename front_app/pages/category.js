@@ -128,7 +128,7 @@ export default function Cagegory() {
             </Head>
             <header className={styles.header}>
                 <div className={styles.header_row}>
-                    <div style={{ fontSize: '1.6rem', fontWeight: 'bold' }}>类目管理</div>
+                    <div className={styles.title}>类目管理</div>
                     <Button primary label='保存修改' onClick={saveChangeClicked}></Button>
                 </div>
             </header>

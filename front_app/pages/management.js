@@ -11,7 +11,7 @@ import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
 
 import Icon from "@mdi/react";
-import { mdiShapeSquarePlus, mdiPageNextOutline, mdiSquareEditOutline, mdiOpenInNew } from '@mdi/js';
+import { mdiShapeSquarePlus, mdiPageNextOutline, mdiSquareEditOutline, mdiOpenInNew, mdiMenuOpen } from '@mdi/js';
 
 import dayjs from 'dayjs'
 import { Space } from 'antd';
@@ -312,6 +312,9 @@ export default function Management() {
                 <div className={styles.header_right}>
                     <div className={styles.filter_row}>
                         <Button primary icon={<Icon path={mdiShapeSquarePlus} size={0.5}></Icon>} label='新增素材' onClick={() => { window.open('/upload', '_blank') }}></Button>
+                    </div>
+                    <div className={styles.filter_row}>
+                        <Button primary icon={<Icon path={mdiMenuOpen} size={0.6}></Icon>} label='类别管理' onClick={() => { window.open('/category', '_blank') }}></Button>
                     </div>
                     <div className={styles.filter_row}>
                         <Button primary icon={<Icon path={mdiPageNextOutline} size={0.5}></Icon>} reverse={true} label='客户展示页' onClick={() => { window.open('/list', '_blank') }}></Button>
