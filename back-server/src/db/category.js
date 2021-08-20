@@ -62,11 +62,13 @@ function updateAll(list) {
         ConnPool.query(updateAllSql, [categorylist], (err, res, fields) => {
             if (err) {
                 console.log(err.message)
-                reject(err.message)
+                if (err.code == 'ER_DUP_ENTRY')
+                    reject('类目名重复！')
+                else
+                    reject(err.message)
             } else
                 resolve(res)
         })
-        resolve('行啊！')
     })
 }
 

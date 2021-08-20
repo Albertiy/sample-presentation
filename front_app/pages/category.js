@@ -79,14 +79,6 @@ export default function Cagegory() {
     }
 
     /**
-     * 点击文本修改
-     * @param {Category} item 
-     */
-    function editTextClicked(item) {
-        console.log(item + 'Helo!');
-    }
-
-    /**
      * 点击保存修改按钮
      * @param {*} event 
      */
@@ -113,11 +105,19 @@ export default function Cagegory() {
      * 保存
      */
     function saveCategoryListChange() {
-        ProductService.saveCategoryListModify(categoryList).then(val => {
-            enqueueSnackbar('' + val, { variant: 'success', autoHideDuration: 2000 })
-        }).catch(err => {
-            enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
-        })
+        let temp = categoryList.filter(val => !val.name || !val.name.trim());
+        if (temp.length > 0)
+            enqueueSnackbar('类目名不能为空！', { variant: 'warning', autoHideDuration: 2000 })
+        else {
+            setIsLoading(true);
+            ProductService.saveCategoryListModify(categoryList).then(val => {
+                enqueueSnackbar('' + val, { variant: 'success', autoHideDuration: 2000 })
+            }).catch(err => {
+                enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+            }).finally(() => {
+                setIsLoading(false);
+            })
+        }
     }
 
     return (
@@ -142,10 +142,7 @@ export default function Cagegory() {
                                     <Card background="light-1" style={item.id == activeId ? { opacity: 0.5 } : {}}>
                                         <div className={styles.list_item}>
                                             <div className={styles.list_item_order}>{item.order ? item.order : '无'}</div>
-                                            <NoStyleInput className={styles.list_item_text} onClick={event => {
-                                                editTextClicked(item); event.preventDefault;
-                                            }} placeholder={item.name} defaultValue={item.name} onChange={(ele) => {
-                                                console.log(ele.value);
+                                            <NoStyleInput className={styles.list_item_text} placeholder={item.name} defaultValue={item.name} onChange={(ele) => {
                                                 item.name = ele.value.trim();
                                             }}></NoStyleInput>
                                             <div className={styles.list_item_icon}>
