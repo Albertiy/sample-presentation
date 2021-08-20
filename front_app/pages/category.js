@@ -17,9 +17,10 @@ import { mdiDragHorizontal } from '@mdi/js';
 import { useDroppable, useDraggable, DragOverlay } from '@dnd-kit/core';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, TouchSensor, useSensors, useSensor } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
+// import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
 import SortableItem from '../src/component/sortable_item';
 import CardItem from '../src/component/card_item';
+import NoStyleInput from '../src/component/input_nostyle'
 
 /**@type{Category[]} */
 const defaultCategoryList = [];
@@ -34,7 +35,8 @@ export default function Cagegory() {
 
     const [activeId, setActiveId] = useState(null)
 
-    const sensors = useSensors(useSensor(PointerSensor, {}), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates, }), useSensor(TouchSensor, { activationConstraint: { delay: 250 } }));
+    /** useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates, }), */
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 250, tolerance: 5 } }), useSensor(TouchSensor, { activationConstraint: { delay: 250 } }));
 
     useEffect(() => {
         ProductService.getCategoryList().then(res => {
@@ -57,7 +59,7 @@ export default function Cagegory() {
      */
     function handleDragEnd(event) {
         const { active, over } = event;
-        console.log('active: %o\n over: %o', active, over)
+        // console.log('active: %o\n over: %o', active, over)
         if (active.id !== over.id) {
             setCategoryList((items) => {
                 const oldIndex = items.findIndex((value) => active.id == value.id);
@@ -71,6 +73,14 @@ export default function Cagegory() {
             })
         }
         setActiveId(null)
+    }
+
+    /**
+     * 点击文本修改
+     * @param {Category} item 
+     */
+    function editTextClicked(item) {
+        console.log(item + 'Helo!');
     }
 
     function saveChangeClicked(event) {
@@ -91,14 +101,20 @@ export default function Cagegory() {
             </header>
             <main className={styles.main}>
                 <div className={styles.list_container}>
-                    <DndContext modifiers={[restrictToFirstScrollableAncestor]} sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                    {/* modifiers={[restrictToFirstScrollableAncestor]}  */}
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                         <SortableContext items={categoryList} strategy={verticalListSortingStrategy}>
                             {categoryList.map((item, idx, arr) => (
                                 <SortableItem key={item.id} id={item.id}>
                                     <Card background="light-1" style={item.id == activeId ? { opacity: 0.5 } : {}}>
                                         <div className={styles.list_item}>
                                             <div className={styles.list_item_order}>{item.order ? item.order : '无'}</div>
-                                            <div className={styles.list_item_text}>{item.name}</div>
+                                            <NoStyleInput className={styles.list_item_text} onClick={event => {
+                                                editTextClicked(item); event.preventDefault;
+                                            }} placeholder={item.name} defaultValue={item.name} onChange={(ele) => {
+                                                console.log(ele.value);
+                                                item.name = ele.value.trim();
+                                            }}></NoStyleInput>
                                             <div className={styles.list_item_icon}>
                                                 <Icon path={mdiDragHorizontal} size={0.6}></Icon>
                                             </div>
@@ -108,8 +124,9 @@ export default function Cagegory() {
                             ))}
                         </SortableContext>
                         <DragOverlay>
+                            {/* style={activeId ? { transform: 'scale(1.1)' } : {}} */}
                             {activeId ? (
-                                <CardItem style={activeId ? { transform: 'scale(1.1)' } : {}}
+                                <CardItem
                                     order={categoryList.find(val => val.id == activeId).order || '无'}
                                     text={categoryList.find(val => val.id == activeId).name}></CardItem>
                             ) : null}
