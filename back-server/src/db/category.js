@@ -45,13 +45,27 @@ function add(name) {
     })
 }
 
+const updateAllSql = 'update `category` as t inner join JSON_TABLE(?, "$[*]" COLUMNS('
+    + '`id` int PATH "$.id",'
+    + '`name` varchar(255) PATH "$.name",'
+    + '`order` int PATH "$.order"'
+    + ')) as j on t.`id`=j.`id` set t.`order` = j.`order`, t.`name` = j.`name`;';
+
 /**
  * 更新全部
  * @param {Category[]} list 
  */
 function updateAll(list) {
+    let categorylist = list ? JSON.stringify(list) : '[]';
+    console.log("%s", categorylist)
     return new Promise((resolve, reject) => {
-        // ConnPool.query(updateAllSql, )
+        ConnPool.query(updateAllSql, [categorylist], (err, res, fields) => {
+            if (err) {
+                console.log(err.message)
+                reject(err.message)
+            } else
+                resolve(res)
+        })
         resolve('行啊！')
     })
 }

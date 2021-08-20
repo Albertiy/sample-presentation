@@ -28,3 +28,22 @@ select * from product_item t where t.id = 1 and JSON_contains(t.category_list, '
 select * from product_item where id = 1;
 
 update `product_item` t set t.`name` = '圣诞狂欢夜1', t.`link_url` = 'www.baidu.com' where id = 1;
+
+set @d = '[{"id":7,"name":"节庆","order":1},{"id":1,"name":"招牌","order":2},{"id":9,"name":"餐饮美食","order":4},{"id":3,"name":"培训","order":5},{"id":2,"name":"美食","order":6},{"id":4,"name":"奇怪","order":7}]';
+
+-- update `category` t s-- -- et t.
+
+select * from `category` as t inner join JSON_TABLE(@d, "$[*]" COLUMNS(
+	`id` int PATH "$.id",
+    `name` varchar(255) PATH "$.name",
+    `order` int PATH "$.order"
+)) as j on t.`id`=j.`id` order by j.`order` desc;
+-- where t.`id`=j.`id`
+
+update `category` as t inner join JSON_TABLE(@d, "$[*]" COLUMNS(
+	`id` int PATH "$.id",
+    `name` varchar(255) PATH "$.name",
+    `order` int PATH "$.order"
+)) as j on t.`id`=j.`id` set t.`order` = j.`order`;
+
+select * from `category` order by `order`=null, `order` asc;
