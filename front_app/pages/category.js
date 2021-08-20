@@ -20,7 +20,8 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 // import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
 import SortableItem from '../src/component/sortable_item';
 import CardItem from '../src/component/card_item';
-import NoStyleInput from '../src/component/input_nostyle'
+import NoStyleInput from '../src/component/input_nostyle';
+import AlertDialog from '../src/component/alert-dialog';
 
 /**@type{Category[]} */
 const defaultCategoryList = [];
@@ -34,6 +35,8 @@ export default function Cagegory() {
     const [isLoading, setIsLoading] = useState(false)
 
     const [activeId, setActiveId] = useState(null)
+
+    const [showAlertDialog, setShowAlertDialog] = useState(false)
 
     /** useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates, }), */
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { delay: 250, tolerance: 5 } }), useSensor(TouchSensor, { activationConstraint: { delay: 250 } }));
@@ -83,8 +86,34 @@ export default function Cagegory() {
         console.log(item + 'Helo!');
     }
 
+    /**
+     * 点击保存修改按钮
+     * @param {*} event 
+     */
     function saveChangeClicked(event) {
         console.log(categoryList)
+        setShowAlertDialog(true)
+    }
+
+    /**
+     * 关闭弹窗事件
+     * @param {*} res 
+     */
+    function alertDialogClosed(res) {
+        try {
+            if (res) saveCategoryListChange();
+            else enqueueSnackbar('未保存', { variant: 'info', autoHideDuration: 2000 })
+
+        } finally {
+            setShowAlertDialog(false)
+        }
+    }
+
+    /**
+     * 保存
+     */
+    function saveCategoryListChange() {
+        
     }
 
     return (
@@ -137,6 +166,7 @@ export default function Cagegory() {
             <footer>
             </footer>
             {isLoading && <ModelLoading />}
+            <AlertDialog open={showAlertDialog} title='提示' contentText='确认修改类目?' handleClose={alertDialogClosed}></AlertDialog>
         </Grommet>
     );
 }
