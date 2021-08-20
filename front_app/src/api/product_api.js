@@ -19,6 +19,7 @@ const addNewCategoryUrl = server + 'api/category';
 const addNewProductItemUrl = server + 'api/productitem';
 const updateProductItemUrl = server + 'api/productitem';
 const fileUrl = server + 'api/file';
+const updateCategoryListUrl = server + 'api/categorylist';
 
 // 拦截服务器错误
 axios.interceptors.response.use((response) => {
@@ -202,4 +203,19 @@ export function getFileRemotePath(filePath, fileName = '') {
     filePath = filePath.replace('\\', '/')
     fileName = fileName.replace('\\', '/')
     return `${fileUrl}/${filePath}${fileName != '' ? '/' + fileName : ''}`;
+}
+
+/**
+ * 更新category列表
+ * @param {Category[]} list 
+ * @returns 
+ */
+export function updateCategoryList(list) {
+    return new Promise((resolve, reject) => {
+        axios.put(updateCategoryListUrl, { list: list }).then((result) => {
+            let res = result.data;
+            if (res.state) resolve(res.data)
+            else reject(res.error)
+        }).catch(err => { reject(err) })
+    })
 }

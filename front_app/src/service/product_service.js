@@ -203,3 +203,23 @@ export function editProductItem(id, itemName, itemProduct, itemCategoryList = []
         })
     })
 }
+
+/**
+ * 修改类目列表
+ * @param {Category[]} list 
+ * @returns {Promise<string>} 结果信息
+ */
+export function saveCategoryListModify(list) {
+    return new Promise((resolve, reject) => {
+        if (!list) {
+            reject('缺少必要参数')
+            return;
+        }
+        ProductAPI.updateCategoryList(list).then(res => {
+            console.log(res)
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}

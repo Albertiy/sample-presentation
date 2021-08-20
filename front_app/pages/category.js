@@ -113,7 +113,7 @@ export default function Cagegory() {
      * 保存
      */
     function saveCategoryListChange() {
-        
+
     }
 
     return (
@@ -166,7 +166,7 @@ export default function Cagegory() {
             <footer>
             </footer>
             {isLoading && <ModelLoading />}
-            <AlertDialog open={showAlertDialog} title='提示' contentText='确认修改类目?' handleClose={alertDialogClosed}></AlertDialog>
+            <AlertDialog open={showAlertDialog} title='提示' contentText='确认保存对类目的修改?' handleClose={alertDialogClosed}></AlertDialog>
         </Grommet>
     );
 }
