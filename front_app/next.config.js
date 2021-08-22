@@ -25,6 +25,17 @@ module.exports = {
                 destination: '/list',
                 permanent: true
             },
+            {
+                source: '/management',
+                has: [
+                    {
+                        type: 'cookie',
+                        key: 'token',
+                    }
+                ],
+                permanent: false,
+                destination: '/login'
+            }
         ]
     },
 };
