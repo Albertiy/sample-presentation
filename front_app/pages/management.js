@@ -11,7 +11,7 @@ import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
 
 import Icon from "@mdi/react";
-import { mdiShapeSquarePlus, mdiPageNextOutline, mdiSquareEditOutline, mdiOpenInNew, mdiMenuOpen } from '@mdi/js';
+import { mdiShapeSquarePlus, mdiPageNextOutline, mdiSquareEditOutline, mdiOpenInNew, mdiMenuOpen, mdiShieldAccount } from '@mdi/js';
 
 import dayjs from 'dayjs'
 import { Space } from 'antd';
@@ -310,6 +310,9 @@ export default function Management() {
                     <Select multiple={false} options={categoryList} labelKey={'name'} value={selectedCategory} valueKey={'id'} onChange={selectedCategoryChanged} ></Select>
                 </div>
                 <div className={styles.header_right}>
+                    <div className={styles.filter_row}>
+                        <Button primary icon={<Icon path={mdiShieldAccount} size={0.5}></Icon>} label='修改密码' onClick={() => { window.open('/upload', '_blank') }}></Button>
+                    </div>
                     <div className={styles.filter_row}>
                         <Button primary icon={<Icon path={mdiShapeSquarePlus} size={0.5}></Icon>} label='新增素材' onClick={() => { window.open('/upload', '_blank') }}></Button>
                     </div>
