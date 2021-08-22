@@ -9,77 +9,80 @@ import { mdiDragHorizontal } from '@mdi/js';
 
 import { useSnackbar } from 'notistack';
 import ModelLoading from '../src/component/model_loading';
-import styles from '../styles/user.module.css';
+import styles from '../styles/login.module.css';
 import AlertDialog from '../src/component/alert-dialog';
 import { View, Hide } from 'grommet-icons';
 
 
-export default function User() {
+export default function Login() {
     const { enqueueSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);
     const [showAlertDialog, setShowAlertDialog] = useState(false);
 
-    const [account, setAccount] = React.useState('admin');
-
-    const [oldValue, setOldValue] = React.useState('');
-    const [oldReveal, setOldReveal] = React.useState(false);
-
-    const [value, setValue] = React.useState('');
+    const [name, setName] = React.useState('');
+    const [password, setPassword] = React.useState('');
     const [reveal, setReveal] = React.useState(false);
 
     /**
-     * 点击保存修改按钮
+     * 点击登录按钮
      * @param {*} event 
      */
-    function saveChangeClicked(event) {
-        if (!value || !oldValue)
+    function loginBtnClicked(event) {
+        if (!name)
+            enqueueSnackbar('用户名不可为空！', { variant: 'warning', autoHideDuration: 2000 })
+        else if (password == undefined || password == '')
             enqueueSnackbar('密码不可为空！', { variant: 'warning', autoHideDuration: 2000 })
-        else
-            setShowAlertDialog(true)
+        else {
+            login()
+        }
+
     }
 
     /**
-     * 关闭弹窗事件
-     * @param {*} res 
+     * 登录
      */
-    function alertDialogClosed(res) {
+    function login() {
         try {
-            if (res) {
-                // TODO 修改密码
-                console.log('account: %o, oldPw: %o, newPw: %o', account, oldValue, value)
-            }
-            else enqueueSnackbar('未保存', { variant: 'info', autoHideDuration: 2000 })
-
+            // TODO 后台请求
+            console.log('name: %o, password: %o', name, password)
+            enqueueSnackbar('登录成功', { variant: 'success', autoHideDuration: 2000 })
         } finally {
             setShowAlertDialog(false)
         }
     }
 
+    function alertDialogClosed() {
+        
+    }
+
 
     return (<Grommet className={styles.container} theme={theme}>
         <Head>
-            <title>用户管理</title>
-            <link rel="icon" href="/img/picturex64u.png" />
+            <title>登录</title>
+            <link rel="icon" href="/img/picturex64m.png" />
         </Head>
         <header className={styles.header}>
             <div className={styles.header_row}>
-                <div className={styles.title}>用户管理</div>
-                <Button primary label='保存修改' onClick={saveChangeClicked}></Button>
+                <div className={styles.title}>登录</div>
             </div>
         </header>
         <main className={styles.main}>
             <div className={styles.form_container}>
                 <div className={styles.form_row}>
                     <Box width="medium" direction="row" margin="medium" align="center" round="small" border>
-                        <TextInput plain type={oldReveal ? 'text' : 'password'} value={oldValue} onChange={event => setOldValue(event.target.value)} placeholder='旧密码' maxLength='20'></TextInput>
-                        <Button icon={oldReveal ? <View size="medium" /> : <Hide size="medium" />} onClick={() => setOldReveal(!oldReveal)}></Button>
+                        <TextInput plain type={'text'} style={{ height: '42px', }} value={name} onChange={event => setName(event.target.value)} placeholder='用户名' maxLength='50'
+                        ></TextInput>
                     </Box>
                 </div>
                 <div className={styles.form_row}>
                     <Box width="medium" direction="row" margin="medium" align="center" round="small" border>
-                        <TextInput plain type={reveal ? 'text' : 'password'} value={value} onChange={event => setValue(event.target.value)} placeholder='新密码' maxLength='20'
-                        ></TextInput>
+                        <TextInput plain type={reveal ? 'text' : 'password'} value={password} onChange={event => setPassword(event.target.value)} placeholder='密码' maxLength='20'></TextInput>
                         <Button icon={reveal ? <View size="medium" /> : <Hide size="medium" />} onClick={() => setReveal(!reveal)}></Button>
+                    </Box>
+                </div>
+                <div className={styles.form_row}>
+                    <Box width="medium" direction="row" margin="medium" align="center" round="small" justify="center">
+                        <Button primary size='large' label='登录' onClick={loginBtnClicked}></Button>
                     </Box>
                 </div>
             </div>
