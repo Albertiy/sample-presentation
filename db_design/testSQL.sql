@@ -47,3 +47,10 @@ update `category` as t inner join JSON_TABLE(@d, "$[*]" COLUMNS(
 )) as j on t.`id`=j.`id` set t.`order` = j.`order`;
 
 select * from `category` order by `order`=null, `order` asc;
+
+
+SELECT * FROM yilabaodb.account;
+
+update `account` set `password` = '' where `name` = 'admin' and password = '123';
+
+select * from `account` where `name` = 'admin' && password = '123456';

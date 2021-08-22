@@ -9,6 +9,8 @@ const fs = require('fs');
  * frontAddress: string, 
  * logDirectory: string,
  * exampleMode: boolean,
+ * tokenSecret: string,
+ * tokenExpires: number,
  * }}
  */
 exports.application = function () {

@@ -4,5 +4,7 @@
   "staticPath": "./public",
   "frontAddress": "http://localhost:8511",
   "logDirectory": "logs",
-  "fileRoot": "../yilabaoPic"
+  "fileRoot": "../yilabaoPic",
+  "tokenSecret": "it's fine if you no more love me",
+  "tokenExpires": 86400
 }

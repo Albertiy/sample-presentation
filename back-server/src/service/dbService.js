@@ -1,10 +1,13 @@
 const ProductAPI = require('../db/product')
 const CategoryAPI = require('../db/category')
 const ProductItemAPI = require('../db/product_item')
+const AccountAPI = require('../db/account')
 
 const Product = require('../model/product')
 const Category = require('../model/category')
 const ProductItem = require('../model/product_item')
+const Account = require('../model/account')
+
 
 /**
  * 
@@ -179,6 +182,43 @@ function updateCategoryList(list) {
     })
 }
 
+/**
+ * 检查登录 和 登录应该分开，因为登录提供新的token，而检查登录不一定？
+ * @param {string} name 
+ * @param {string} password 
+ * @returns 
+ */
+function checkLogin(name, password) {
+    return new Promise((resolve, reject) => {
+        if (name && password) {
+            AccountAPI.checkAccount(new Account(undefined, name, password)).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        } else reject('缺少必要参数')
+    })
+}
+
+/**
+ * 修改密码
+ * @param {string} name 
+ * @param {string} oldPwd 
+ * @param {string} newPwd 
+ * @returns 
+ */
+function changePwd(name, oldPwd, newPwd) {
+    return new Promise((resolve, reject) => {
+        if (name && oldPwd != undefined && newPwd != undefined) {
+            AccountAPI.updatePassword(new Account(undefined, name, oldPwd, newPwd)).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        } else reject('缺少必要参数')
+    })
+}
+
 module.exports = {
     getProductList: getProductList,
     addNewProduct: addNewProduct,
@@ -189,4 +229,6 @@ module.exports = {
     getProductItem: getProductItem,
     updateProductItem: updateProductItem,
     updateCategoryList: updateCategoryList,
+    checkLogin: checkLogin,
+    changePwd: changePwd,
 }

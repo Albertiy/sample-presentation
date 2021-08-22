@@ -13,7 +13,8 @@ var formidable = require('formidable');
 var uuidV1 = require('uuid').v1;
 const fileService = require('../src/service/fileservice');
 const tools = require('../src/tool/tools');
-const { rejects } = require('assert');
+const tokenService = require('../src/service/tokenService');
+
 
 /** 缩略图文件默认后缀 */
 const thumbName = '-thumb';
@@ -393,6 +394,45 @@ router.put('/categorylist', function (req, res, next) {
         })
     } else
         res.send(new ReqBody(0, null, '缺少必要参数'))
+})
+
+/**
+ * 检查登录，在cookie中添加token，若已有token则不变。
+ */
+router.post('/checklogin', function (req, res, next) {
+    let { name, password } = req.body;
+    if (name && password != undefined) {
+        dbService.checkLogin(name, password).then((val) => {
+            if (req.cookies.token != null) {
+                let token = req.cookies.token;
+                let payload = tokenService.verToken(token);
+                console.log('payload: ' + payload)
+                res.send(new ReqBody(1, { code: 'EXISTS_TOKEN' }))
+            } else {
+                let token = tokenService.genToken(name, password);
+                res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, httpOnly: true })
+                res.send(new ReqBody(1, { code: 'NEW_TOKEN' }))
+            }
+        }).catch((err) => {
+            res.clearCookie("token");
+            res.send(new ReqBody(0, null, err))
+        });
+    } else
+        res.send(new ReqBody(0, null, '用户名密码不能为空'))
+})
+
+router.post('/changepwd', function (req, res, next) {
+    let { name, oldPwd, newPwd } = req.body;
+    if (name && oldPwd != undefined && newPwd != undefined && newPwd != '') {
+        dbService.changePwd(name, oldPwd, newPwd).then((val) => {
+            let token = tokenService.genToken(name, newPwd);
+            res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, httpOnly: true })
+            res.send(new ReqBody(1, val))
+        }).catch((err) => {
+            res.send(new ReqBody(0, null, err))
+        });
+    } else
+        res.send(new ReqBody(0, null, '密码不能为空'))
 })
 
 
