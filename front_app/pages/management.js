@@ -313,7 +313,7 @@ function Management() {
                 </div>
                 <div className={styles.header_right}>
                     <div className={styles.filter_row}>
-                        <Button primary icon={<Icon path={mdiShieldAccount} size={0.5}></Icon>} label='修改密码' onClick={() => { window.open('/upload', '_blank') }}></Button>
+                        <Button primary icon={<Icon path={mdiShieldAccount} size={0.5}></Icon>} label='修改密码' onClick={() => { window.open('/user', '_blank') }}></Button>
                     </div>
                     <div className={styles.filter_row}>
                         <Button primary icon={<Icon path={mdiShapeSquarePlus} size={0.5}></Icon>} label='新增素材' onClick={() => { window.open('/upload', '_blank') }}></Button>

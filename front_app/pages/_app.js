@@ -1,5 +1,6 @@
 import '../styles/global.css';
 import { SnackbarProvider } from 'notistack'
+import { CookiesProvider } from 'react-cookie';
 
 /**
  * 全局组件 App
@@ -8,8 +9,10 @@ import { SnackbarProvider } from 'notistack'
  */
 export default function App({ Component, pageProps }) {
     return (
-        <SnackbarProvider>
-            < Component {...pageProps} />
-        </SnackbarProvider>
+        <CookiesProvider>
+            <SnackbarProvider>
+                < Component {...pageProps} />
+            </SnackbarProvider>
+        </CookiesProvider>
     )
 }

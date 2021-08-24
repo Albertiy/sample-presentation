@@ -13,8 +13,12 @@ import styles from '../styles/login.module.css';
 import AlertDialog from '../src/component/alert-dialog';
 import { View, Hide } from 'grommet-icons';
 
+import { useRouter } from 'next/router';
 
-export default function Login() {
+import * as ProductService from '../src/service/product_service';
+// import authenticatedRoute from '../src/component/AuthenticatedRoute';
+
+function Login() {
     const { enqueueSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);
     const [showAlertDialog, setShowAlertDialog] = useState(false);
@@ -22,6 +26,8 @@ export default function Login() {
     const [name, setName] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [reveal, setReveal] = React.useState(false);
+
+    const router = useRouter();
 
     /**
      * 点击登录按钮
@@ -42,17 +48,28 @@ export default function Login() {
      * 登录
      */
     function login() {
+        console.log('name: %o, password: %o', name, password)
         try {
-            // TODO 后台请求
-            console.log('name: %o, password: %o', name, password)
-            enqueueSnackbar('登录成功', { variant: 'success', autoHideDuration: 2000 })
+            setIsLoading(true)
+            // 后台请求
+            ProductService.login(name, password).then(res => {
+                enqueueSnackbar('' + res, { variant: 'success', autoHideDuration: 2000 })
+                if (window.history.length > 1)
+                    router.back();
+                else
+                    router.push('/management');
+            }).catch((err) => {
+                enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+            }).finally(() => {
+                setIsLoading(false)
+            })
         } finally {
             setShowAlertDialog(false)
         }
     }
 
     function alertDialogClosed() {
-        
+
     }
 
 
@@ -93,3 +110,6 @@ export default function Login() {
         <AlertDialog open={showAlertDialog} title='提示' contentText='确认修改?' handleClose={alertDialogClosed}></AlertDialog>
     </Grommet>);
 }
+
+// export default authenticatedRoute(Login, { pathAfterFailure: '/login' });
+export default Login;

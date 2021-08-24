@@ -405,12 +405,13 @@ router.post('/checklogin', function (req, res, next) {
         dbService.checkLogin(name, password).then((val) => {
             if (req.cookies.token != null) {
                 let token = req.cookies.token;
+                console.log('cookie token: %o', token);
                 let payload = tokenService.verToken(token);
                 console.log('payload: ' + payload)
                 res.send(new ReqBody(1, { code: 'EXISTS_TOKEN' }))
             } else {
                 let token = tokenService.genToken(name, password);
-                res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, httpOnly: true })
+                res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, path: "/", httpOnly: false }) // httpOnly: true,
                 res.send(new ReqBody(1, { code: 'NEW_TOKEN' }))
             }
         }).catch((err) => {
@@ -426,7 +427,7 @@ router.post('/changepwd', function (req, res, next) {
     if (name && oldPwd != undefined && newPwd != undefined && newPwd != '') {
         dbService.changePwd(name, oldPwd, newPwd).then((val) => {
             let token = tokenService.genToken(name, newPwd);
-            res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, httpOnly: true })
+            res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, httpOnly: false })
             res.send(new ReqBody(1, val))
         }).catch((err) => {
             res.send(new ReqBody(0, null, err))

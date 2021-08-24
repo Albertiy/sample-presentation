@@ -20,6 +20,8 @@ const addNewProductItemUrl = server + 'api/productitem';
 const updateProductItemUrl = server + 'api/productitem';
 const fileUrl = server + 'api/file';
 const updateCategoryListUrl = server + 'api/categorylist';
+const loginUrl = server + 'api/checklogin';
+
 
 // 拦截服务器错误
 axios.interceptors.response.use((response) => {
@@ -214,6 +216,23 @@ export function updateCategoryList(list) {
     return new Promise((resolve, reject) => {
         axios.put(updateCategoryListUrl, { list: list }).then((result) => {
             let res = result.data;
+            if (res.state) resolve(res.data)
+            else reject(res.error)
+        }).catch(err => { reject(err) })
+    })
+}
+
+/**
+ * 登录，后端设置cookie
+ * @param {string} name 
+ * @param {string} password 
+ * @returns 
+ */
+export function login(name, password) {
+    return new Promise((resolve, reject) => {
+        axios.post(loginUrl, { name: name, password: password }).then((result) => {
+            let res = result.data;
+            console.log(res);
             if (res.state) resolve(res.data)
             else reject(res.error)
         }).catch(err => { reject(err) })

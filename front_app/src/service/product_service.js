@@ -223,3 +223,30 @@ export function saveCategoryListModify(list) {
         })
     })
 }
+
+/**
+ * 登录
+ * @param {string} name 
+ * @param {string} password 
+ * @returns 
+ */
+export function login(name, password) {
+    return new Promise((resolve, reject) => {
+        if (name && password != undefined && password != '') {
+            ProductAPI.login(name, password).then((res) => {
+                console.log(res)
+                if (res.code == 'EXISTS_TOKEN')
+                    resolve('已登录')
+                else if (res.code == 'NEW_TOKEN')
+                    resolve('登录成功')
+                else
+                    resolve('登录成功')
+            }).catch((err) => {
+                reject(err)
+            })
+        } else
+            reject('用户名和密码不能为空')
+
+    })
+
+}
