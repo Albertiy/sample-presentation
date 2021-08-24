@@ -15,13 +15,15 @@ import { View, Hide } from 'grommet-icons';
 
 import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
 
+import * as ProductService from '../src/service/product_service';
+
 
 function User() {
     const { enqueueSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);
     const [showAlertDialog, setShowAlertDialog] = useState(false);
 
-    const [account, setAccount] = React.useState('admin');
+    const [name, setName] = React.useState('admin');
 
     const [oldValue, setOldValue] = React.useState('');
     const [oldReveal, setOldReveal] = React.useState(false);
@@ -42,13 +44,18 @@ function User() {
 
     /**
      * 关闭弹窗事件
-     * @param {*} res 
+     * @param {boolean} confirm 点击确定还是取消按钮
      */
-    function alertDialogClosed(res) {
+    function alertDialogClosed(confirm) {
         try {
-            if (res) {
+            if (confirm) {
                 // TODO 修改密码
-                console.log('account: %o, oldPw: %o, newPw: %o', account, oldValue, value)
+                console.log('account: %o, oldPw: %o, newPw: %o', name, oldValue, value)
+                ProductService.changePassword(name, oldValue, value).then((result) => {
+                    enqueueSnackbar('' + result, { variant: 'success', autoHideDuration: 2000 })
+                }).catch((err) => {
+                    enqueueSnackbar('' + err, { variant: 'error', autoHideDuration: 2000 })
+                });
             }
             else enqueueSnackbar('未保存', { variant: 'info', autoHideDuration: 2000 })
 
@@ -71,6 +78,11 @@ function User() {
         </header>
         <main className={styles.main}>
             <div className={styles.form_container}>
+                <div className={styles.form_row}>
+                    <Box width="medium" direction="row" margin="medium" align="center" round="small" border>
+                        <TextInput plain type='text' value={name} placeholder='用户名' maxLength='50' disabled={true} style={{ height: '42px', }}></TextInput>
+                    </Box>
+                </div>
                 <div className={styles.form_row}>
                     <Box width="medium" direction="row" margin="medium" align="center" round="small" border>
                         <TextInput plain type={oldReveal ? 'text' : 'password'} value={oldValue} onChange={event => setOldValue(event.target.value)} placeholder='旧密码' maxLength='20'></TextInput>

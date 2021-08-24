@@ -21,6 +21,7 @@ const updateProductItemUrl = server + 'api/productitem';
 const fileUrl = server + 'api/file';
 const updateCategoryListUrl = server + 'api/categorylist';
 const loginUrl = server + 'api/checklogin';
+const changePwdUrl = server + 'api/changepwd';
 
 
 // 拦截服务器错误
@@ -236,5 +237,23 @@ export function login(name, password) {
             if (res.state) resolve(res.data)
             else reject(res.error)
         }).catch(err => { reject(err) })
+    })
+}
+
+/**
+ * 修改密码
+ * @param {string} name 
+ * @param {string} oldPwd 
+ * @param {string} newPwd 
+ * @returns 
+ */
+export function changePwd(name, oldPwd, newPwd) {
+    return new Promise((resolve, reject) => {
+        axios.post(changePwdUrl, { name: name, oldPwd: oldPwd, newPwd: newPwd }).then((result) => {
+            let res = result.data;
+            console.log(res);
+            if (res.state) resolve(res.data)
+            else reject(res.error)
+        }).catch((err) => { reject(err) });
     })
 }

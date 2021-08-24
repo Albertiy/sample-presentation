@@ -250,3 +250,19 @@ export function login(name, password) {
     })
 
 }
+
+/**
+ * 修改密码
+ * @param {string} name 
+ * @param {string} oldPwd 
+ * @param {string} newPwd 
+ */
+export function changePassword(name, oldPwd, newPwd) {
+    return new Promise((resolve, reject) => {
+        ProductAPI.changePwd(name, oldPwd, newPwd).then((result) => {
+            resolve(result);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
