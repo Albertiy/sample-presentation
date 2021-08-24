@@ -13,8 +13,10 @@ import styles from '../styles/user.module.css';
 import AlertDialog from '../src/component/alert-dialog';
 import { View, Hide } from 'grommet-icons';
 
+import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
 
-export default function User() {
+
+function User() {
     const { enqueueSnackbar } = useSnackbar();
     const [isLoading, setIsLoading] = useState(false);
     const [showAlertDialog, setShowAlertDialog] = useState(false);
@@ -90,3 +92,5 @@ export default function User() {
         <AlertDialog open={showAlertDialog} title='提示' contentText='确认修改?' handleClose={alertDialogClosed}></AlertDialog>
     </Grommet>);
 }
+
+export default authenticatedRoute(User, { pathAfterFailure: '/login' });

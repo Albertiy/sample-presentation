@@ -25,6 +25,9 @@ import { useRouter } from 'next/router'
 import ModelLoading from '../src/component/model_loading'
 import Compressor from 'compressorjs'
 
+import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
+
+
 /** 路由参数刷新计数，第2次可获取query值 */
 const defaultRouterTime = 0;
 
@@ -52,7 +55,7 @@ const defaultShowLoading = false;
 
 const thumb = '?thumb=1';
 
-export default function Edit() {
+function Edit() {
 
     const router = useRouter();
     const [routerTime, setRouterTime] = useState(defaultRouterTime);  // 第一次的路由参数总是为{}，被舍弃
@@ -387,6 +390,9 @@ export default function Edit() {
             <footer>
             </footer>
             {showLoading && <ModelLoading />}
-        </Grommet >
+        </Grommet>
     );
 }
+
+
+export default authenticatedRoute(Edit, { pathAfterFailure: '/login' });

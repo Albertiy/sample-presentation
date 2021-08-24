@@ -23,6 +23,9 @@ import ModelLoading from '../src/component/model_loading'
 
 import Compressor from 'compressorjs'
 
+import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
+
+
 /** @type{Product[]} */
 const defaultProductList = [];
 /** @type{Category[]} */
@@ -42,7 +45,7 @@ const defaultPrivewSrc = '';
 const defaultShowLoading = false;
 
 
-export default function Upload(props) {
+function Upload(props) {
 
     const [productList, setProductList] = useState(defaultProductList)
     const [categoryList, setCategoryList] = useState(defaultCategoryList)
@@ -291,3 +294,5 @@ export default function Upload(props) {
         </Grommet>
     );
 }
+
+export default authenticatedRoute(Upload, { pathAfterFailure: '/login' });

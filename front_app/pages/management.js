@@ -22,6 +22,8 @@ import { useSnackbar } from 'notistack';
 import ModelLoading from '../src/component/model_loading'
 import InView from "react-intersection-observer";
 
+import authenticatedRoute from '../src/component/AuthenticatedRoute/index'
+
 /** @type{Product[]} */
 const defaultProductList = [];
 /** @type{Category[]} */
@@ -38,7 +40,7 @@ const defaultIsLoading = false;
 const defaultImgSrc = '/img/placeholder.jpg';   // 默认图
 
 
-export default function Management() {
+function Management() {
     const [productList, setProductList] = useState(defaultProductList);
     const [categoryList, setCategoryList] = useState(defaultCategoryList);
     const [selectedProduct, setSelectedProduct] = useState(defaultProduct);
@@ -343,3 +345,5 @@ export default function Management() {
         </Grommet>
     );
 }
+
+export default authenticatedRoute(Management, { pathAfterFailure: '/login' });

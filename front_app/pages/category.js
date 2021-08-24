@@ -23,10 +23,13 @@ import CardItem from '../src/component/card_item';
 import NoStyleInput from '../src/component/input_nostyle';
 import AlertDialog from '../src/component/alert-dialog';
 
+import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
+
+
 /**@type{Category[]} */
 const defaultCategoryList = [];
 
-export default function Cagegory() {
+function Cagegory() {
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -171,3 +174,5 @@ export default function Cagegory() {
         </Grommet>
     );
 }
+
+export default authenticatedRoute(Category, { pathAfterFailure: '/login' });
