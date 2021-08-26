@@ -29,7 +29,7 @@ import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
 /**@type{Category[]} */
 const defaultCategoryList = [];
 
-function Cagegory() {
+function CategoryPage() {
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -175,4 +175,4 @@ function Cagegory() {
     );
 }
 
-export default authenticatedRoute(Category, { pathAfterFailure: '/login' });
+export default authenticatedRoute(CategoryPage, { pathAfterFailure: '/login' });
