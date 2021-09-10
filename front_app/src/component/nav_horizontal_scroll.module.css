@@ -15,7 +15,17 @@
 }
 
 .container::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
+    height: 0.35rem;
+    background-color: #eee;
+}
+
+.container::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
 }
 
 .item {
