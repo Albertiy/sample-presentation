@@ -1,6 +1,6 @@
 {
-  "name": "back-server",
-  "version": "0.0.0",
+  "name": "yilabao-back-server",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
