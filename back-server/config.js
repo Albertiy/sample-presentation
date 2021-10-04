@@ -1,4 +1,6 @@
 const fs = require('fs');
+const ApplicationConfigPath = './config/application.config.json';
+const DatabaseConfigPath = './config/database.config.json';
 
 /**
  * 获取 application.config.json
@@ -15,7 +17,7 @@ const fs = require('fs');
  */
 exports.application = function () {
     try {
-        return JSON.parse(fs.readFileSync('./config/application.config.json'));
+        return JSON.parse(fs.readFileSync(ApplicationConfigPath));
     } catch (_) {
         return {};
     }
@@ -23,11 +25,17 @@ exports.application = function () {
 
 /**
  * 获取 database.config.json
- * @returns {{}}
+ * @returns {{
+ *  host: string,
+ *  port: string,
+ *  user: string,
+ *  password: string,
+ *  database: string,
+ * }}
  */
 exports.database = function () {
     try {
-        return JSON.parse(fs.readFileSync('./config/database.config.json'));
+        return JSON.parse(fs.readFileSync(DatabaseConfigPath));
     } catch (_) {
         return {};
     }
