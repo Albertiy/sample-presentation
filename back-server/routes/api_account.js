@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-var ReqBody = require('../src/model/req_body')
 const dbService = require('../src/service/dbService');
 const tokenService = require('../src/service/tokenService');
 var config = require('../config');
+var ReqBody = require('../src/model/req_body')
 
 /**
  * 检查登录，在cookie中添加token，若已有token则不变。
