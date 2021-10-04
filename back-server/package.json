@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "pm2": "pm2 start pm2.config.json"
+    "pm2": "pm2 start ./config/pm2.config.json"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

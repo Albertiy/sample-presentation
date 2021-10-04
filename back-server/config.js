@@ -15,7 +15,7 @@ const fs = require('fs');
  */
 exports.application = function () {
     try {
-        return JSON.parse(fs.readFileSync('./application.config.json'));
+        return JSON.parse(fs.readFileSync('./config/application.config.json'));
     } catch (_) {
         return {};
     }
@@ -27,7 +27,7 @@ exports.application = function () {
  */
 exports.database = function () {
     try {
-        return JSON.parse(fs.readFileSync('./database.config.json'));
+        return JSON.parse(fs.readFileSync('./config/database.config.json'));
     } catch (_) {
         return {};
     }

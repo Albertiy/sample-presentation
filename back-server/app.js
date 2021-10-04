@@ -20,7 +20,7 @@ app.set('view engine', 'ejs');
 
 /** 自定义日志写入文件 */
 // 日志文件位置
-const logDirectory = CONFIG.application().logDirectory || 'logs';
+const logDirectory = CONFIG.application().logDirectory || 'log';
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 // create a rotating write stream
 var accessLogfile = FileStreamRotator.getStream({
