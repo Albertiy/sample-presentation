@@ -10,8 +10,8 @@ class Category {
      * @param {number} id 
      * @param {string} name 
      * @param {number} [order]
-     * @param {number} [parent_id] 
      * @param {number} [product_id]
+     * @param {number} [parent_id] 
      */
     constructor(id, name, order = null, product_id = null, parent_id = null) {
         this.id = id;

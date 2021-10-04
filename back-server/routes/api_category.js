@@ -19,14 +19,14 @@ router.get('/categorylist', function (req, res, next) {
  * 新增-类目
  */
 router.post('/category', function (req, res, next) {
-    let { name } = req.body;
+    let { name, productId } = req.body;
     if (name)
-        dbService.addNewCategory(name).then(val => {
+        dbService.addNewCategory({ name, productId }).then(val => {
             res.send(new ReqBody(1, val))
         }).catch(err => {
             res.send(new ReqBody(0, null, err))
         })
-    else res.send(new ReqBody(0, null, 'need parameters'))
+    else res.send(new ReqBody(0, null, '缺少必要参数'))
 })
 
 /**

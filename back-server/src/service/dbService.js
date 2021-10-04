@@ -61,14 +61,15 @@ function getCategoryList() {
 }
 
 /**
- * 
- * @param {string} name 
- * @returns {Promise<Category>}
+ * 新增类目
+ * @param {{name:string, productId?:number}} params 
+ * @returns {Promise<Category>} 返回的Category对象其实是组装的而不是查询的
  */
-function addNewCategory(name) {
+function addNewCategory(params) {
+    let { name, productId } = params;
     return new Promise((resolve, reject) => {
-        CategoryAPI.add(name).then(res => {
-            resolve(new Category(res.insertId, name))
+        CategoryAPI.add(name, productId).then(res => {
+            resolve(new Category(res.insertId, name, null, productId))
         }).catch((err) => {
             reject(err)
         });

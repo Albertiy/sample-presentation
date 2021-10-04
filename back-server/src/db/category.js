@@ -1,11 +1,19 @@
 const ConnPool = require('./conn_pool')
+const Category = require('../model/category')
 
 const pool = ConnPool.getPool();
 
 const queryAllSql = 'select * from category order by `order` IS NULL, `order` asc;' // 添加排序
+const queryByProductSql = 'select * from `category` where `product_id`=? ';  // `product_id` is null || 
+const addSql = 'insert into category set ?'  // 'insert into category(name) values(?);'
+const updateAllSql = 'update `category` as t inner join JSON_TABLE(?, "$[*]" COLUMNS('
+    + '`id` int PATH "$.id",'
+    + '`name` varchar(255) PATH "$.name",'
+    + '`order` int PATH "$.order"'
+    + ')) as j on t.`id`=j.`id` set t.`order` = j.`order`, t.`name` = j.`name`;';
 
 /**
- * 
+ * 无条件查询所有类目
  * @returns {Promise<[]>}
  */
 function queryAll() {
@@ -21,17 +29,38 @@ function queryAll() {
     })
 }
 
-
-const addSql = 'insert into category(name) values(?);'
+/**
+ * 通过productId查询
+ * @param {number} productId 商品id
+ * @param {boolean} strict  严格模式：查询结果不包含商品id为空项。 默认 true
+ * @returns {Promise<Category[]>}
+ */
+function queryByProduct(productId, strict = true) {
+    let query = queryByProductSql;
+    if (!strict) query += ' || `product_id` is null';
+    return new Promise((resolve, reject) => {
+        ConnPool.query(query, [productId], (err, res, fields) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            } else {
+                resolve(res)
+            }
+        })
+    })
+}
 
 /**
- * 添加
+ * 添加类目
  * @param {string} name 
+ * @param {number} [productId]
  * @returns 
  */
-function add(name) {
+function add(name, productId) {
+    let data = { name }
+    if (productId) data.product_id = productId;
     return new Promise((resolve, reject) => {
-        ConnPool.query(addSql, [name], (err, res, fields) => {
+        ConnPool.query(addSql, [data], (err, res, fields) => {
             if (err) {
                 console.log(err.sqlMessage)
                 if (err.code == 'ER_DUP_ENTRY')
@@ -44,12 +73,6 @@ function add(name) {
         })
     })
 }
-
-const updateAllSql = 'update `category` as t inner join JSON_TABLE(?, "$[*]" COLUMNS('
-    + '`id` int PATH "$.id",'
-    + '`name` varchar(255) PATH "$.name",'
-    + '`order` int PATH "$.order"'
-    + ')) as j on t.`id`=j.`id` set t.`order` = j.`order`, t.`name` = j.`name`;';
 
 /**
  * 更新全部
@@ -74,6 +97,7 @@ function updateAll(list) {
 
 module.exports = {
     queryAll: queryAll,
+    queryByProduct: queryByProduct,
     add: add,
     updateAll: updateAll,
 }
