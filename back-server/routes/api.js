@@ -15,9 +15,14 @@ const fileService = require('../src/service/fileservice');
 const tools = require('../src/tool/tools');
 const tokenService = require('../src/service/tokenService');
 
+const accountRouter = require('./account')
+const fileRouter = require('./file')
+router.use('/', accountRouter)
+router.use('/', fileRouter)
+
 
 /** 缩略图文件默认后缀 */
-const thumbName = '-thumb';
+const THUMB_NAME = '-thumb';
 
 router.get('/productlist', function (req, res, next) {
     dbService.getProductList().then(val => {
@@ -138,7 +143,7 @@ router.post('/productitem', function (req, res, next) {
                     // 拼接自定义的文件名，格式 “<素材名>-uuid<扩展名>”
                     let mainRelativePath = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
                     // 缩略图加上后缀
-                    let thumbRelativePath = mainRelativePath + thumbName;
+                    let thumbRelativePath = mainRelativePath + THUMB_NAME;
                     if (Object.keys(files).length > 0) {
                         let keys = []   // 目前是单图传输，以后可能会有多图。
                         Object.keys(files).forEach(key => {
@@ -207,32 +212,6 @@ router.get('/productitem', function (req, res, next) {
     }
 })
 
-/**
- * 获取图片链接(以及缩略图链接，默认只有jpg有缩略图)
- * 后台生成图片链接，不用担心CORS问题
- * 参数：文件相对于根文件夹的路径。
- * 为了方便拼接，文件名不作为路径的参数，而是作为path的一部分。可能需要 uldecode 解码。
- */
-router.get('/file/*', function (req, res, next) {
-    // console.log(req.query)
-    // console.log(req.params) // 放心，不会带上?后面的内容
-    let { thumb } = req.query;  // 与缩略图共用接口
-    /** @type{string} */
-    let filePath = req.params[0];
-    if (thumb != undefined) {
-        let tempfilePath = tools.expandFileName(filePath, null, thumbName)
-        let absoluteTempFilePath = path.join(fileService.getFileRoot(), tempfilePath);
-        if (fs.existsSync(absoluteTempFilePath)) {
-            res.sendFile(absoluteTempFilePath);
-            return;
-        } else {
-            console.log('缩略图不存在: %s', absoluteTempFilePath)
-        }
-    }
-    let absoluteFilePath = path.join(fileService.getFileRoot(), filePath);
-    console.log('原图: %s', absoluteFilePath);
-    res.sendFile(absoluteFilePath); // 传输为字节流文件
-});
 
 /** 更新 */
 router.put('/productitem', function (req, res, next) {
@@ -297,7 +276,7 @@ router.put('/productitem', function (req, res, next) {
 
                     // 拼接自定义的文件名，格式 “<素材名>-uuid<扩展名>”
                     let mainRelativePath = (tools.validateFileName(name) ? name : tools.correctingFileName(name)) + '-' + uuidV1();
-                    let thumbRelativePath = mainRelativePath + thumbName;
+                    let thumbRelativePath = mainRelativePath + THUMB_NAME;
 
                     /** @type{File} */
                     let mainPic;    // 若文件为空，不会报错，会没有扩展名，且创建的文件内容为空
@@ -337,7 +316,7 @@ router.put('/productitem', function (req, res, next) {
                     // 先读数据库，获取原图地址
                     dbService.getProductItem(id).then(val => {
                         let oldMainRelativePath = val.mainPic;
-                        let oldThumbRelativePath = tools.expandFileName(oldMainRelativePath, null, thumbName);
+                        let oldThumbRelativePath = tools.expandFileName(oldMainRelativePath, null, THUMB_NAME);
                         let oldMainAbsolutePath = path.resolve(rootUrl, oldMainRelativePath);
                         let oldThumbAbsolutePath = path.resolve(rootUrl, oldThumbRelativePath);
                         console.log('oldMainAbsolutePath: ' + oldMainAbsolutePath);
@@ -395,46 +374,5 @@ router.put('/categorylist', function (req, res, next) {
     } else
         res.send(new ReqBody(0, null, '缺少必要参数'))
 })
-
-/**
- * 检查登录，在cookie中添加token，若已有token则不变。
- */
-router.post('/checklogin', function (req, res, next) {
-    let { name, password } = req.body;
-    if (name && password != undefined) {
-        dbService.checkLogin(name, password).then((val) => {
-            if (req.cookies.token != null) {
-                let token = req.cookies.token;
-                console.log('cookie token: %o', token);
-                let payload = tokenService.verToken(token);
-                console.log('payload: ' + payload)
-                res.send(new ReqBody(1, { code: 'EXISTS_TOKEN' }))
-            } else {
-                let token = tokenService.genToken(name, password);
-                res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, path: "/", httpOnly: false }) // httpOnly: true,
-                res.send(new ReqBody(1, { code: 'NEW_TOKEN' }))
-            }
-        }).catch((err) => {
-            res.clearCookie("token");
-            res.send(new ReqBody(0, null, err))
-        });
-    } else
-        res.send(new ReqBody(0, null, '用户名密码不能为空'))
-})
-
-router.post('/changepwd', function (req, res, next) {
-    let { name, oldPwd, newPwd } = req.body;
-    if (name && oldPwd != undefined && newPwd != undefined && newPwd != '') {
-        dbService.changePwd(name, oldPwd, newPwd).then((val) => {
-            let token = tokenService.genToken(name, newPwd);
-            res.cookie("token", token, { maxAge: config.application().tokenExpires * 1000, httpOnly: false })
-            res.send(new ReqBody(1, val))
-        }).catch((err) => {
-            res.send(new ReqBody(0, null, err))
-        });
-    } else
-        res.send(new ReqBody(0, null, '密码不能为空'))
-})
-
 
 module.exports = router;
