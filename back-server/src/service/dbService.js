@@ -43,20 +43,34 @@ function addNewProduct(name) {
 }
 
 /**
- * 
+ * 查询类目列表
+ * @param {{productId?:number}} params
  * @returns {Promise<Category[]>}
  */
-function getCategoryList() {
+function getCategoryList(params) {
+    let { productId } = params;
     return new Promise((resolve, reject) => {
-        CategoryAPI.queryAll().then(res => {
-            let list = [];
-            res.forEach(ele => {
-                list.push(new Category(ele.id, ele.name, ele.order, ele.product_id, ele.parent_id))
-            });
-            resolve(list)
-        }).catch(err => {
-            reject(err)
-        })
+        if (!productId) {
+            CategoryAPI.queryAll().then(res => {
+                let list = [];
+                res.forEach(ele => {
+                    list.push(new Category(ele.id, ele.name, ele.order, ele.product_id, ele.parent_id))
+                });
+                resolve(list)
+            }).catch(err => {
+                reject(err)
+            })
+        } else {
+            CategoryAPI.queryByProduct(productId).then(res => {
+                let list = [];
+                res.forEach(ele => {
+                    list.push(new Category(ele.id, ele.name, ele.order, ele.product_id, ele.parent_id))
+                });
+                resolve(list)
+            }).catch(err => {
+                reject(err)
+            })
+        }
     })
 }
 

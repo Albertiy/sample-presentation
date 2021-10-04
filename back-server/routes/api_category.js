@@ -8,7 +8,15 @@ var ReqBody = require('../src/model/req_body')
  * 查询-类目列表
  */
 router.get('/categorylist', function (req, res, next) {
-    dbService.getCategoryList().then(val => {
+    let { productId } = req.query;
+    if (productId)
+        try {
+            productId = parseInt(productId);
+        } catch (e) {
+            console.log('无效的productId: ' + productId)
+        }
+
+    dbService.getCategoryList({ productId }).then(val => {
         res.send(new ReqBody(1, val))
     }).catch(err => {
         res.send(new ReqBody(0, null, err))

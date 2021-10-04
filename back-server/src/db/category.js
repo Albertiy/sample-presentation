@@ -14,7 +14,7 @@ const updateAllSql = 'update `category` as t inner join JSON_TABLE(?, "$[*]" COL
 
 /**
  * 无条件查询所有类目
- * @returns {Promise<[]>}
+ * @returns {Promise<Category[]>}
  */
 function queryAll() {
     return new Promise((resolve, reject) => {
@@ -75,7 +75,7 @@ function add(name, productId) {
 }
 
 /**
- * 更新全部
+ * 批量更新列表中全部类目
  * @param {Category[]} list 
  */
 function updateAll(list) {
