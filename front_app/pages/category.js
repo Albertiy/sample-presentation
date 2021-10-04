@@ -207,6 +207,7 @@ function CategoryPage() {
                 </section>
                 <section className={styles.center_container}>
                     <div className={styles.list_container}>
+                        {categoryList.length == 0 && <div>此商品的类目为空，可自行添加类目</div>}
                         {/* modifiers={[restrictToFirstScrollableAncestor]}  */}
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                             <SortableContext items={categoryList} strategy={verticalListSortingStrategy}>
