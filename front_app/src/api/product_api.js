@@ -141,12 +141,15 @@ export function addNewProduct(name) {
 /**
  * 新增类目
  * @param {string} name 类目名称
+ * @param {number} productId 商品Id
  * @returns 
  */
-export function addNewCategory(name) {
+export function addNewCategory(name, productId) {
     return new Promise((resolve, reject) => {
         if (name) {
-            axios.post(addNewCategoryUrl, { name: name }).then((result) => {
+            let data = { name };
+            if (productId) data.productId = productId;
+            axios.post(addNewCategoryUrl, data).then((result) => {
                 /** @type {ReqBody} */
                 let res = result.data;
                 if (res.state) resolve(res.data)

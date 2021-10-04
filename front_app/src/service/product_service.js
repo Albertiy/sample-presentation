@@ -35,10 +35,11 @@ export function getProductList() {
 
 /**
  * 获取分类列表，因数据量小，后台不处理，在此过滤。
- * @param {number} [product]
+ * @param {number} [productId]
+ * @param {boolean} [strict] 严格模式：不包含productId为null的类目；默认true
  * @returns  {Promise<Category[]>}
  */
-export function getCategoryList(product) {
+export function getCategoryList(productId, strict = true) {
     return new Promise((resolve, reject) => {
         let now = new Date().getTime();
         let res = [];
@@ -47,9 +48,10 @@ export function getCategoryList(product) {
             ProductAPI.getCategoryList().then(value => {
                 categoryListCache = value;
                 categoryListCacheUpdatedTime = now;
-                if (product !== null)
+                if (productId !== null)
                     res = value.filter((val) => {
-                        return (val.product_id == null || val.product_id == product);
+                        if (strict) return val.product_id == productId;
+                        else return (val.product_id == null || val.product_id == productId);
                     });
                 else
                     res = value;
@@ -58,9 +60,10 @@ export function getCategoryList(product) {
                 reject(error);
             })
         } else {
-            if (product !== null)
+            if (productId !== null)
                 res = categoryListCache.filter((val) => {
-                    return (val.product_id == null || val.product_id == product);
+                    if (strict) return val.product_id == productId;
+                    else return (val.product_id == null || val.product_id == productId);
                 });
             else
                 res = categoryListCache;
@@ -128,11 +131,12 @@ export function addNewProduct(name) {
 /**
  * 新增类目，返回新增的对象
  * @param {string} name 
+ * @param {number} productId
  * @returns {Promise<Category>}
  */
-export function addNewCategory(name) {
+export function addNewCategory(name, productId) {
     return new Promise((resolve, reject) => {
-        ProductAPI.addNewCategory(name).then(value => {
+        ProductAPI.addNewCategory(name, productId).then(value => {
             resolve(value);
         }).catch(error => {
             reject(error)
