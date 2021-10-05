@@ -12,6 +12,7 @@ import Category from "../src/model/category";
 import Product from "../src/model/product";
 import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
+import GlobalSettings from '../src/setting/global';
 import styles from "../styles/list.module.css";
 
 
@@ -279,8 +280,9 @@ export default function ListPage() {
     return (
         <div className={styles.container}>
             <Head>
-                <title>素材列表</title>
-                <link rel="icon" href="/img/picturex64.png" />
+                <title>{GlobalSettings.siteTitle('素材列表')}</title>
+                <link rel="icon" href="/img/sirwhiston.ico" />
+                {/* picturex64.png */}
             </Head>
             <header>
                 <div id='topbar' className={styles.pin_navbar_container} ref={scrollToTopAnchor}>

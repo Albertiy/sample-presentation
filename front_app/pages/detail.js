@@ -6,6 +6,7 @@ import * as ProductService from "../src/service/product_service";
 import ProductItem from '../src/model/product_item';
 import Icon from '@mdi/react';
 import { mdiEmoticonKissOutline, mdiChevronLeft } from '@mdi/js';
+import GlobalSettings from '../src/setting/global';
 
 /** @type{ProductItem} */
 const defaultItem = null;
@@ -60,8 +61,8 @@ export default function Detail() {
     return (
         <div className={styles.container}>
             <Head>
-                <title>素材详情[{id}]</title>
-                <link rel="icon" href="/img/picturex64.png" />
+                <title>{GlobalSettings.siteTitle(`素材详情[${id}]`)}</title>
+                <link rel="icon" href="/img/sirwhiston.ico" />
             </Head>
             <header>
                 <div className={styles.navbar_container}>

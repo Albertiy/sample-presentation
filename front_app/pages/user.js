@@ -16,6 +16,7 @@ import { View, Hide } from 'grommet-icons';
 import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
 
 import * as ProductService from '../src/service/product_service';
+import GlobalSettings from '../src/setting/global';
 
 
 function User() {
@@ -67,7 +68,7 @@ function User() {
 
     return (<Grommet className={styles.container} theme={theme}>
         <Head>
-            <title>用户管理</title>
+            <title>{GlobalSettings.siteTitle('用户管理')}</title>
             <link rel="icon" href="/img/picturex64u.png" />
         </Head>
         <header className={styles.header}>

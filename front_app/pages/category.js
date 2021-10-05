@@ -16,6 +16,7 @@ import SortableItem from '../src/component/sortable_item';
 import Category from "../src/model/category";
 import Product from "../src/model/product";
 import * as ProductService from '../src/service/product_service';
+import GlobalSettings from '../src/setting/global';
 import theme from '../src/setting/grommet-theme.json';
 import styles from '../styles/category.module.css';
 
@@ -188,7 +189,7 @@ function CategoryPage() {
     return (
         <Grommet className={styles.container} theme={theme}>
             <Head>
-                <title>素材管理 - 类目管理</title>
+                <title>{GlobalSettings.siteTitle('类目管理')}</title>
                 <link rel="icon" href="/img/picturex64m.png" />
             </Head>
             <header className={styles.header}>

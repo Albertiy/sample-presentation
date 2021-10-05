@@ -24,6 +24,7 @@ import ModelLoading from '../src/component/model_loading'
 import Compressor from 'compressorjs'
 
 import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
+import GlobalSettings from '../src/setting/global'
 
 
 /** @type{Product[]} */
@@ -235,7 +236,7 @@ function Upload(props) {
     return (
         <Grommet className={styles.container} theme={theme}>
             <Head>
-                <title>添加素材</title>
+                <title>{GlobalSettings.siteTitle('添加素材')}</title>
                 <link rel="icon" href="/img/picturex64u.png" />
             </Head>
             <header className={styles.header_panel}>

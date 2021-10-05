@@ -26,6 +26,7 @@ import ModelLoading from '../src/component/model_loading'
 import Compressor from 'compressorjs'
 
 import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
+import GlobalSettings from '../src/setting/global'
 
 
 /** 路由参数刷新计数，第2次可获取query值 */
@@ -308,7 +309,7 @@ function Edit() {
     return (
         <Grommet className={styles.container} theme={theme}>
             <Head>
-                <title>修改素材</title>
+                <title>{GlobalSettings.siteTitle('修改素材')}</title>
                 <link rel="icon" href="/img/picturex64e.png" />
             </Head>
             <header className={styles.header_panel}>

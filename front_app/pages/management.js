@@ -23,6 +23,7 @@ import ModelLoading from '../src/component/model_loading'
 import InView from "react-intersection-observer";
 
 import authenticatedRoute from '../src/component/AuthenticatedRoute/index'
+import GlobalSettings from '../src/setting/global';
 
 /** @type{Product[]} */
 const defaultProductList = [];
@@ -298,7 +299,7 @@ function Management() {
     return (
         <Grommet className={styles.container} theme={theme} >
             <Head>
-                <title>素材管理</title>
+                <title>{GlobalSettings.siteTitle('素材管理')}</title>
                 <link rel="icon" href="/img/picturex64m.png" />
             </Head>
             <header className={styles.header}>

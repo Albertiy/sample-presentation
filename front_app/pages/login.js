@@ -16,6 +16,7 @@ import { View, Hide } from 'grommet-icons';
 import { useRouter } from 'next/router';
 
 import * as ProductService from '../src/service/product_service';
+import GlobalSettings from '../src/setting/global';
 // import authenticatedRoute from '../src/component/AuthenticatedRoute';
 
 function Login() {
@@ -75,7 +76,7 @@ function Login() {
 
     return (<Grommet className={styles.container} theme={theme}>
         <Head>
-            <title>登录</title>
+            <title>{GlobalSettings.siteTitle('登录')}</title>
             <link rel="icon" href="/img/picturex64m.png" />
         </Head>
         <header className={styles.header}>
