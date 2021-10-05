@@ -29,7 +29,7 @@ const defaultTarget = typeof window !== 'undefined' ? window : null;
  */
 const useScrollTrigger = (options = {}) => {
 
-    console.log('options: %o', options)
+    // console.log('options: %o', options)
 
     // void 0 返回 undefined，防止 undefined 被重写
     let target = options.target === void 0 || options.target === null ? defaultTarget : options.target;

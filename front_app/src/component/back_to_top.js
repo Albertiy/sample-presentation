@@ -8,7 +8,7 @@ export default function BackToTop(props) {
 
     const { children, anchor } = props;
 
-    console.log('anchor: %o', anchor)
+    // console.log('anchor: %o', anchor)
 
     const trigger = useScrollTrigger({ target: anchor });
 
