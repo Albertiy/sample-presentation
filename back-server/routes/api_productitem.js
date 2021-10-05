@@ -104,7 +104,7 @@ router.post('/productitem', function (req, res, next) {
                 console.log(fields);
                 console.log('上传文件数：%o', Object.keys(files).length);
                 let { name, product, categories, linkUrl } = fields;
-                if (!name || !product || !linkUrl) {
+                if (!name || !product) { // || !linkUrl
                     res.send(new ReqBody(0, null, '缺少必要的参数'))
                 } else {
                     try {
@@ -214,7 +214,7 @@ router.put('/productitem', function (req, res, next) {
                 console.log(fields);
                 console.log('上传文件数：%o', Object.keys(files).length);
                 let { id, name, product, categories, linkUrl } = fields;
-                if (!id || !name || !product || !linkUrl) {
+                if (!id || !name || !product) { //  || !linkUrl
                     res.send(new ReqBody(0, null, '缺少必要的参数'))
                 } else {
                     try {
