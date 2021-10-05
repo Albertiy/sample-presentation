@@ -1,32 +1,21 @@
-import styles from '../styles/edit.module.css'
-
-import Head from 'next/head'
-
-import Product from '../src/model/product'
-import Category from '../src/model/category'
-import ProductItem from '../src/model/product_item'
-
-import { useState, useEffect, useRef } from 'react'
-
-import * as ProductService from '../src/service/product_service'
-
-import { Button, TextInput, FileInput, Select, Image, Box, Grommet } from 'grommet'
-
-import theme from '../src/setting/grommet-theme.json'
-
-import * as Tools from '../src/tool/tools'
-
+import { mdiImageSizeSelectActual } from '@mdi/js'
 import Icon from '@mdi/react'
-import { mdiImageSizeSelectActual } from '@mdi/js';
-
-import { useSnackbar } from 'notistack'
-import { useRouter } from 'next/router'
-
-import ModelLoading from '../src/component/model_loading'
 import Compressor from 'compressorjs'
-
-import authenticatedRoute from '../src/component/AuthenticatedRoute/index';
+import { Box, Button, FileInput, Grommet, Image, Select, TextInput } from 'grommet'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useSnackbar } from 'notistack'
+import { useEffect, useRef, useState } from 'react'
+import authenticatedRoute from '../src/component/AuthenticatedRoute/index'
+import ModelLoading from '../src/component/model_loading'
+import Category from '../src/model/category'
+import Product from '../src/model/product'
+import ProductItem from '../src/model/product_item'
+import * as ProductService from '../src/service/product_service'
 import GlobalSettings from '../src/setting/global'
+import theme from '../src/setting/grommet-theme.json'
+import * as Tools from '../src/tool/tools'
+import styles from '../styles/edit.module.css'
 
 
 /** 路由参数刷新计数，第2次可获取query值 */
@@ -37,6 +26,8 @@ const defaultProductList = [];
 /** @type{Category[]} 类目列表 */
 const defaultCategoryList = [];
 
+/** @type{number} */
+const defaultId = null;
 const defaultItemName = '';
 const defaultItemLink = '';
 /** @type{number} 占位，防止 Select 报错 */
@@ -49,15 +40,13 @@ const defaultItemMainPic = null;
 const defaultThumbMainPic = null;
 const defaultPreviewSrc = '';
 const defaultPreviewOldSrc = '';
-/** @type{number} */
-const defaultId = null;
+
 const defaultErrorInfo = null;
 const defaultShowLoading = false;
 
-const thumb = '?thumb=1';
+const THUMB = '?thumb=1';
 
-function Edit() {
-
+function EditPage() {
     const router = useRouter();
     const [routerTime, setRouterTime] = useState(defaultRouterTime);  // 第一次的路由参数总是为{}，被舍弃
 
@@ -84,6 +73,92 @@ function Edit() {
 
     // const fileInputEl = useRef(null);   // 绑定FileInput元素
 
+    /** 初始化列表 */
+    useEffect(() => {
+        console.log('[商品列表] 请求:')
+        ProductService.getProductList().then(value => {
+            console.log('[商品列表] 结果: %o', value)
+            setProductList(value)
+            // if (value.length > 0)
+            //     setItemProductId(v => v != defaultItemProductId ? v : value[0].id)
+        }).catch(error => {
+            console.log(error)
+            enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
+        })
+    }, [])
+
+    /** 路由初始化 */
+    useEffect(() => {
+        setRouterTime(value => {
+            console.log('路由刷新第 %d 次：%o', value + 1, router.query)
+            if (value == 1) {
+                init(router.query);
+            }
+            value++;
+            return value;
+        })
+    }, [router.query])
+
+    /** 根据id加载内容 */
+    useEffect(() => {
+        if (id != defaultId) {
+            console.log('[商品项] id: %o 请求: ', id)
+            ProductService.getProductItemById(id).then(val => {
+                console.log('[商品项] id: %o 结果: %o', id, val)
+                setItemName(val.name)   // 字符串
+                setItemLink(val.linkUrl)    // 字符串
+                setItemProductId(val.productId)   // number
+                setItemCategoryList(val.categoryList)   // number数组
+                setPrivewOldSrc(val.mainPic + THUMB)  // 是一串远程链接字符串，添加缩略图标记
+            }).catch(err => {
+                console.log(err)
+                enqueueSnackbar(err)
+            });
+        }
+    }, [id])
+
+    /** 加载类目列表 */
+    useEffect(() => {
+        if (itemProductId != defaultItemProductId) {
+            console.log('[类目列表] 请求: itemProductId: %o', itemProductId)
+            ProductService.getCategoryList(itemProductId).then(value => {
+                console.log('[类目列表] 结果: %o', value)
+                setCategoryList(value)
+            }).catch(error => {
+                console.log(error)
+                enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
+            })
+        }
+    }, [itemProductId])
+
+    // categoryList 改变时，检查已选择类目是否有不符合的。由于延迟可能导致将 itemCategoryList清空
+    useEffect(() => {
+        if (itemCategoryList && categoryList != defaultCategoryList && categoryList.length > 0) {
+            let notFound = [];
+            itemCategoryList.map((val, idx) => {
+                if (categoryList.findIndex(item => val == item.id) == -1)
+                    notFound.push(idx);
+            })
+            // 倒转数组，从后往前移除元素
+            notFound.reverse().forEach(idx => {
+                itemCategoryList.splice(idx, 1);
+            })
+        }
+    }, [categoryList])
+
+    /** 选中的图片变化 */
+    useEffect(() => {
+        if (itemMainPic != defaultItemMainPic) {
+            let reader = new FileReader();
+            reader.readAsDataURL(itemMainPic)
+            reader.onload = function (e) {
+                setPreviewSrc(this.result)
+            }
+        } else {
+            setPreviewSrc(defaultPreviewSrc)
+        }
+    }, [itemMainPic])
+
     /**
      * 从路由参数中获取id
      * @param {*} query 
@@ -103,86 +178,6 @@ function Edit() {
             setErrorInfo('无效的素材id')
         }
     }
-
-    /** 路由初始化 */
-    useEffect(() => {
-        setRouterTime(value => {
-            console.log('路由刷新第 %d 次：%o', value + 1, router.query)
-            if (value == 1) {
-                init(router.query);
-            }
-            value++;
-            return value;
-        })
-    }, [router.query])
-
-    /** 根据id加载内容 */
-    useEffect(() => {
-        if (id != null)
-            ProductService.getProductItemById(id).then(val => {
-                console.log('根据id获取到素材内容：%o', val)
-                setItemName(val.name)   // 字符串
-                setItemLink(val.linkUrl)    // 字符串
-                setItemProductId(val.productId)   // number
-                setItemCategoryList(val.categoryList)   // number数组
-                setPrivewOldSrc(val.mainPic + thumb)  // 是一串远程链接字符串，添加缩略图标记
-            }).catch(err => {
-                console.log(err)
-                enqueueSnackbar(err)
-            });
-    }, [id])
-
-    /** 初始化列表 */
-    useEffect(() => {
-        ProductService.getProductList().then(value => {
-            setProductList(value)
-            if (value.length > 0)
-                setItemProductId(v => v != defaultItemProductId ? v : value[0])
-        }).catch(error => {
-            console.log(error)
-            enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
-        })
-    }, [])
-
-    /** 加载类目列表 */
-    useEffect(() => {
-        ProductService.getCategoryList(itemProductId).then(value => {
-            setCategoryList(value)
-        }).catch(error => {
-            console.log(error)
-            enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
-        })
-    }, [itemProductId])
-
-
-    // categoryList 改变时，检查已选择类目是否有不符合的。
-    useEffect(() => {
-        if (itemCategoryList && categoryList) {
-            let notFound = [];
-            itemCategoryList.map((val, idx) => {
-                if (categoryList.findIndex(item => val == item.id) == -1)
-                    notFound.push(idx);
-            })
-            // 倒转数组，从后往前移除元素
-            notFound.reverse().forEach(idx => {
-                itemCategoryList.splice(idx, 1);
-            })
-        }
-
-    }, [categoryList])
-
-    /** 选中的图片变化 */
-    useEffect(() => {
-        if (itemMainPic != defaultItemMainPic) {
-            let reader = new FileReader();
-            reader.readAsDataURL(itemMainPic)
-            reader.onload = function (e) {
-                setPreviewSrc(this.result)
-            }
-        } else {
-            setPreviewSrc(defaultPreviewSrc)
-        }
-    }, [itemMainPic])
 
     /**
      * 文件选择改变
@@ -224,7 +219,7 @@ function Edit() {
         }
     }
 
-    /** 点击添加产品 */
+    /** 点击添加商品 */
     function addProductClicked(e) {
         if (newProduct && newProduct.trim().length > 0) {
             setShowLoading(true)
@@ -286,7 +281,7 @@ function Edit() {
             setShowLoading(true)
             ProductService.editProductItem(id, itemName, itemProductId, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
                 if (res.mainPic) {  // 文件更新
-                    setPrivewOldSrc(res.mainPic + thumb)    // 更新state
+                    setPrivewOldSrc(res.mainPic + THUMB)    // 更新state
                     setItemMainPic(defaultItemMainPic)      // 更新主图
                     setThumbMainPic(defaultThumbMainPic)    // 移除缩略图
                     // console.log('%o', fileInputEl.current);
@@ -406,4 +401,4 @@ function Edit() {
 }
 
 
-export default authenticatedRoute(Edit, { pathAfterFailure: '/login' });
+export default authenticatedRoute(EditPage, { pathAfterFailure: '/login' });
