@@ -247,9 +247,14 @@ function Edit() {
 
     /** 点击添加类目 */
     function addCategoryClicked(e) {
-        if (newCategory && newCategory.trim().length > 0) {
+        if (itemProductId == defaultItemProductId) {
+            enqueueSnackbar('需要选择产品大类', { autoHideDuration: 2000, variant: 'warning' })
+        }
+        else if (!(newCategory && newCategory.trim().length > 0)) {
+            enqueueSnackbar('请填写类别名称', { autoHideDuration: 2000, variant: 'warning' })
+        } else {
             setShowLoading(true)
-            ProductService.addNewCategory(newCategory.trim()).then(res => {
+            ProductService.addNewCategory(newCategory.trim(), itemProductId).then(res => {
                 console.log(res)
                 setCategoryList(old => {
                     old.push(res);
@@ -261,9 +266,7 @@ function Edit() {
             }).finally(() => {
                 setShowLoading(false)
             })
-
-        } else
-            enqueueSnackbar('请填写内容', { autoHideDuration: 2000, variant: 'warning' })
+        }
     }
 
     /** 点击保存更改按钮 */
@@ -322,7 +325,7 @@ function Edit() {
                             <Button primary label="添加" onClick={addProductClicked} />
                         </div>
                         <div className={[styles.left_panel, styles.category_panel].join(" ")}>
-                            <label>新增类别：</label>
+                            <label>在当前选中大类下新增类别：</label>
                             <TextInput placeholder='类别名称' maxLength='50' value={newCategory} onChange={e => { setNewCategory(e.target.value) }} />
                             <Button primary label="添加" onClick={addCategoryClicked} />
                         </div>
