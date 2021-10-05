@@ -193,8 +193,21 @@ function Upload(props) {
             enqueueSnackbar('请填写内容', { autoHideDuration: 2000, variant: 'warning' })
     }
 
+    /**
+     * 添加新商品项
+     * @param {*} e 
+     */
     function addItemClicked(e) {
-        if (itemName && itemLink && itemProduct && itemMainPic) {
+        if (!itemName) {
+            enqueueSnackbar('名称不能为空', { autoHideDuration: 2000, variant: 'warning' })
+            // } else if (!itemLink) {
+        } else if (!itemProductId) {
+            enqueueSnackbar('产品大类不能为空', { autoHideDuration: 2000, variant: 'warning' })
+        } else if (!itemCategoryList.length) {
+            enqueueSnackbar('请至少选择一个类别', { autoHideDuration: 2000, variant: 'warning' })
+        } else if (!itemMainPic) {
+            enqueueSnackbar('图片不能为空', { autoHideDuration: 2000, variant: 'warning' })
+        } else {
             setShowLoading(true)
             let productId = itemProduct.id;
             let categories = [];
@@ -209,10 +222,7 @@ function Upload(props) {
             }).finally(() => {
                 setShowLoading(false)
             })
-        } else {
-            enqueueSnackbar('请补全信息', { autoHideDuration: 2000, variant: 'warning' })
         }
-
     }
 
     return (

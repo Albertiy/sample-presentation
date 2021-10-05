@@ -268,7 +268,17 @@ function Edit() {
 
     /** 点击保存更改按钮 */
     function editItemClicked(e) {
-        if (id && itemName && itemLink && itemProductId) {  // 图片若未选择新文件，则不提交
+        if (!id) {
+            enqueueSnackbar('无效的商品项id，请回到管理页重新点击编辑按钮', { autoHideDuration: 2000, variant: 'warning' })
+        } else if (!itemName) {
+            enqueueSnackbar('名称不能为空', { autoHideDuration: 2000, variant: 'warning' })
+            // } else if (!itemLink) {
+
+        } else if (!itemProductId) {
+            enqueueSnackbar('产品大类不能为空', { autoHideDuration: 2000, variant: 'warning' })
+        } else if (!itemCategoryList.length) {
+            enqueueSnackbar('请至少选择一个类别', { autoHideDuration: 2000, variant: 'warning' })
+        } else {  // 图片若未选择新文件，则不提交
             setShowLoading(true)
             ProductService.editProductItem(id, itemName, itemProductId, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
                 if (res.mainPic) {  // 文件更新
@@ -289,10 +299,7 @@ function Edit() {
             }).finally(() => {
                 setShowLoading(false)
             })
-        } else {
-            enqueueSnackbar('请补全信息', { autoHideDuration: 2000, variant: 'warning' })
         }
-
     }
 
     return (
