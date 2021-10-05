@@ -1,22 +1,19 @@
+import { mdiEmoticonKissOutline, mdiFormatVerticalAlignTop, mdiLinkBoxVariantOutline, mdiLinkVariant } from '@mdi/js';
+import Icon from "@mdi/react";
 import Head from "next/head";
-
-import styles from "../styles/list.module.css"
-
-import { useState, useEffect, useRef } from "react";
-
-import Product from "../src/model/product";
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from "react";
+import InView from "react-intersection-observer";
+import BackToTop from "../src/component/back_to_top";
+import SearchInput from "../src/component/input_search";
+import ModelLoading from "../src/component/model_loading";
+import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
 import Category from "../src/model/category";
+import Product from "../src/model/product";
 import ProductItem from "../src/model/product_item";
 import * as ProductService from "../src/service/product_service";
-import SearchInput from "../src/component/input_search";
-import HorizontalScrollNav from "../src/component/nav_horizontal_scroll";
-import Icon from "@mdi/react";
-import { mdiEmoticonKissOutline, mdiLinkVariant, mdiFormatVerticalAlignTop, mdiLinkBoxVariantOutline } from '@mdi/js';
-import InView from "react-intersection-observer";
-import ModelLoading from "../src/component/model_loading";
-import BackToTop from "../src/component/back_to_top";
+import styles from "../styles/list.module.css";
 
-import { useRouter } from 'next/router';
 
 /** @type{Product[]} */
 const defaultProductList = [];
@@ -27,12 +24,11 @@ const defaultProductId = null;
 const defaultCategory = null;   // -1
 /** @type{ProductItem[]} */
 const defaultProductItemList = [];
-const defaultSearchString = '';   // 默认空串
+const defaultSearchString = null;   // 默认null而不是空串
 
 const defaultImgSrc = '/img/placeholder.jpg';   // 默认图
 const defaultShowLoading = false;   // 显示loading
 const defaultRouterTime = 0;
-
 
 
 export default function List() {
@@ -50,34 +46,58 @@ export default function List() {
     const routerProduct = useRef(null);
     const routerCategory = useRef(null);
     const routerSearchString = useRef(null);
+    const routerOnly = useRef(null);
 
     // 滚动组件的锚点元素
     const scrollToTopAnchor = useRef(null);
 
     /**
-     * 初始化获取产品列表
+     * 获取产品列表
      */
-    function init() {
-        console.log('[init]')
-        console.log('初始化产品列表：')
+    function loadProductList() {
+        console.log('[商品列表] 加载: ')
         ProductService.getProductList().then(res => {
-            console.log('初始化产品列表：结果：%o', res)
-            setProductList(res);
+            console.log('[商品列表]: 结果：%o', res)
             if (res.length > 0) {
+                let p = null;
+                if (routerProduct.current) {
+                    console.log('routerProduct: %d', routerProduct.current)
+                    p = res.find((val, idx, list) => val.id == routerProduct.current);
+                    console.log('p: %o', p);
+                }
+                console.log('routerOnly: %o', routerOnly.current)
+
+                // 当有only参数，product列表只保留选中项或者第一项
+                if (routerOnly.current) {
+                    console.log('商品列表只保留一个：')
+                    if (p) setProductList([p]);
+                    else setProductList(res.slice(0, 1))
+                } else {
+                    setProductList(res);
+                }
                 console.log(routerProduct)
-                if (routerProduct.current != null)
+                if (routerProduct.current != null) {    // 路由参数
                     setSelectedProductId(value => {
-                        console.log(routerProduct.current)
+                        console.log('routerProduct: ' + routerProduct.current)
                         let p = routerProduct.current;
                         routerProduct.current = null;
                         return p;
                     })
-                else if (selectedProductId == defaultProductId)    // 只有当选中项未初始化才让列表刷新引起选中项刷新
+                } else if (selectedProductId == defaultProductId) { // 若当选中项值初始化，选中第一个商品
                     setSelectedProductId(value => {
                         return res[0].id;
-                    });
+                    })
+                }
             }
         }).catch(err => { console.log(err) });
+    }
+
+    /**
+     * 初始化
+     */
+    function init() {
+        console.log('[init]')
+        loadProductList()
     }
 
     /**
@@ -102,10 +122,11 @@ export default function List() {
      * 从路由获取查询参数。使用 ref 保存值
      */
     function setRouterParams() {
-        let { product, category, searchString: search } = router.query;
-        console.log('router product: %o', product)
-        console.log('router category: %o', category)
-        console.log('router searchString: %o', search)
+        let { product, category, searchString: search, only } = router.query;
+        // console.log('router product: %o', product)
+        // console.log('router category: %o', category)
+        // console.log('router searchString: %o', search)
+        // console.log('router only: ', only)
         if (product)
             try {
                 product = parseInt(product);
@@ -120,9 +141,13 @@ export default function List() {
             search = search.trim();
             routerSearchString.current = search;
         }
+        if (only !== undefined) {
+            routerOnly.current = true;
+        }
         console.log('router product: %o', routerProduct.current)
         console.log('router category: %o', routerCategory.current)
         console.log('router searchString: %o', routerSearchString.current)
+        console.log('router only: %o', routerOnly.current)
     }
 
     // 初始化，此时路由参数仍然为空，finally时也为空
@@ -132,7 +157,7 @@ export default function List() {
 
     useEffect(() => {
         setRouterTime(value => {
-            console.log('路由刷新第 %d 次：%o', value + 1, router.query)
+            console.log('[路由刷新] 第 %d 次：%o', value + 1, router.query)
             if (value == 1) {
                 setRouterParams();  // 获取路由参数
                 init(); // 从获取Product列表开始
@@ -144,7 +169,7 @@ export default function List() {
 
     // 选中的产品变化。现去除默认选项。
     useEffect(() => {
-        if (selectedProductId) {  // product为必要参数
+        if (selectedProductId != defaultProductId) {  // product为必要参数
             if (!routerProduct.current) {
                 let query = router.query;
                 query.product = selectedProductId;
@@ -189,22 +214,27 @@ export default function List() {
 
     // 选中的分类变化时。这里有重复查询问题
     useEffect(() => {
-        if (!routerCategory.current) {
+        if (selectedCategory != defaultCategory) {
+            // if (!routerCategory.current) {
             let query = router.query;
+            console.log('[selectedCategory changed!]: %o', query);
             query.category = selectedCategory;
             router.replace({ pathname: '/list', query: query }, null, { shallow: true });
+            // }
+            loadProductItems();
         }
-        loadProductItems();
     }, [selectedCategory])
 
     //查询语句变化
     useEffect(() => {
-        if (!routerSearchString.current) {
-            let query = router.query;
-            query.searchString = searchString;
-            router.replace({ pathname: '/list', query: query }, null, { shallow: true });
+        if (searchString != defaultSearchString) {
+            if (!routerSearchString.current) {
+                let query = router.query;
+                query.searchString = searchString;
+                router.replace({ pathname: '/list', query: query }, null, { shallow: true });
+            }
+            loadProductItems();
         }
-        loadProductItems();
     }, [searchString])
 
     /**
