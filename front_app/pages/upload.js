@@ -76,7 +76,7 @@ function Upload(props) {
     }, [])
 
     useEffect(() => {
-        ProductService.getCategoryList(itemProduct).then(value => {
+        ProductService.getCategoryList(itemProduct.id).then(value => {
             setCategoryList(value)
         }).catch(error => {
             console.log(error)

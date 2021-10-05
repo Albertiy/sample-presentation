@@ -88,7 +88,7 @@ function Management() {
     // 选中的产品变化
     useEffect(() => {
         // 1.加载分类列表
-        ProductService.getCategoryList(selectedProduct).then(res => {
+        ProductService.getCategoryList(selectedProduct.id).then(res => {
             if (res && ((res.length > 0 && res[0].id != defaultCategory.id) || res.length == 0)) {
                 res.unshift(defaultCategory)   // 添加一个全部item
             }

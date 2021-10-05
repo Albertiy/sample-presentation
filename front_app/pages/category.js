@@ -55,6 +55,10 @@ function CategoryPage() {
         }).catch(err => { console.log(err) });
     }
 
+    /**
+     * 
+     * @param {number} productId 
+     */
     function getCategoryListByProductId(productId) {
         ProductService.getCategoryList(productId).then(res => {
             console.log('类目数量: ' + res.length)

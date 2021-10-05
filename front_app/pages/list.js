@@ -22,8 +22,8 @@ import { useRouter } from 'next/router';
 const defaultProductList = [];
 /** @type{Category[]} */
 const defaultCategoryList = [];
-/** @type{Product} */
-const defaultProduct = null;
+/** @type{number} 商品id而不是商品对象 */
+const defaultProductId = null;
 const defaultCategory = null;   // -1
 /** @type{ProductItem[]} */
 const defaultProductItemList = [];
@@ -40,7 +40,7 @@ export default function List() {
     const [routerTime, setRouterTime] = useState(defaultRouterTime);  // 第一次的路由参数总是为{}，被舍弃
     const [productList, setProductList] = useState(defaultProductList);
     const [categoryList, setCategoryList] = useState(defaultCategoryList);
-    const [selectedProduct, setSelectedProduct] = useState(defaultProduct);
+    const [selectedProductId, setSelectedProductId] = useState(defaultProductId);
     const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
     const [productItemList, setProductItemList] = useState(defaultProductItemList);
     const [searchString, setSearchString] = useState(defaultSearchString);
@@ -66,14 +66,14 @@ export default function List() {
             if (res.length > 0) {
                 console.log(routerProduct)
                 if (routerProduct.current != null)
-                    setSelectedProduct(value => {
+                    setSelectedProductId(value => {
                         console.log(routerProduct.current)
                         let p = routerProduct.current;
                         routerProduct.current = null;
                         return p;
                     })
-                else if (selectedProduct == defaultProduct)    // 只有当选中项未初始化才让列表刷新引起选中项刷新
-                    setSelectedProduct(value => {
+                else if (selectedProductId == defaultProductId)    // 只有当选中项未初始化才让列表刷新引起选中项刷新
+                    setSelectedProductId(value => {
                         return res[0].id;
                     });
             }
@@ -84,7 +84,7 @@ export default function List() {
      * 加载商品列表
      */
     function loadProductItems() {
-        let p = selectedProduct;
+        let p = selectedProductId;
         let c = selectedCategory == defaultCategory ? null : selectedCategory;
         let s = searchString && searchString.trim() != '' ? searchString.trim() : null;
         if (p) {    // product 为必要参数
@@ -144,20 +144,20 @@ export default function List() {
 
     // 选中的产品变化。现去除默认选项。
     useEffect(() => {
-        if (selectedProduct) {  // product为必要参数
+        if (selectedProductId) {  // product为必要参数
             if (!routerProduct.current) {
                 let query = router.query;
-                query.product = selectedProduct;
+                query.product = selectedProductId;
                 // 参数写入URL
                 router.replace({ pathname: '/list', query: query }, null, { shallow: true });
             }
-            console.log('加载分类列表：%o', selectedProduct)
+            console.log('加载分类列表：%o', selectedProductId)
             // 1.加载分类列表
-            ProductService.getCategoryList(selectedProduct).then(res => {
+            ProductService.getCategoryList(selectedProductId).then(res => {
                 // if (res && ((res.length > 0 && res[0].id != defaultCategory) || res.length == 0)) {
                 //     res.unshift(new Category(defaultCategory, '全部'))   // 添加一个全部item
                 // }
-                console.log('加载分类列表：%o 结果: %o', selectedProduct, res)
+                console.log('加载分类列表：%o 结果: %o', selectedProductId, res)
                 setCategoryList(res);
                 // 路由参数尚未使用，使用路由参数
                 if (routerCategory.current != null && res.findIndex(item => item.id == routerCategory.current) != -1) {
@@ -185,7 +185,7 @@ export default function List() {
             // 2.加载商品目录。这里浪费了性能，因为若selectedCategory改变，还会触发一次请求。但同步太难了，只能先这样。
             loadProductItems();
         }
-    }, [selectedProduct])
+    }, [selectedProductId])
 
     // 选中的分类变化时。这里有重复查询问题
     useEffect(() => {
@@ -250,9 +250,9 @@ export default function List() {
                 <div>
                     {/* product 列表 */}
                     <div className={styles.nav_list}>
-                        <HorizontalScrollNav selectedClassName={styles.product_selected} items={productList} defaultValue={selectedProduct} valueProp={'id'} displayProp={'name'} onChange={(value, item) => {
+                        <HorizontalScrollNav selectedClassName={styles.product_selected} items={productList} defaultValue={selectedProductId} valueProp={'id'} displayProp={'name'} onChange={(value, item) => {
                             console.log('Product Navbar onChange: ' + value);
-                            setSelectedProduct(value);
+                            setSelectedProductId(value);
                         }} itemStyle={{ fontSize: '0.8rem' }} />
                     </div>
                     {/* category 列表 */}

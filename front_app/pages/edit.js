@@ -39,7 +39,7 @@ const defaultCategoryList = [];
 const defaultItemName = '';
 const defaultItemLink = '';
 /** @type{number} 占位，防止 Select 报错 */
-const defaultItemProduct = -1;
+const defaultItemProductId = -1;
 /** @type{number[]} */
 const defaultItemCategoryList = [];
 /** @type{File} */
@@ -71,7 +71,7 @@ function Edit() {
 
     const [itemName, setItemName] = useState(defaultItemName)
     const [itemLink, setItemLink] = useState(defaultItemLink)
-    const [itemProduct, setItemProduct] = useState(defaultItemProduct)
+    const [itemProductId, setItemProductId] = useState(defaultItemProductId)
     const [itemCategoryList, setItemCategoryList] = useState(defaultItemCategoryList)
     const [itemMainPic, setItemMainPic] = useState(defaultItemMainPic)
     const [thumbMainPic, setThumbMainPic] = useState(defaultThumbMainPic)   // 缩略图
@@ -122,7 +122,7 @@ function Edit() {
                 console.log('根据id获取到素材内容：%o', val)
                 setItemName(val.name)   // 字符串
                 setItemLink(val.linkUrl)    // 字符串
-                setItemProduct(val.productId)   // number
+                setItemProductId(val.productId)   // number
                 setItemCategoryList(val.categoryList)   // number数组
                 setPrivewOldSrc(val.mainPic + thumb)  // 是一串远程链接字符串，添加缩略图标记
             }).catch(err => {
@@ -136,7 +136,7 @@ function Edit() {
         ProductService.getProductList().then(value => {
             setProductList(value)
             if (value.length > 0)
-                setItemProduct(v => v != defaultItemProduct ? v : value[0])
+                setItemProductId(v => v != defaultItemProductId ? v : value[0])
         }).catch(error => {
             console.log(error)
             enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
@@ -145,13 +145,13 @@ function Edit() {
 
     /** 加载类目列表 */
     useEffect(() => {
-        ProductService.getCategoryList(itemProduct).then(value => {
+        ProductService.getCategoryList(itemProductId).then(value => {
             setCategoryList(value)
         }).catch(error => {
             console.log(error)
             enqueueSnackbar('' + error, { variant: 'error', autoHideDuration: 2000 })
         })
-    }, [itemProduct])
+    }, [itemProductId])
 
 
     // categoryList 改变时，检查已选择类目是否有不符合的。
@@ -268,9 +268,9 @@ function Edit() {
 
     /** 点击保存更改按钮 */
     function editItemClicked(e) {
-        if (id && itemName && itemLink && itemProduct) {  // 图片若未选择新文件，则不提交
+        if (id && itemName && itemLink && itemProductId) {  // 图片若未选择新文件，则不提交
             setShowLoading(true)
-            ProductService.editProductItem(id, itemName, itemProduct, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
+            ProductService.editProductItem(id, itemName, itemProductId, itemCategoryList, itemLink, itemMainPic, thumbMainPic).then(res => {
                 if (res.mainPic) {  // 文件更新
                     setPrivewOldSrc(res.mainPic + thumb)    // 更新state
                     setItemMainPic(defaultItemMainPic)      // 更新主图
@@ -335,11 +335,11 @@ function Edit() {
                                 <label className={styles.label}>产品大类：</label>
                                 {/* 需要注意 id 不能为空。这里的value是值而不是对象，所以需要 valueKey={'id'} ，还需要 valueLabel 来手动显示value的label 还是不用吧*/}
                                 <Select options={productList} labelKey={'name'} valueKey={'id'}
-                                    value={productList.find(pl => pl.id == itemProduct)}
+                                    value={productList.find(pl => pl.id == itemProductId)}
                                     onChange={
                                         ({ option, value, selected }) => {
                                             console.log('value: %o', value)
-                                            setItemProduct(value.id)
+                                            setItemProductId(value.id)
                                         }}
                                 ></Select>
                             </div>
