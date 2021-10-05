@@ -2,7 +2,7 @@
 const express = require('express')
 const next = require('next')
 const { createProxyMiddleware } = require('http-proxy-middleware')
-const config = require('./application.config.json')
+const config = require('./config/application.config.json')
 
 const devProxy = {
     '/api': {

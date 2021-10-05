@@ -1,11 +1,9 @@
+import axios from 'axios';
 import Category from "../model/category";
 import Product from "../model/product";
 import ProductItem from "../model/product_item";
 import ReqBody from "../model/req_body";
 
-import axios from 'axios'
-
-import config from '../../application.config.json'
 
 const server = '';
 // const server = config.server ? config.server + '' : '';

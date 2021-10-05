@@ -1,4 +1,4 @@
-let config = require('./application.config.json')
+let config = require('./config/application.config.json')
 let server = config.server ? config.server : '';
 // next.config.js
 
