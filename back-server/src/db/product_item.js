@@ -46,7 +46,7 @@ const addSql = "insert into product_item(`name`, product_id, category_list, main
  * @param {string} linkUrl 
  * @returns 
  */
-function add(name, product, categories, picUrl, linkUrl) {
+function add(name, product, categories, picUrl, linkUrl = '') {
     let categoryList = categories ? JSON.stringify(categories) : '[]';  // stringify 自动添加引号
     return new Promise((resolve, reject) => {
         ConnPool.query(addSql, [name, product, categoryList, picUrl, linkUrl], (err, res, fields) => {
@@ -99,7 +99,7 @@ const updateSql = 'update `product_item` t set t.`name`=? , t.`link_url`=? , t.`
  * @param {string} [mainPic] 
  * @returns 
  */
-function update(id, name, linkUrl, product, categories, mainPic) {
+function update(id, name, linkUrl = '', product, categories, mainPic) {
     let where = ' where id = ?';    // 条件拼接在最后
     let categoryList = categories ? JSON.stringify(categories) : '[]';  // 转换为JSON
     let params = [name, linkUrl, product, categoryList];

@@ -270,11 +270,13 @@ export default function ListPage() {
      */
     function linkBtnClicked(item) {
         console.log('linkBtnClicked: %o', item)
-        // 检查是否包含协议头，若无可能被前端服务器识别为内部地址。
-        if (!item.linkUrl.startsWith('http://') && !item.linkUrl.startsWith('https://'))
-            window.open('http://' + item.linkUrl, '_blank')
-        else
-            window.open(item.linkUrl, '_blank')
+        if (item.linkUrl) {
+            // 检查是否包含协议头，若无可能被前端服务器识别为内部地址。
+            if (!item.linkUrl.startsWith('http://') && !item.linkUrl.startsWith('https://'))
+                window.open('http://' + item.linkUrl, '_blank')
+            else
+                window.open(item.linkUrl, '_blank')
+        }
     }
 
     return (
@@ -319,7 +321,7 @@ export default function ListPage() {
                             return (
                                 <div key={item.id} className={styles.item_container}>
                                     <div className={styles.image_container}>
-                                        <div className={styles.link_btn} onClick={linkBtnClicked.bind(this, item)}><Icon path={mdiLinkVariant}></Icon></div>
+                                        {item.linkUrl && <div className={styles.link_btn} onClick={linkBtnClicked.bind(this, item)}><Icon path={mdiLinkVariant}></Icon></div>}
                                         <InView triggerOnce={true}>
                                             {({ inView, ref, entry }) => (
                                                 <img ref={ref} className={styles.main_pic} alt={item.name} src={inView ? item.mainPic + '?thumb=1' : defaultImgSrc} onClick={itemClicked.bind(this, item)}></img>

@@ -141,11 +141,13 @@ function Management() {
      */
     function linkBtnClicked(item) {
         console.log('linkBtnClicked: %o', item)
-        // 检查是否包含协议头，若无可能被前端服务器识别为内部地址。
-        if (!item.linkUrl.startsWith('http://') && !item.linkUrl.startsWith('https://'))
-            window.open('http://' + item.linkUrl, '_blank')
-        else
-            window.open(item.linkUrl, '_blank')
+        if (item.linkUrl) {
+            // 检查是否包含协议头，若无可能被前端服务器识别为内部地址。
+            if (!item.linkUrl.startsWith('http://') && !item.linkUrl.startsWith('https://'))
+                window.open('http://' + item.linkUrl, '_blank')
+            else
+                window.open(item.linkUrl, '_blank')
+        }
     }
 
     /**

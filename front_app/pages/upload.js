@@ -46,7 +46,7 @@ const defaultPrivewSrc = '';
 const defaultShowLoading = false;
 
 
-function Upload(props) {
+function UploadPage(props) {
 
     const [productList, setProductList] = useState(defaultProductList)
     const [categoryList, setCategoryList] = useState(defaultCategoryList)
@@ -209,7 +209,7 @@ function Upload(props) {
         if (!itemName) {
             enqueueSnackbar('名称不能为空', { autoHideDuration: 2000, variant: 'warning' })
             // } else if (!itemLink) {
-        } else if (!itemProductId) {
+        } else if (!itemProduct) {
             enqueueSnackbar('产品大类不能为空', { autoHideDuration: 2000, variant: 'warning' })
         } else if (!itemCategoryList.length) {
             enqueueSnackbar('请至少选择一个类别', { autoHideDuration: 2000, variant: 'warning' })
@@ -313,4 +313,4 @@ function Upload(props) {
     );
 }
 
-export default authenticatedRoute(Upload, { pathAfterFailure: '/login' });
+export default authenticatedRoute(UploadPage, { pathAfterFailure: '/login' });
